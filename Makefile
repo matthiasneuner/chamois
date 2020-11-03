@@ -41,18 +41,21 @@ RDG                         := no
 RICHARDS                    := no
 SOLID_MECHANICS             := no
 STOCHASTIC_TOOLS            := no
-TENSOR_MECHANICS            := no
+TENSOR_MECHANICS            := yes
 XFEM                        := no
 
 include $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################
 
+
 # dep apps
-APPLICATION_DIR    := $(CURDIR)
-APPLICATION_NAME   := chamois
-BUILD_EXEC         := yes
-GEN_REVISION       := no
-include            $(FRAMEWORK_DIR)/app.mk
+APPLICATION_DIR    	:= $(CURDIR)
+APPLICATION_NAME   	:= chamois
+BUILD_EXEC         	:= yes
+GEN_REVISION       	:= no
+ADDITIONAL_INCLUDES += -I$(BFT_USER_LIBRARY)/include
+include            	$(FRAMEWORK_DIR)/app.mk
 
 ###############################################################################
 # Additional special case targets should be added here
+ADDITIONAL_LIBS += -L/$(BFT_USER_LIBRARY)/lib -lbftUserLibrary -Wl,-rpath=$(BFT_USER_LIBRARY)/lib

@@ -29,3 +29,8 @@ AlwaysBreakAfterDefinitionReturnType: TopLevel
 AlwaysBreakTemplateDeclarations: true
 
 FixNamespaceComments: false
+
+
+
+SpacesInAngles: true 
+SpacesInParentheses: true

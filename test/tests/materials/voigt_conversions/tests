@@ -1,0 +1,12 @@
+[Tests]
+  [test_linear_elastic]
+    type = 'Exodiff'
+    input = 'plane_strain_bft_linear_elastic.i'
+    exodiff = 'plane_strain_bft_linear_elastic_out.e'
+  []
+  [test_modleon]
+    type = 'Exodiff'
+    input = 'plane_strain_bft_modleon.i'
+    exodiff = 'plane_strain_bft_modleon_out.e'
+  []
+[]
