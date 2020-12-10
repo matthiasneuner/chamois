@@ -55,4 +55,6 @@ ImplicitGradientEnhancedDamage::computeQpOffDiagJacobian(unsigned int jvar)
   for (unsigned int i = 0; i < _ndisp; ++i)
       if (jvar == _disp_var[i])
              return - _test[_i][_qp] * ( _dk_local_dstrain[_qp] * _grad_phi[_j][_qp] ) ( i ) ; // TODO: check notation used in MOOSE, because according to theory left index of dkde should contract with grad_phi instead of right one
+
+  return 0.0;
 }

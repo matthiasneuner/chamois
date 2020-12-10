@@ -13,14 +13,10 @@
 []
 
 [Variables]
-  [disp_x]
-  []
-  [disp_y]
-  []
-  [disp_z]
-  []
-  [nonlocal_damage]
-  []
+  [disp_x] []
+  [disp_y] []
+  [disp_z] []
+  [nonlocal_damage] []
 []
 
 [Kernels]
@@ -69,12 +65,9 @@
     order = CONSTANT
     family = MONOMIAL
   []
-  [force_x]
-  []
-  [force_y]
-  []
-  [force_z]
-  []
+  [force_x] []
+  [force_y] []
+  [force_z] []
 []
 
 
@@ -109,13 +102,13 @@
     type = ComputeBftMaterialHypoElasticNonLocalStress
     block='steel_HEX20'
     bft_material_name = GRADIENTENHANCEDDRUCKERPRAGER
-    bft_material_parameters = '25850  0.18            20e3          2e3                     .0      25        15          15    4     1.00         1e-3       0.0'
+    bft_material_parameters = '25850  0.18            20e3          2e3                     0      25        15          15    ${LDAM}     1.00         ${EPSF}      0.0'
   []
   [bft_material]
     type = ComputeBftMaterialHypoElasticNonLocalStress
     block='concrete_HEX20'
     bft_material_name = GRADIENTENHANCEDDRUCKERPRAGER
-    bft_material_parameters = '25850  0.18            20e3          2.65                    .0      25        15          15    4   1.00         1e-3       1.0'
+    bft_material_parameters = '25850  0.18            20e3          2.65                    0      25        15          15    ${LDAM}   1.00         ${EPSF}       .99'
   []
   [dstrain]
     type = ComputeIncrementalSmallStrain
@@ -198,22 +191,27 @@
   type = Transient
   solve_type = 'NEWTON'
 
-  petsc_options_iname = '-pc_type   -pc_hypre_type    -ksp_type     -ksp_gmres_restart  -pc_hypre_boomeramg_strong_threshold -pc_hypre_boomeramg_agg_nl -pc_hypre_boomeramg_agg_num_paths -pc_hypre_boomeramg_max_levels -pc_hypre_boomeramg_coarsen_type -pc_hypre_boomeramg_interp_type -pc_hypre_boomeramg_P_max -pc_hypre_boomeramg_truncfactor'
-  petsc_options_value = 'hypre      boomeramg         gmres         301                  0.6                                  4                          5                                 25                             HMIS                             ext+i                           1                         0.3'
+    petsc_options_iname = '-pc_type   -pc_hypre_type    -ksp_type     -ksp_gmres_restart  -pc_hypre_boomeramg_strong_threshold -pc_hypre_boomeramg_agg_nl -pc_hypre_boomeramg_agg_num_paths -pc_hypre_boomeramg_max_levels -pc_hypre_boomeramg_coarsen_type -pc_hypre_boomeramg_interp_type -pc_hypre_boomeramg_P_max -pc_hypre_boomeramg_truncfactor'
+    petsc_options_value = 'hypre      boomeramg         gmres         301                  0.6                                  4                          5                                 25                             HMIS                             FF1                           1                         0.3'
 
-  #petsc_options_iname = '-pc_type -pc_factor_mat_solver_package'
-  #petsc_options_value = ' lu       mumps'
+#   petsc_options_iname = '-pc_type -pc_factor_mat_solver_package'
+#   petsc_options_value = ' lu       mumps'
 
   nl_rel_tol = 1e-8
-  nl_abs_tol = 1e-8
-  l_tol = 1e-4
-  l_max_its = 300
+  nl_abs_tol = 1e-12
+  l_tol = 1e-3
+  l_max_its = 100
   nl_max_its = 20
+  nl_div_tol = 1e1
 
-  #line_search = 'none'
+  automatic_scaling=true
+  compute_scaling_once = true
+  verbose=false
 
-  dtmin = 1e-5
-  dtmax= 5e-3
+  line_search = 'none'
+
+  dtmin = 1e-4
+  dtmax= 1e-2
   
   start_time = 0.0
   end_time = 1.0 
@@ -223,19 +221,23 @@
     type = IterationAdaptiveDT
     optimal_iterations = 15
     iteration_window = 3
-    linear_iteration_ratio = 100
+    linear_iteration_ratio = 1000
     growth_factor=1.5
     cutback_factor=0.5
-    dt = 5e-3
+    dt = 1e-2
   []
   [Quadrature]
     order=SECOND
   []
+  [Predictor]
+    type = SimplePredictor
+    scale = 1.0
+  []
 [] 
 
 [Outputs]
+  file_base='${JOB}_LDAM_${LDAM}_EPSF_${EPSF}'
   interval = 1
-  #execute_on = 'initial timestep_end'
   print_linear_residuals = false
   csv = true
   exodus = true

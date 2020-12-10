@@ -26,8 +26,8 @@ FunctionDirichletIncrementalBC::validParams()
 
 FunctionDirichletIncrementalBC::FunctionDirichletIncrementalBC( const InputParameters & parameters )
   : FunctionDirichletBC( parameters ),
-    _the_offset( _u ),
-    _reset_times( getParam< std::vector< Real > >( "reset_times" ) )
+    _reset_times( getParam< std::vector< Real > >( "reset_times" ) ),
+    _the_offset( _u )
 {
 }
 

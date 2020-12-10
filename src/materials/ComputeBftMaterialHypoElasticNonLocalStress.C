@@ -48,9 +48,9 @@ ComputeBftMaterialHypoElasticNonLocalStress::ComputeBftMaterialHypoElasticNonLoc
     _stress_voigt( declareProperty< std::array< Real, 6 > >( _base_name + "stress_voigt" ) ),
     _stress_voigt_old(
         getMaterialPropertyOld< std::array< Real, 6 > >( _base_name + "stress_voigt" ) ),
+    _dstrain_voigt( getMaterialProperty< std::array< Real, 6 > >( "strain_increment_voigt" ) ),
     _dstress_voigt_dstrain_voigt(
         declareProperty< std::array< Real, 6 * 6 > >( _base_name + "Jacobian_mult_voigt" ) ),
-    _dstrain_voigt( getMaterialProperty< std::array< Real, 6 > >( "strain_increment_voigt" ) ),
     _k_local( declareProperty< Real >( "local_damage" ) ),
     _nonlocal_radius( declareProperty< Real >( "nonlocal_radius" ) ),
     _dstress_voigt_dk(
