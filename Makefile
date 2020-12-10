@@ -53,9 +53,9 @@ APPLICATION_DIR    	:= $(CURDIR)
 APPLICATION_NAME   	:= chamois
 BUILD_EXEC         	:= yes
 GEN_REVISION       	:= no
-ADDITIONAL_INCLUDES += -I$(BFT_USER_LIBRARY)/include
+ADDITIONAL_INCLUDES += -I$(MARMOT_DIR)/include
 include            	$(FRAMEWORK_DIR)/app.mk
 
 ###############################################################################
 # Additional special case targets should be added here
-ADDITIONAL_LIBS += -L/$(BFT_USER_LIBRARY)/lib -lbftUserLibrary -Wl,-rpath=$(BFT_USER_LIBRARY)/lib
+ADDITIONAL_LIBS += -L/$(MARMOT_DIR)/lib -lMarmot -Wl,-rpath=$(MARMOT_DIR)/lib

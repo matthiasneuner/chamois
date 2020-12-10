@@ -1,6 +1,6 @@
 //* Chamois - a MOOSE interface to constitutive models developed at the
 //* Unit of Strength of Materials and Structural Analysis -- University of Innsbruck
-//* https://www.uibk.ac.at/bft/
+//* https://www.uibk.ac.at/Marmot/
 //*
 //* Copyright (C) 2020 Matthias Neuner <matthias.neuner@uibk.ac.at>
 //*

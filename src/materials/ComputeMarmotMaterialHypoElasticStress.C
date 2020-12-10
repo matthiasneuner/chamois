@@ -1,6 +1,6 @@
 //* Chamois - a MOOSE interface to constitutive models developed at the
 //* Unit of Strength of Materials and Structural Analysis -- University of Innsbruck
-//* https://www.uibk.ac.at/bft/
+//* https://www.uibk.ac.at/Marmot/
 //*
 //* Copyright (C) 2020 Matthias Neuner <matthias.neuner@uibk.ac.at>
 //*
@@ -8,38 +8,38 @@
 //* License, v. 2.0. If a copy of the MPL was not distributed with this
 //* file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-#include "ComputeBftMaterialHypoElasticStress.h"
+#include "ComputeMarmotMaterialHypoElasticStress.h"
 
 // Moose defines a registerMaterial macro, which is really just an alias to registerObject.
 // This macro is not used at all in the complete mooseframework, but it clashes with the
-// registerMaterial function in namespace bft
+// registerMaterial function in namespace Marmot
 #undef registerMaterial
-#include "userLibrary.h"
+#include "Marmot/Marmot.h"
 
-registerMooseObject( "ChamoisApp", ComputeBftMaterialHypoElasticStress );
+registerMooseObject( "ChamoisApp", ComputeMarmotMaterialHypoElasticStress );
 
 InputParameters
-ComputeBftMaterialHypoElasticStress::validParams()
+ComputeMarmotMaterialHypoElasticStress::validParams()
 {
   InputParameters params = Material::validParams();
   params.addClassDescription(
-      "Compute stress using a hypoelastic material model from bftUserLibrary" );
+      "Compute stress using a hypoelastic material model from MarmotUserLibrary" );
   params.addParam< std::string >( "base_name",
                                   "Optional parameter that allows the user to define "
                                   "multiple mechanics material systems on the same "
                                   "block, i.e. for multiple phases" );
-  params.addRequiredParam< std::string >( "bft_material_name",
-                                          "Material name for the bftMaterialHypoElastic" );
+  params.addRequiredParam< std::string >( "marmot_material_name",
+                                          "Material name for the MarmotMaterialHypoElastic" );
   params.addRequiredParam< std::vector< Real > >(
-      "bft_material_parameters", "Material Parameters for the bftMaterialHypoElastic" );
+      "marmot_material_parameters", "Material Parameters for the MarmotMaterialHypoElastic" );
   return params;
 }
 
-ComputeBftMaterialHypoElasticStress::ComputeBftMaterialHypoElasticStress(
+ComputeMarmotMaterialHypoElasticStress::ComputeMarmotMaterialHypoElasticStress(
     const InputParameters & parameters )
   : DerivativeMaterialInterface< Material >( parameters ),
     _base_name( isParamValid( "base_name" ) ? getParam< std::string >( "base_name" ) + "_" : "" ),
-    _material_parameters( getParam< std::vector< Real > >( "bft_material_parameters" ) ),
+    _material_parameters( getParam< std::vector< Real > >( "marmot_material_parameters" ) ),
     _statevars( declareProperty< std::vector< Real > >( _base_name + "state_vars" ) ),
     _statevars_old( getMaterialPropertyOld< std::vector< Real > >( _base_name + "state_vars" ) ),
     _stress_voigt( declareProperty< std::array< Real, 6 > >( _base_name + "stress_voigt" ) ),
@@ -51,15 +51,15 @@ ComputeBftMaterialHypoElasticStress::ComputeBftMaterialHypoElasticStress(
     _characteristic_element_length( getMaterialProperty< Real >( "characteristic_element_length" ) ),
     _time_old{ _t, _t }
 {
-  const auto materialCode = userLibrary::BftMaterialFactory::getMaterialCodeFromName(
-      getParam< std::string >( "bft_material_name" ) );
+  const auto materialCode = MarmotLibrary::MarmotMaterialFactory::getMaterialCodeFromName(
+      getParam< std::string >( "marmot_material_name" ) );
 
-  _the_material = std::unique_ptr< BftMaterialHypoElastic >(
-      dynamic_cast< BftMaterialHypoElastic * >( userLibrary::BftMaterialFactory::createMaterial(
-          materialCode, _material_parameters.data(), _material_parameters.size(), 0, 0 ) ) );
+  _the_material = std::unique_ptr< MarmotMaterialHypoElastic >(
+      dynamic_cast< MarmotMaterialHypoElastic * >( MarmotLibrary::MarmotMaterialFactory::createMaterial(
+          materialCode, _material_parameters.data(), _material_parameters.size(), 0 ) ) );
 }
 void
-ComputeBftMaterialHypoElasticStress::initQpStatefulProperties()
+ComputeMarmotMaterialHypoElasticStress::initQpStatefulProperties()
 {
   _statevars[_qp].resize( _the_material->getNumberOfRequiredStateVars() );
   for ( auto & sdv : _statevars[_qp] )
@@ -69,7 +69,7 @@ ComputeBftMaterialHypoElasticStress::initQpStatefulProperties()
 }
 
 void
-ComputeBftMaterialHypoElasticStress::computeQpProperties()
+ComputeMarmotMaterialHypoElasticStress::computeQpProperties()
 {
   _statevars[_qp] = _statevars_old[_qp];
   _stress_voigt[_qp] = _stress_voigt_old[_qp];
@@ -94,7 +94,7 @@ ComputeBftMaterialHypoElasticStress::computeQpProperties()
           << _dstrain_voigt[_qp][3] << " " 
           << _dstrain_voigt[_qp][4] << " " 
           << _dstrain_voigt[_qp][5] << "\n" ;
-    throw MooseException( "BftMaterial " + getParam< std::string >( "bft_material_name" ) +
+    throw MooseException( "MarmotMaterial " + getParam< std::string >( "marmot_material_name" ) +
                           " requests a smaller timestep." );
 
 

@@ -98,17 +98,17 @@
 
 
 [Materials]
-  [bft_material_Elastic]
-    type = ComputeBftMaterialHypoElasticNonLocalStress
+  [marmot_material_Elastic]
+    type = ComputeMarmotMaterialGradientEnhancedHypoElasticStress
     block='steel_HEX20'
-    bft_material_name = GRADIENTENHANCEDDRUCKERPRAGER
-    bft_material_parameters = '25850  0.18            20e3          2e3                     0      25        15          15    ${LDAM}     1.00         ${EPSF}      0.0'
+    marmot_material_name = GRADIENTENHANCEDDRUCKERPRAGER
+    marmot_material_parameters = '25850  0.18            20e3          2e3                     0      25        15          15    ${LDAM}     1.00         ${EPSF}      0.0'
   []
-  [bft_material]
-    type = ComputeBftMaterialHypoElasticNonLocalStress
+  [marmot_material]
+    type = ComputeMarmotMaterialGradientEnhancedHypoElasticStress
     block='concrete_HEX20'
-    bft_material_name = GRADIENTENHANCEDDRUCKERPRAGER
-    bft_material_parameters = '25850  0.18            20e3          2.65                    0      25        15          15    ${LDAM}   1.00         ${EPSF}       .99'
+    marmot_material_name = GRADIENTENHANCEDDRUCKERPRAGER
+    marmot_material_parameters = '25850  0.18            20e3          2.65                    0      25        15          15    ${LDAM}   1.00         ${EPSF}       .99'
   []
   [dstrain]
     type = ComputeIncrementalSmallStrain

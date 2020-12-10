@@ -76,10 +76,10 @@
 []
 
 [Materials]
-  [bft_material]
-    type = ComputeBftMaterialHypoElasticStress
-    bft_material_name = MODLEON
-    bft_material_parameters = ' 30000.0	 0.15 	13 	 47.4 	  55   	 4.74 	 0.85 	 0.12 	 0.003	 2.0	 0.000001	 15.0	 0.10	 1'
+  [marmot_material]
+    type = ComputeMarmotMaterialHypoElasticStress
+    marmot_material_name = MODLEON
+    marmot_material_parameters = ' 30000.0	 0.15 	13 	 47.4 	  55   	 4.74 	 0.85 	 0.12 	 0.003	 2.0	 0.000001	 15.0	 0.10	 1'
   []
   [char_element_length]
     type = ComputeCharacteristicElementLength

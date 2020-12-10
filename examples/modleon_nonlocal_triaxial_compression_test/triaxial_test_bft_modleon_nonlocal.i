@@ -102,29 +102,29 @@
 
 
 [Materials]
-  [bft_material_Elastic]
-    type = ComputeBftMaterialHypoElasticNonLocalStress
+  [marmot_material_Elastic]
+    type = ComputeMarmotMaterialGradientEnhancedHypoElasticStress
     block='top_HEX20'
-    bft_material_name = MODLEONNONLOCAL
-    bft_material_parameters = '30000.0  0.15  13e3   47.4e3    55e3     4.74e3   0.85   0.12   0.003  2.0  0.000001  15.0  10  1.00  0.0017  1'
+    marmot_material_name = MODLEONNONLOCAL
+    marmot_material_parameters = '30000.0  0.15  13e3   47.4e3    55e3     4.74e3   0.85   0.12   0.003  2.0  0.000001  15.0  10  1.00  0.0017  1'
   []
-  [bft_material_Elastic2]
-    type = ComputeBftMaterialHypoElasticNonLocalStress
+  [marmot_material_Elastic2]
+    type = ComputeMarmotMaterialGradientEnhancedHypoElasticStress
     block='tbottom_HEX20'
-    bft_material_name = MODLEONNONLOCAL
-    bft_material_parameters = '30000.0  0.15  13e3   47.4e3    55e3     4.74e3   0.85   0.12   0.003  2.0  0.000001  15.0  10  1.00  0.0017  1'
+    marmot_material_name = MODLEONNONLOCAL
+    marmot_material_parameters = '30000.0  0.15  13e3   47.4e3    55e3     4.74e3   0.85   0.12   0.003  2.0  0.000001  15.0  10  1.00  0.0017  1'
   []
-  [bft_material]
-    type = ComputeBftMaterialHypoElasticNonLocalStress
+  [marmot_material]
+    type = ComputeMarmotMaterialGradientEnhancedHypoElasticStress
     block='notWeakElements_HEX20'
-    bft_material_name = MODLEONNONLOCAL
-    bft_material_parameters = '30000.0  0.15  13   47.4    55     4.74   0.85   0.12   0.003  2.0  0.000001  15.0  10  1.00  0.0017  1'
+    marmot_material_name = MODLEONNONLOCAL
+    marmot_material_parameters = '30000.0  0.15  13   47.4    55     4.74   0.85   0.12   0.003  2.0  0.000001  15.0  10  1.00  0.0017  1'
   []
-  [bft_material_weak]
-    type = ComputeBftMaterialHypoElasticNonLocalStress
+  [marmot_material_weak]
+    type = ComputeMarmotMaterialGradientEnhancedHypoElasticStress
     block='weakElements_HEX20'
-    bft_material_name = MODLEONNONLOCAL
-    bft_material_parameters = '31000.0  0.15  13   44.4    53     4.54   0.85   0.12   0.003  2.0  0.000001  15.0  10  1.00  0.0017  1'
+    marmot_material_name = MODLEONNONLOCAL
+    marmot_material_parameters = '31000.0  0.15  13   44.4    53     4.54   0.85   0.12   0.003  2.0  0.000001  15.0  10  1.00  0.0017  1'
   []
   [dstrain]
     type = ComputeIncrementalSmallStrain

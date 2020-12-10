@@ -10,18 +10,18 @@
 #pragma once
 
 #include "DerivativeMaterialInterface.h"
-#include "bftMaterialHypoElastic.h"
+#include "Marmot/MarmotMaterialHypoElastic.h"
 
 /**
- * ComputeBftMaterialHypoElasticStress is a wrapper for hypoelastic constitutive models provided by
- * the bftUserLibrary.
+ * ComputeMarmotMaterialHypoElasticStress is a wrapper for hypoelastic constitutive models provided by
+ * the MarmotUserLibrary.
  */
-class ComputeBftMaterialHypoElasticStress : public DerivativeMaterialInterface< Material >
+class ComputeMarmotMaterialHypoElasticStress : public DerivativeMaterialInterface< Material >
 {
 public:
   static InputParameters validParams();
 
-  ComputeBftMaterialHypoElasticStress( const InputParameters & parameters );
+  ComputeMarmotMaterialHypoElasticStress( const InputParameters & parameters );
 
 protected:
   virtual void initQpStatefulProperties() override;
@@ -40,7 +40,7 @@ protected:
 
   const MaterialProperty< Real > & _characteristic_element_length;
 
-  std::unique_ptr< BftMaterialHypoElastic > _the_material;
+  std::unique_ptr< MarmotMaterialHypoElastic > _the_material;
 
   const double _time_old[2];
 };

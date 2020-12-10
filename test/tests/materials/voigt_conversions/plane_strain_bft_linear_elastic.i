@@ -38,10 +38,10 @@
 []
 
 [Materials]
-  [./bft_material]
-    type = ComputeBftMaterialHypoElasticStress
-    bft_material_name = LINEARELASTIC
-    bft_material_parameters = '1000 0.25'
+  [./marmot_material]
+    type = ComputeMarmotMaterialHypoElasticStress
+    marmot_material_name = LINEARELASTIC
+    marmot_material_parameters = '1000 0.25'
   []
   [./char_element_length]
     type = ComputeCharacteristicElementLength
