@@ -53,9 +53,15 @@ APPLICATION_DIR    	:= $(CURDIR)
 APPLICATION_NAME   	:= chamois
 BUILD_EXEC         	:= yes
 GEN_REVISION       	:= no
-ADDITIONAL_INCLUDES += -I$(MARMOT_DIR)/include
+ifdef MARMOT_DIR
+	ADDITIONAL_INCLUDES += -I$(MARMOT_DIR)/include
+endif
 include            	$(FRAMEWORK_DIR)/app.mk
 
 ###############################################################################
 # Additional special case targets should be added here
-ADDITIONAL_LIBS += -L/$(MARMOT_DIR)/lib -lMarmot -Wl,-rpath=$(MARMOT_DIR)/lib
+ifdef MARMOT_DIR
+	ADDITIONAL_LIBS += -L/$(MARMOT_DIR)/lib -lMarmot -Wl,-rpath=$(MARMOT_DIR)/lib
+else
+	ADDITIONAL_LIBS += -lMarmot 
+endif
