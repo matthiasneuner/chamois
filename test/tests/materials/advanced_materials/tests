@@ -1,0 +1,7 @@
+[Tests]
+  [test_gm_druckerprager]
+    type = 'Exodiff'
+    input = 'gm_druckerprager.i'
+    exodiff = 'gm_druckerprager_out.e'
+  []
+[]

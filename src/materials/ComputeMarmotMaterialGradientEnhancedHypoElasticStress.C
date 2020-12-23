@@ -113,7 +113,7 @@ ComputeMarmotMaterialGradientEnhancedHypoElasticStress::computeQpProperties()
           << _dstrain_voigt[_qp][3] << " " 
           << _dstrain_voigt[_qp][4] << " " 
           << _dstrain_voigt[_qp][5] << "\n" ;
-    throw MooseException( "MarmotMaterial" + getParam< std::string >( "marmot_material_name" ) +
+    throw MooseException( "MarmotMaterial " + getParam< std::string >( "marmot_material_name" ) +
                           " requests a smaller timestep." );
 
 

@@ -10,29 +10,32 @@
 
 #include "GradientEnhancedStressDivergenceTensors.h"
 
-registerMooseObject("ChamoisApp", GradientEnhancedStressDivergenceTensors);
+registerMooseObject( "ChamoisApp", GradientEnhancedStressDivergenceTensors );
 
 InputParameters
 GradientEnhancedStressDivergenceTensors::validParams()
 {
   InputParameters params = StressDivergenceTensors::validParams();
-  params.addClassDescription( "Enhanced StressDivergenceTensors kernel considering off diagonal jacobian terms due to gradient-enhanced stress effects." );
-  params.addRequiredCoupledVar("nonlocal_damage", "The nonlocal damage field");
+  params.addClassDescription( "Enhanced StressDivergenceTensors kernel considering off diagonal "
+                              "jacobian terms due to gradient-enhanced stress effects." );
+  params.addRequiredCoupledVar( "nonlocal_damage", "The nonlocal damage field" );
   return params;
 }
 
-GradientEnhancedStressDivergenceTensors::GradientEnhancedStressDivergenceTensors(const InputParameters & parameters)
-  : StressDivergenceTensors(parameters),
-   _nonlocal_damage_var (  coupled("nonlocal_damage") ),
-    _dstress_dk ( getMaterialPropertyByName < RankTwoTensor > (_base_name + "dstress_dnonlocal_damage") )
+GradientEnhancedStressDivergenceTensors::GradientEnhancedStressDivergenceTensors(
+    const InputParameters & parameters )
+  : StressDivergenceTensors( parameters ),
+    _nonlocal_damage_var( coupled( "nonlocal_damage" ) ),
+    _dstress_dk(
+        getMaterialPropertyByName< RankTwoTensor >( _base_name + "dstress_dnonlocal_damage" ) )
 {
 }
 
 Real
-GradientEnhancedStressDivergenceTensors::computeQpOffDiagJacobian(unsigned int jvar)
+GradientEnhancedStressDivergenceTensors::computeQpOffDiagJacobian( unsigned int jvar )
 {
-    if ( jvar == _nonlocal_damage_var ) 
-        return _grad_test[_i][_qp] * _dstress_dk[_qp].row( _component) * _phi[_j][_qp];
+  if ( jvar == _nonlocal_damage_var )
+    return _grad_test[_i][_qp] * _dstress_dk[_qp].row( _component ) * _phi[_j][_qp];
 
-  return StressDivergenceTensors::computeQpOffDiagJacobian(jvar);
+  return StressDivergenceTensors::computeQpOffDiagJacobian( jvar );
 }
