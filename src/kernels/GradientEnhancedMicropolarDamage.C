@@ -30,8 +30,8 @@ GradientEnhancedMicropolarDamage::GradientEnhancedMicropolarDamage(
     const InputParameters & parameters )
   : ALEKernel( parameters ),
     _base_name( isParamValid( "base_name" ) ? getParam< std::string >( "base_name" ) + "_" : "" ),
-    _nonlocal_radius( getMaterialPropertyByName< Real >( _base_name + "nonlocal_radius" ) ),
     _k_local( getMaterialPropertyByName< Real >( _base_name + "k_local" ) ),
+    _nonlocal_radius( getMaterialPropertyByName< Real >( _base_name + "nonlocal_radius" ) ),
     _dk_local_dF( getMaterialPropertyByName< Arr33 >( _base_name + "dk_local_dF" ) ),
     _dk_local_dw( getMaterialPropertyByName< Arr3 >( _base_name + "dk_local_dw" ) ),
     _dk_local_dgrad_w( getMaterialPropertyByName< Arr33 >( _base_name + "dk_local_dgrad_w" ) ),

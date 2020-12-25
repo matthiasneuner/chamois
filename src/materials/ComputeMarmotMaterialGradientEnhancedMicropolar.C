@@ -151,12 +151,6 @@ ComputeMarmotMaterialGradientEnhancedMicropolar::computeQpProperties()
 
   const static Tensor333d LeCi = levi_civita_pd () ;
 
-  const Tensor33d F_np = Tensor33d {
-    { (*_grad_disp[0])[_qp](0), (*_grad_disp[0])[_qp](1), (*_grad_disp[0])[_qp](2) },
-    { (*_grad_disp[1])[_qp](0), (*_grad_disp[1])[_qp](1), (*_grad_disp[1])[_qp](2) },
-    { (*_grad_disp[2])[_qp](0), (*_grad_disp[2])[_qp](1), (*_grad_disp[2])[_qp](2) } }
-    + I;
-
   const MarmotMaterialGradientEnhancedMicropolar::DeformationIncrement< 3 > _deformation_increment{
     .F_n = Tensor33d{
       { (*_grad_disp_old[0])[_qp](0), (*_grad_disp_old[0])[_qp](1), (*_grad_disp_old[0])[_qp](2) },
@@ -164,7 +158,11 @@ ComputeMarmotMaterialGradientEnhancedMicropolar::computeQpProperties()
       { (*_grad_disp_old[2])[_qp](0), (*_grad_disp_old[2])[_qp](1), (*_grad_disp_old[2])[_qp](2) } }
       +I,
 
-    .F_np = F_np, 
+    .F_np = Tensor33d {
+      { (*_grad_disp[0])[_qp](0), (*_grad_disp[0])[_qp](1), (*_grad_disp[0])[_qp](2) },
+      { (*_grad_disp[1])[_qp](0), (*_grad_disp[1])[_qp](1), (*_grad_disp[1])[_qp](2) },
+      { (*_grad_disp[2])[_qp](0), (*_grad_disp[2])[_qp](1), (*_grad_disp[2])[_qp](2) } }
+      + I,
 
     .W_n = Tensor3d {
       (*_mrot_old[0])[_qp],
@@ -186,7 +184,7 @@ ComputeMarmotMaterialGradientEnhancedMicropolar::computeQpProperties()
       { (*_grad_mrot[1])[_qp](0), (*_grad_mrot[1])[_qp](1), (*_grad_mrot[1])[_qp](2) },
       { (*_grad_mrot[2])[_qp](0), (*_grad_mrot[2])[_qp](1), (*_grad_mrot[2])[_qp](2) } },
 
-    _k[_qp]
+    .N = _k[_qp]
   };
   // clang-format on
 
@@ -218,6 +216,8 @@ ComputeMarmotMaterialGradientEnhancedMicropolar::computeQpProperties()
   using to_IikK = Fastor::OIndex < I_, i_, k_, K_>;
   using to_IjkK = Fastor::OIndex < I_, j_, k_, K_>;
 
+  const auto& F_np = _deformation_increment.F_np;
+
   const Tensor33d    FInv    =   Fastor::inverse ( F_np );
   const Tensor3333d dFInv_dF = - Fastor::einsum< Ik, Ki, to_IikK > ( FInv, FInv);
 
@@ -234,7 +234,6 @@ ComputeMarmotMaterialGradientEnhancedMicropolar::computeQpProperties()
   const Tensor333d  dpk_i_couple_stress_dw      = Fastor::einsum < Ii, ijk >           ( FInv, _algorithmic_moduli.dM_dW ) ;
   const Tensor3333d dpk_i_couple_stress_dgrad_w = Fastor::einsum < Ii, ijkK >          ( FInv, _algorithmic_moduli.dM_ddWdX ) ;
   const Tensor33d   dpk_i_couple_stress_dk      = Fastor::einsum < Ii, ij >            ( FInv, _algorithmic_moduli.dM_dN ) ;
-
 
   const Tensor3d    kirchhoff_moment             = Fastor::einsum < ijl, ij >            ( LeCi,            _response.S ) ;
   const Tensor333d dkirchhoff_moment_dF          = Fastor::einsum < ijl, ijkK >          ( LeCi, _algorithmic_moduli.dS_dF );

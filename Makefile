@@ -65,3 +65,5 @@ ifdef MARMOT_DIR
 else
 	ADDITIONAL_LIBS += -lMarmot 
 endif
+
+ADDITIONAL_CPPFLAGS += "--std=c++17"
