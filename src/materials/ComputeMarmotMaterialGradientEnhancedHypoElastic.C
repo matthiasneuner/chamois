@@ -8,7 +8,7 @@
 //* License, v. 2.0. If a copy of the MPL was not distributed with this
 //* file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-#include "ComputeMarmotMaterialGradientEnhancedHypoElasticStress.h"
+#include "ComputeMarmotMaterialGradientEnhancedHypoElastic.h"
 
 // Moose defines a registerMaterial macro, which is really just an alias to registerObject.
 // This macro is not used at all in the complete mooseframework, but it clashes with the
@@ -16,10 +16,10 @@
 #undef registerMaterial
 #include "Marmot/Marmot.h"
 
-registerMooseObject( "ChamoisApp", ComputeMarmotMaterialGradientEnhancedHypoElasticStress );
+registerMooseObject( "ChamoisApp", ComputeMarmotMaterialGradientEnhancedHypoElastic );
 
 InputParameters
-ComputeMarmotMaterialGradientEnhancedHypoElasticStress::validParams()
+ComputeMarmotMaterialGradientEnhancedHypoElastic::validParams()
 {
   InputParameters params = Material::validParams();
   params.addClassDescription(
@@ -36,7 +36,7 @@ ComputeMarmotMaterialGradientEnhancedHypoElasticStress::validParams()
   return params;
 }
 
-ComputeMarmotMaterialGradientEnhancedHypoElasticStress::ComputeMarmotMaterialGradientEnhancedHypoElasticStress(
+ComputeMarmotMaterialGradientEnhancedHypoElastic::ComputeMarmotMaterialGradientEnhancedHypoElastic(
     const InputParameters & parameters )
   : DerivativeMaterialInterface< Material >( parameters ),
     _base_name( isParamValid( "base_name" ) ? getParam< std::string >( "base_name" ) + "_" : "" ),
@@ -50,7 +50,7 @@ ComputeMarmotMaterialGradientEnhancedHypoElasticStress::ComputeMarmotMaterialGra
         getMaterialPropertyOld< std::array< Real, 6 > >( _base_name + "stress_voigt" ) ),
     _dstrain_voigt( getMaterialProperty< std::array< Real, 6 > >( "strain_increment_voigt" ) ),
     _dstress_voigt_dstrain_voigt(
-        declareProperty< std::array< Real, 6 * 6 > >( _base_name + "Jacobian_mult_voigt" ) ),
+        declareProperty< std::array< Real, 6 * 6 > >( _base_name + "dstress_voigt_dstrain_voigt" ) ),
     _k_local( declareProperty< Real >( "local_damage" ) ),
     _nonlocal_radius( declareProperty< Real >( "nonlocal_radius" ) ),
     _dstress_voigt_dk(
@@ -71,7 +71,7 @@ ComputeMarmotMaterialGradientEnhancedHypoElasticStress::ComputeMarmotMaterialGra
                 getParam< std::string >( "marmot_material_name" ) );
 }
 void
-ComputeMarmotMaterialGradientEnhancedHypoElasticStress::initQpStatefulProperties()
+ComputeMarmotMaterialGradientEnhancedHypoElastic::initQpStatefulProperties()
 {
   _statevars[_qp].resize( _the_material->getNumberOfRequiredStateVars() );
   for ( auto & sdv : _statevars[_qp] )
@@ -81,7 +81,7 @@ ComputeMarmotMaterialGradientEnhancedHypoElasticStress::initQpStatefulProperties
 }
 
 void
-ComputeMarmotMaterialGradientEnhancedHypoElasticStress::computeQpProperties()
+ComputeMarmotMaterialGradientEnhancedHypoElastic::computeQpProperties()
 {
   _statevars[_qp] = _statevars_old[_qp];
   _stress_voigt[_qp] = _stress_voigt_old[_qp];

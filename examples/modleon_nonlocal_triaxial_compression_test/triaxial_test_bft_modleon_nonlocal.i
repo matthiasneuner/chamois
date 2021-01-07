@@ -103,25 +103,25 @@
 
 [Materials]
   [marmot_material_Elastic]
-    type = ComputeMarmotMaterialGradientEnhancedHypoElasticStress
+    type = ComputeMarmotMaterialGradientEnhancedHypoElastic
     block='top_HEX20'
     marmot_material_name = MODLEONNONLOCAL
     marmot_material_parameters = '30000.0  0.15  13e3   47.4e3    55e3     4.74e3   0.85   0.12   0.003  2.0  0.000001  15.0  10  1.00  0.0017  1'
   []
   [marmot_material_Elastic2]
-    type = ComputeMarmotMaterialGradientEnhancedHypoElasticStress
+    type = ComputeMarmotMaterialGradientEnhancedHypoElastic
     block='tbottom_HEX20'
     marmot_material_name = MODLEONNONLOCAL
     marmot_material_parameters = '30000.0  0.15  13e3   47.4e3    55e3     4.74e3   0.85   0.12   0.003  2.0  0.000001  15.0  10  1.00  0.0017  1'
   []
   [marmot_material]
-    type = ComputeMarmotMaterialGradientEnhancedHypoElasticStress
+    type = ComputeMarmotMaterialGradientEnhancedHypoElastic
     block='notWeakElements_HEX20'
     marmot_material_name = MODLEONNONLOCAL
     marmot_material_parameters = '30000.0  0.15  13   47.4    55     4.74   0.85   0.12   0.003  2.0  0.000001  15.0  10  1.00  0.0017  1'
   []
   [marmot_material_weak]
-    type = ComputeMarmotMaterialGradientEnhancedHypoElasticStress
+    type = ComputeMarmotMaterialGradientEnhancedHypoElastic
     block='weakElements_HEX20'
     marmot_material_name = MODLEONNONLOCAL
     marmot_material_parameters = '31000.0  0.15  13   44.4    53     4.54   0.85   0.12   0.003  2.0  0.000001  15.0  10  1.00  0.0017  1'
@@ -144,7 +144,7 @@
   [Jacobian_conv]
     type = ConvertRankFourTensorFromVoigt
     tensor = Jacobian_mult
-    tensor_voigt = Jacobian_mult_voigt
+    tensor_voigt = dstress_voigt_dstrain_voigt
     shear_components_half_ij = false
     shear_components_half_kl = false
     tensor_voigt_uses_row_major_layout = false

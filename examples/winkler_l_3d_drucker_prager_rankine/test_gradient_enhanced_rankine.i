@@ -128,7 +128,7 @@
   [Jacobian_conv]
     type = ConvertRankFourTensorFromVoigt
     tensor = Jacobian_mult
-    tensor_voigt = Jacobian_mult_voigt
+    tensor_voigt = dstress_voigt_dstrain_voigt
     shear_components_half_ij = false
     shear_components_half_kl = false
     tensor_voigt_uses_row_major_layout = false

@@ -77,7 +77,7 @@
 
 [Materials]
   [marmot_material]
-    type = ComputeMarmotMaterialHypoElasticStress
+    type = ComputeMarmotMaterialHypoElastic
     marmot_material_name = MODLEON
     marmot_material_parameters = ' 30000.0	 0.15 	13 	 47.4 	  55   	 4.74 	 0.85 	 0.12 	 0.003	 2.0	 0.000001	 15.0	 0.10	 1'
   []
@@ -102,7 +102,7 @@
   [Jacobian_conv]
     type = ConvertRankFourTensorFromVoigt
     tensor = Jacobian_mult
-    tensor_voigt = Jacobian_mult_voigt
+    tensor_voigt = dstress_voigt_dstrain_voigt
     shear_components_half_ij = false
     shear_components_half_kl = false
     tensor_voigt_uses_row_major_layout = false
