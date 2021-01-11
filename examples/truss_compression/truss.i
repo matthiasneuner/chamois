@@ -197,7 +197,7 @@
     petsc_options_value = 'hypre      boomeramg         gmres         301                  0.6                                  4                          5                                 25                             HMIS                             ext+i                           1                         0.3'
 
   nl_rel_tol = 1e-5
-  nl_abs_tol = 1e-8
+  nl_abs_tol = 1e-10
   l_tol = 1e-3
   l_max_its = 250
   nl_max_its = 20

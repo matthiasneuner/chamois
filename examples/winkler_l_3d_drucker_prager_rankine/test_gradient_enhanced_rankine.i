@@ -99,13 +99,13 @@
 
 [Materials]
   [marmot_material_Elastic]
-    type = ComputeMarmotMaterialGradientEnhancedHypoElasticStress
+    type = ComputeMarmotMaterialGradientEnhancedHypoElastic
     block='steel_HEX20'
     marmot_material_name = GRADIENTENHANCEDDRUCKERPRAGER
     marmot_material_parameters = '25850  0.18            20e3          2e3                     0      25        15          15    ${LDAM}     1.00         ${EPSF}      0.0'
   []
   [marmot_material]
-    type = ComputeMarmotMaterialGradientEnhancedHypoElasticStress
+    type = ComputeMarmotMaterialGradientEnhancedHypoElastic
     block='concrete_HEX20'
     marmot_material_name = GRADIENTENHANCEDDRUCKERPRAGER
     marmot_material_parameters = '25850  0.18            20e3          2.65                    0      25        15          15    ${LDAM}   1.00         ${EPSF}       .99'
@@ -192,17 +192,14 @@
   solve_type = 'NEWTON'
 
     petsc_options_iname = '-pc_type   -pc_hypre_type    -ksp_type     -ksp_gmres_restart  -pc_hypre_boomeramg_strong_threshold -pc_hypre_boomeramg_agg_nl -pc_hypre_boomeramg_agg_num_paths -pc_hypre_boomeramg_max_levels -pc_hypre_boomeramg_coarsen_type -pc_hypre_boomeramg_interp_type -pc_hypre_boomeramg_P_max -pc_hypre_boomeramg_truncfactor'
-    petsc_options_value = 'hypre      boomeramg         gmres         301                  0.6                                  4                          5                                 25                             HMIS                             FF1                           1                         0.3'
+    petsc_options_value = 'hypre      boomeramg         gmres         301                  0.6                                  4                          5                                 25                             HMIS                             ext+i                           1                         0.3'
 
-#   petsc_options_iname = '-pc_type -pc_factor_mat_solver_package'
-#   petsc_options_value = ' lu       mumps'
-
-  nl_rel_tol = 1e-8
-  nl_abs_tol = 1e-12
+  nl_rel_tol = 1e-5
+  nl_abs_tol = 1e-10
   l_tol = 1e-3
-  l_max_its = 100
+  l_max_its = 250
   nl_max_its = 20
-  nl_div_tol = 1e1
+  nl_div_tol = 1e2
 
   automatic_scaling=true
   compute_scaling_once = true
@@ -229,10 +226,10 @@
   [Quadrature]
     order=SECOND
   []
-  [Predictor]
-    type = SimplePredictor
-    scale = 1.0
-  []
+#  [Predictor]
+#    type = SimplePredictor
+#    scale = 1.0
+#  []
 [] 
 
 [Outputs]
