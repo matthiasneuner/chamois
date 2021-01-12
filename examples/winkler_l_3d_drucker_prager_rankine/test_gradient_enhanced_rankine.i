@@ -226,10 +226,10 @@
   [Quadrature]
     order=SECOND
   []
-#  [Predictor]
-#    type = SimplePredictor
-#    scale = 1.0
-#  []
+  [Predictor]
+    type = SimplePredictor
+    scale = 1.0
+  []
 [] 
 
 [Outputs]

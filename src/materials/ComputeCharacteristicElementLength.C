@@ -1,12 +1,26 @@
-//* Chamois - a MOOSE interface to constitutive models developed at the
-//* Unit of Strength of Materials and Structural Analysis -- University of Innsbruck
-//* https://www.uibk.ac.at/Marmot/
-//*
-//* Copyright (C) 2020 Matthias Neuner <matthias.neuner@uibk.ac.at>
-//*
-//* This Source Code Form is subject to the terms of the Mozilla Public
-//* License, v. 2.0. If a copy of the MPL was not distributed with this
-//* file, You can obtain one at https://mozilla.org/MPL/2.0/.
+/* ---------------------------------------------------------------------
+ *       _                           _     
+ *   ___| |__   __ _ _ __ ___   ___ (_)___ 
+ *  / __| '_ \ / _` | '_ ` _ \ / _ \| / __|
+ * | (__| | | | (_| | | | | | | (_) | \__ \
+ *  \___|_| |_|\__,_|_| |_| |_|\___/|_|___/
+ * 
+ * Chamois - a MOOSE interface to constitutive models developed at the
+ * Unit of Strength of Materials and Structural Analysis
+ * University of Innsbruck,
+ * 2020 - today
+ *
+ * Matthias Neuner matthias.neuner@uibk.ac.at
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * The full text of the license can be found in the file LICENSE.md at
+ * the top level directory of chamois.
+ * ---------------------------------------------------------------------
+ */
 
 #include "ComputeCharacteristicElementLength.h"
 #include "MooseMesh.h"
