@@ -1,6 +1,9 @@
 Chamois
 =====
 
-"Fork Chamois" to create a new MOOSE-based application.
+A MOOSE application for simulating complex materials using the [Marmot](https://github.com/MAteRialMOdelingToolbox/marmot) library.
 
-For more information see: [http://mooseframework.org/create-an-app/](http://mooseframework.org/create-an-app/)
+## Gallery
+
+![Brokenshire torsion test](share/brokenshire_animation.gif)
+Brokenshire torsion test
