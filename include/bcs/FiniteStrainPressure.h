@@ -12,10 +12,7 @@
 #include "DerivativeMaterialInterface.h"
 #include "IntegratedBC.h"
 
-using Arr3 = std::array< Real, 3 >;
-using Arr33 = std::array< Arr3, 3 >;
-using Arr333 = std::array< Arr33, 3 >;
-using Arr3333 = std::array< Arr333, 3 >;
+#include "FastorHelper.h"
 
 class Function;
 
@@ -56,7 +53,9 @@ protected:
 
   const std::vector< const VariableGradient * > _grad_disp;
 
-  const MaterialProperty< Arr3 > & _n;
+  /* const MaterialProperty < Ten33d > & theTensor; */
 
-  const MaterialProperty< Arr333  > & _dn_dF;
+  const MaterialProperty< TensorData3R > & _n;
+
+  const MaterialProperty< TensorData333R  > & _dn_dF;
 };

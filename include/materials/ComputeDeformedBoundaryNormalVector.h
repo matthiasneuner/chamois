@@ -25,12 +25,8 @@
 #pragma once
 
 #include "DerivativeMaterialInterface.h"
+#include "FastorHelper.h"
 #include <Fastor/Fastor.h>
-
-using Arr3 = std::array< Real, 3 >;
-using Arr33 = std::array< Arr3, 3 >;
-using Arr333 = std::array< Arr33, 3 >;
-using Arr3333 = std::array< Arr333, 3 >;
 
 class ComputeDeformedBoundaryNormalVector
   : public DerivativeMaterialInterface< Material >
@@ -45,8 +41,8 @@ protected:
 
   const std::vector< const VariableGradient * > _grad_disp;
 
-  MaterialProperty< Arr3 > & _n;
+  MaterialProperty< TensorData3R > & _n;
 
-  MaterialProperty< Arr333 > & _dn_dF;
+  MaterialProperty< TensorData333R > & _dn_dF;
 
 };

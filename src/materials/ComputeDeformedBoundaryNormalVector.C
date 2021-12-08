@@ -46,8 +46,8 @@ ComputeDeformedBoundaryNormalVector::ComputeDeformedBoundaryNormalVector(
     const InputParameters & parameters )
   : DerivativeMaterialInterface< Material >( parameters ),
     _grad_disp( coupledGradients( "displacements" ) ),
-    _n ( declareProperty< Arr3 > ( "boundary_normal_vector" ) ),
-    _dn_dF ( declarePropertyDerivative< Arr333 > ( "boundary_normal_vector" , "grad_u" ) )
+    _n ( declareProperty< TensorData3R > ( "boundary_normal_vector" ) ),
+    _dn_dF ( declarePropertyDerivative< TensorData333R > ( "boundary_normal_vector" , "grad_u" ) )
 {
   if ( getParam< bool >( "use_displaced_mesh" ) )
     paramError( "use_displaced_mesh", "This material must be run on the undisplaced mesh" );
@@ -100,7 +100,7 @@ ComputeDeformedBoundaryNormalVector::computeQpProperties()
   const Tensor3d  n = J * Fastor::transpose( FInv ) % N;
   const Tensor333d dn_dF = Fastor::einsum<i, Ik>( Fastor::transpose( FInv ) % N , dJ_dF ) + J * Fastor::einsum< IikK, I> ( dFInv_dF, N );
 
-  std::copy ( n.data(),      n.data()  + 3 , &_n[_qp][0] );
-  std::copy ( dn_dF.data(),      dn_dF.data()  + 3*3*3 , &_dn_dF[_qp][0][0][0] );
+  _n[_qp] = n;
+  _dn_dF[_qp] = dn_dF;
 
 }

@@ -40,8 +40,8 @@ FiniteStrainPressure::FiniteStrainPressure(const InputParameters & parameters)
     _ndisp(this->coupledComponents("displacements")),
     _dvars(_ndisp),
     _grad_disp( coupledGradients( "displacements" ) ),
-    _n ( getMaterialProperty< Arr3 > ( "boundary_normal_vector" ) ),
-    _dn_dF ( getMaterialProperty< Arr333 > ( "dboundary_normal_vector/dgrad_u" ) )
+    _n ( getMaterialProperty< TensorData3R > ( "boundary_normal_vector" ) ),
+    _dn_dF ( getMaterialProperty< TensorData333R > ( "dboundary_normal_vector/dgrad_u" ) )
 {
   if (_component > 2)
     mooseError("Invalid component given for ", name(), ": ", _component, ".\n");
@@ -64,7 +64,7 @@ FiniteStrainPressure::computeQpResidual()
   if (_postprocessor)
     factor *= *_postprocessor;
 
-  return factor * _n[_qp][_component] * _test[_i][_qp];
+  return factor * _n[_qp].retrieveTensor()(_component) * _test[_i][_qp];
 }
 
 Real
@@ -100,7 +100,7 @@ FiniteStrainPressure::componentJacobian(unsigned int j)
 
    const Tensor3d dN_dX { _grad_phi[_j][_qp](0), _grad_phi[_j][_qp](1), _grad_phi[_j][_qp](2)};
 
-   const Fastor::TensorMap<const double, 3, 3, 3> dn_dF ( &_dn_dF[_qp][0][0][0] );
+   const auto dn_dF = _dn_dF[_qp].retrieveTensor();
 
    const Tensor33d dn_dq = Fastor::einsum< ijK, K> ( dn_dF, dN_dX ) ;
 
