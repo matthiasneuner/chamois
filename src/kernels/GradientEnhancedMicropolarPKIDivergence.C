@@ -52,14 +52,14 @@ GradientEnhancedMicropolarPKIDivergence::GradientEnhancedMicropolarPKIDivergence
   : Kernel( parameters ),
     _base_name( isParamValid( "base_name" ) ? getParam< std::string >( "base_name" ) + "_" : "" ),
     _tensor_name( getParam< std::string >( "tensor" ) ),
-    _pk_i( getMaterialPropertyByName< TensorData33R >( _base_name + _tensor_name ) ),
+    _pk_i( getMaterialPropertyByName< Tensor33R >( _base_name + _tensor_name ) ),
     _dpk_i_dF(
-        getMaterialPropertyByName< TensorData3333R >( "d" + _base_name + _tensor_name + "/d" + "grad_u" ) ),
+        getMaterialPropertyByName< Tensor3333R >( "d" + _base_name + _tensor_name + "/d" + "grad_u" ) ),
     _dpk_i_dw(
-        getMaterialPropertyByName< TensorData333R >( "d" + _base_name + _tensor_name + "/d" + "w" ) ),
+        getMaterialPropertyByName< Tensor333R >( "d" + _base_name + _tensor_name + "/d" + "w" ) ),
     _dpk_i_dgrad_w(
-        getMaterialPropertyByName< TensorData3333R >( "d" + _base_name + _tensor_name + "/d" + "grad_w" ) ),
-    _dpk_i_dk( getMaterialPropertyByName< TensorData33R >( "d" + _base_name + _tensor_name + "/d" + "k" ) ),
+        getMaterialPropertyByName< Tensor3333R >( "d" + _base_name + _tensor_name + "/d" + "grad_w" ) ),
+    _dpk_i_dk( getMaterialPropertyByName< Tensor33R >( "d" + _base_name + _tensor_name + "/d" + "k" ) ),
     _component( getParam< unsigned int >( "component" ) ),
     _ndisp( coupledComponents( "displacements" ) ),
     _disp_var( _ndisp ),

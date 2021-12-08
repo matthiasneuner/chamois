@@ -54,13 +54,13 @@ protected:
   /// Tensor of which the moment is computed
   const std::string _moment_name;
   /// The tensor
-  const MaterialProperty< TensorData3R > & _kirchhoff_moment;
+  const MaterialProperty< Tensor3R > & _kirchhoff_moment;
 
   //// Derivatives of the w.r.t. deformation gradient, micro rotations, material gradient of the micro rotations and the nonlocal damage driving field
-  const MaterialProperty< TensorData333R > & _dkirchhoff_moment_dF;
-  const MaterialProperty< TensorData33R > & _dkirchhoff_moment_dw;
-  const MaterialProperty< TensorData333R > & _dkirchhoff_moment_dgrad_w;
-  const MaterialProperty< TensorData3R > & _dkirchhoff_moment_dk;
+  const MaterialProperty< Tensor333R > & _dkirchhoff_moment_dF;
+  const MaterialProperty< Tensor33R > & _dkirchhoff_moment_dw;
+  const MaterialProperty< Tensor333R > & _dkirchhoff_moment_dgrad_w;
+  const MaterialProperty< Tensor3R > & _dkirchhoff_moment_dk;
 
   /// An integer corresponding to the direction this kernel acts in
   const unsigned int _component;

@@ -58,32 +58,32 @@ protected:
 
   const VariableValue & _k;
 
-  MaterialProperty< TensorData3R > & _kirchhoff_moment;
+  MaterialProperty< Tensor3R > & _kirchhoff_moment;
 
-  MaterialProperty< TensorData333R > & _dkirchhoff_moment_dF;
-  MaterialProperty< TensorData33R > & _dkirchhoff_moment_dw;
-  MaterialProperty< TensorData333R > & _dkirchhoff_moment_dgrad_w;
-  MaterialProperty< TensorData3R > & _dkirchhoff_moment_dk;
+  MaterialProperty< Tensor333R > & _dkirchhoff_moment_dF;
+  MaterialProperty< Tensor33R > & _dkirchhoff_moment_dw;
+  MaterialProperty< Tensor333R > & _dkirchhoff_moment_dgrad_w;
+  MaterialProperty< Tensor3R > & _dkirchhoff_moment_dk;
 
-  MaterialProperty< TensorData33R > & _pk_i_stress;
+  MaterialProperty< Tensor33R > & _pk_i_stress;
 
-  MaterialProperty< TensorData3333R > & _dpk_i_stress_dF;
-  MaterialProperty< TensorData333R > & _dpk_i_stress_dw;
-  MaterialProperty< TensorData3333R > & _dpk_i_stress_dgrad_w;
-  MaterialProperty< TensorData33R > & _dpk_i_stress_dk;
+  MaterialProperty< Tensor3333R > & _dpk_i_stress_dF;
+  MaterialProperty< Tensor333R > & _dpk_i_stress_dw;
+  MaterialProperty< Tensor3333R > & _dpk_i_stress_dgrad_w;
+  MaterialProperty< Tensor33R > & _dpk_i_stress_dk;
 
-  MaterialProperty< TensorData33R > & _pk_i_couple_stress;
+  MaterialProperty< Tensor33R > & _pk_i_couple_stress;
 
-  MaterialProperty< TensorData3333R > & _dpk_i_couple_stress_dF;
-  MaterialProperty< TensorData333R > & _dpk_i_couple_stress_dw;
-  MaterialProperty< TensorData3333R > & _dpk_i_couple_stress_dgrad_w;
-  MaterialProperty< TensorData33R > & _dpk_i_couple_stress_dk;
+  MaterialProperty< Tensor3333R > & _dpk_i_couple_stress_dF;
+  MaterialProperty< Tensor333R > & _dpk_i_couple_stress_dw;
+  MaterialProperty< Tensor3333R > & _dpk_i_couple_stress_dgrad_w;
+  MaterialProperty< Tensor33R > & _dpk_i_couple_stress_dk;
 
   MaterialProperty< Real > & _k_local;
 
-  MaterialProperty< TensorData33R > & _dk_local_dF;
-  MaterialProperty< TensorData3R > & _dk_local_dw;
-  MaterialProperty< TensorData33R > & _dk_local_dgrad_w;
+  MaterialProperty< Tensor33R > & _dk_local_dF;
+  MaterialProperty< Tensor3R > & _dk_local_dw;
+  MaterialProperty< Tensor33R > & _dk_local_dgrad_w;
   MaterialProperty< Real > & _dk_local_dk;
 
   MaterialProperty< Real > & _nonlocal_radius;

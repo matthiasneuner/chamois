@@ -54,9 +54,9 @@ protected:
   const MaterialProperty< Real > & _k_local;
   const MaterialProperty< Real > & _nonlocal_radius;
   /// Derivatives of the w.r.t. deformation gradient, micro rotations, material gradient of the micro rotations and the nonlocal damage driving field
-  const MaterialProperty< TensorData33R > & _dk_local_dF;
-  const MaterialProperty< TensorData3R > & _dk_local_dw;
-  const MaterialProperty< TensorData33R > & _dk_local_dgrad_w;
+  const MaterialProperty< Tensor33R > & _dk_local_dF;
+  const MaterialProperty< Tensor3R > & _dk_local_dw;
+  const MaterialProperty< Tensor33R > & _dk_local_dgrad_w;
   const MaterialProperty< Real > & _dk_local_dk;
 
   /// Coupled displacement variables

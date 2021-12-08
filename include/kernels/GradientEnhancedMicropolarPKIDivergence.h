@@ -55,13 +55,13 @@ protected:
   /// Tensor of which the divergence is computed
   const std::string _tensor_name;
   /// The tensor
-  const MaterialProperty< TensorData33R > & _pk_i;
+  const MaterialProperty< Tensor33R > & _pk_i;
 
   //// Derivatives of the w.r.t. deformation gradient, micro rotations, material gradient of the micro rotations and the nonlocal damage driving field
-  const MaterialProperty< TensorData3333R > & _dpk_i_dF;
-  const MaterialProperty< TensorData333R > & _dpk_i_dw;
-  const MaterialProperty< TensorData3333R > & _dpk_i_dgrad_w;
-  const MaterialProperty< TensorData33R > & _dpk_i_dk;
+  const MaterialProperty< Tensor3333R > & _dpk_i_dF;
+  const MaterialProperty< Tensor333R > & _dpk_i_dw;
+  const MaterialProperty< Tensor3333R > & _dpk_i_dgrad_w;
+  const MaterialProperty< Tensor33R > & _dpk_i_dk;
 
   /// An integer corresponding to the direction this kernel acts in
   const unsigned int _component;

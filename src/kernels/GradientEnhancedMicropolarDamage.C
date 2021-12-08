@@ -48,10 +48,10 @@ GradientEnhancedMicropolarDamage::GradientEnhancedMicropolarDamage(
     _k_local( getMaterialPropertyByName< Real >( _base_name + "k_local" ) ),
     _nonlocal_radius( getMaterialPropertyByName< Real >( _base_name + "nonlocal_radius" ) ),
     _dk_local_dF(
-        getMaterialPropertyByName< TensorData33R >( "d" + _base_name + "k_local" + "/d" + "grad_u" ) ),
-    _dk_local_dw( getMaterialPropertyByName< TensorData3R >( "d" + _base_name + "k_local" + "/d" + "w" ) ),
+        getMaterialPropertyByName< Tensor33R >( "d" + _base_name + "k_local" + "/d" + "grad_u" ) ),
+    _dk_local_dw( getMaterialPropertyByName< Tensor3R >( "d" + _base_name + "k_local" + "/d" + "w" ) ),
     _dk_local_dgrad_w(
-        getMaterialPropertyByName< TensorData33R >( "d" + _base_name + "k_local" + "/d" + "grad_w" ) ),
+        getMaterialPropertyByName< Tensor33R >( "d" + _base_name + "k_local" + "/d" + "grad_w" ) ),
     _dk_local_dk( getMaterialPropertyByName< Real >( "d" + _base_name + "k_local" + "/d" + "k" ) ),
     _ndisp( coupledComponents( "displacements" ) ),
     _disp_var( _ndisp ),

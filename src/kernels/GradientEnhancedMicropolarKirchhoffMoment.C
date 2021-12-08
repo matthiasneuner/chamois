@@ -51,15 +51,15 @@ GradientEnhancedMicropolarKirchhoffMoment::GradientEnhancedMicropolarKirchhoffMo
   : Kernel( parameters ),
     _base_name( isParamValid( "base_name" ) ? getParam< std::string >( "base_name" ) + "_" : "" ),
     _moment_name( getParam< std::string >( "tensor" ) ),
-    _kirchhoff_moment( getMaterialPropertyByName< TensorData3R >( _base_name + _moment_name ) ),
+    _kirchhoff_moment( getMaterialPropertyByName< Tensor3R >( _base_name + _moment_name ) ),
     _dkirchhoff_moment_dF(
-        getMaterialPropertyByName< TensorData333R >("d" + _base_name +  _moment_name + "/d"+ "grad_u" ) ),
+        getMaterialPropertyByName< Tensor333R >("d" + _base_name +  _moment_name + "/d"+ "grad_u" ) ),
     _dkirchhoff_moment_dw(
-        getMaterialPropertyByName< TensorData33R >("d" + _base_name +  _moment_name + "/d"+ "w" ) ),
+        getMaterialPropertyByName< Tensor33R >("d" + _base_name +  _moment_name + "/d"+ "w" ) ),
     _dkirchhoff_moment_dgrad_w(
-        getMaterialPropertyByName< TensorData333R >("d" + _base_name +  _moment_name + "/d"+ "grad_w" ) ),
+        getMaterialPropertyByName< Tensor333R >("d" + _base_name +  _moment_name + "/d"+ "grad_w" ) ),
     _dkirchhoff_moment_dk(
-        getMaterialPropertyByName< TensorData3R >("d" + _base_name +  _moment_name + "/d"+ "k" ) ),
+        getMaterialPropertyByName< Tensor3R >("d" + _base_name +  _moment_name + "/d"+ "k" ) ),
     _component( getParam< unsigned int >( "component" ) ),
     _ndisp( coupledComponents( "displacements" ) ),
     _disp_var( _ndisp ),
