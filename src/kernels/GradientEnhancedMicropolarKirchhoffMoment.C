@@ -42,23 +42,24 @@ GradientEnhancedMicropolarKirchhoffMoment::validParams()
   params.addRequiredCoupledVar(
       "micro_rotations", "The string of micro rotations suitable for the problem statement" );
   params.addRequiredCoupledVar( "nonlocal_damage", "The nonlocal damage field" );
+  params.set<bool>("use_displaced_mesh") = false;
   return params;
 }
 
 GradientEnhancedMicropolarKirchhoffMoment::GradientEnhancedMicropolarKirchhoffMoment(
     const InputParameters & parameters )
-  : ALEKernel( parameters ),
+  : Kernel( parameters ),
     _base_name( isParamValid( "base_name" ) ? getParam< std::string >( "base_name" ) + "_" : "" ),
     _moment_name( getParam< std::string >( "tensor" ) ),
     _kirchhoff_moment( getMaterialPropertyByName< Arr3 >( _base_name + _moment_name ) ),
     _dkirchhoff_moment_dF(
-        getMaterialPropertyByName< Arr333 >( _base_name + "d" + _moment_name + "_dF" ) ),
+        getMaterialPropertyByName< Arr333 >("d" + _base_name +  _moment_name + "/d"+ "grad_u" ) ),
     _dkirchhoff_moment_dw(
-        getMaterialPropertyByName< Arr33 >( _base_name + "d" + _moment_name + "_dw" ) ),
+        getMaterialPropertyByName< Arr33 >("d" + _base_name +  _moment_name + "/d"+ "w" ) ),
     _dkirchhoff_moment_dgrad_w(
-        getMaterialPropertyByName< Arr333 >( _base_name + "d" + _moment_name + "_dgrad_w" ) ),
+        getMaterialPropertyByName< Arr333 >("d" + _base_name +  _moment_name + "/d"+ "grad_w" ) ),
     _dkirchhoff_moment_dk(
-        getMaterialPropertyByName< Arr3 >( _base_name + "d" + _moment_name + "_dk" ) ),
+        getMaterialPropertyByName< Arr3 >("d" + _base_name +  _moment_name + "/d"+ "k" ) ),
     _component( getParam< unsigned int >( "component" ) ),
     _ndisp( coupledComponents( "displacements" ) ),
     _disp_var( _ndisp ),
@@ -66,6 +67,8 @@ GradientEnhancedMicropolarKirchhoffMoment::GradientEnhancedMicropolarKirchhoffMo
     _mrot_var( _nmrot ),
     _nonlocal_damage_var( coupled( "nonlocal_damage" ) )
 {
+  if (getParam<bool>("use_displaced_mesh"))
+    paramError("use_displaced_mesh", "This kernel must be run on the undisplaced mesh");
   if ( _ndisp != 3 || _nmrot != 3 )
     mooseError( "Gradient-enhanced micropolar kernels are implemented only for 3D!" );
 
@@ -124,7 +127,7 @@ GradientEnhancedMicropolarKirchhoffMoment::computeQpJacobianDisplacement( unsign
 
   for ( int M = 0; M < 3; M++ )
     dmom_comp_i_du_comp_j +=
-        _dkirchhoff_moment_dF[_qp][comp_i][comp_j][M] * _grad_phi_undisplaced[_j][_qp]( M );
+        _dkirchhoff_moment_dF[_qp][comp_i][comp_j][M] * _grad_phi[_j][_qp]( M );
 
   return -1 * _test[_i][_qp] * dmom_comp_i_du_comp_j;
 }
@@ -138,7 +141,7 @@ GradientEnhancedMicropolarKirchhoffMoment::computeQpJacobianMicroRotation( unsig
 
   for ( int M = 0; M < 3; M++ )
     dmom_comp_i_dw_comp_j +=
-        _dkirchhoff_moment_dgrad_w[_qp][comp_i][comp_j][M] * _grad_phi_undisplaced[_j][_qp]( M );
+        _dkirchhoff_moment_dgrad_w[_qp][comp_i][comp_j][M] * _grad_phi[_j][_qp]( M );
 
   return -1 * _test[_i][_qp] * dmom_comp_i_dw_comp_j;
 }

@@ -1,10 +1,10 @@
 /* ---------------------------------------------------------------------
- *       _                           _     
- *   ___| |__   __ _ _ __ ___   ___ (_)___ 
+ *       _                           _
+ *   ___| |__   __ _ _ __ ___   ___ (_)___
  *  / __| '_ \ / _` | '_ ` _ \ / _ \| / __|
  * | (__| | | | (_| | | | | | | (_) | \__ \
  *  \___|_| |_|\__,_|_| |_| |_|\___/|_|___/
- * 
+ *
  * Chamois - a MOOSE interface to constitutive models developed at the
  * Unit of Strength of Materials and Structural Analysis
  * University of Innsbruck,
@@ -37,25 +37,31 @@ GradientEnhancedMicropolarDamage::validParams()
   params.addRequiredCoupledVar(
       "micro_rotations", "The string of micro rotations suitable for the problem statement" );
   params.addRequiredCoupledVar( "nonlocal_damage", "The nonlocal damage field" );
+  params.set< bool >( "use_displaced_mesh" ) = false;
   return params;
 }
 
 GradientEnhancedMicropolarDamage::GradientEnhancedMicropolarDamage(
     const InputParameters & parameters )
-  : ALEKernel( parameters ),
+  : Kernel( parameters ),
     _base_name( isParamValid( "base_name" ) ? getParam< std::string >( "base_name" ) + "_" : "" ),
     _k_local( getMaterialPropertyByName< Real >( _base_name + "k_local" ) ),
     _nonlocal_radius( getMaterialPropertyByName< Real >( _base_name + "nonlocal_radius" ) ),
-    _dk_local_dF( getMaterialPropertyByName< Arr33 >( _base_name + "dk_local_dF" ) ),
-    _dk_local_dw( getMaterialPropertyByName< Arr3 >( _base_name + "dk_local_dw" ) ),
-    _dk_local_dgrad_w( getMaterialPropertyByName< Arr33 >( _base_name + "dk_local_dgrad_w" ) ),
-    _dk_local_dk( getMaterialPropertyByName< Real >( _base_name + "dk_local_dk" ) ),
+    _dk_local_dF(
+        getMaterialPropertyByName< Arr33 >( "d" + _base_name + "k_local" + "/d" + "grad_u" ) ),
+    _dk_local_dw( getMaterialPropertyByName< Arr3 >( "d" + _base_name + "k_local" + "/d" + "w" ) ),
+    _dk_local_dgrad_w(
+        getMaterialPropertyByName< Arr33 >( "d" + _base_name + "k_local" + "/d" + "grad_w" ) ),
+    _dk_local_dk( getMaterialPropertyByName< Real >( "d" + _base_name + "k_local" + "/d" + "k" ) ),
     _ndisp( coupledComponents( "displacements" ) ),
     _disp_var( _ndisp ),
     _nmrot( coupledComponents( "micro_rotations" ) ),
     _mrot_var( _nmrot ),
     _nonlocal_damage_var( coupled( "nonlocal_damage" ) )
 {
+  if ( getParam< bool >( "use_displaced_mesh" ) )
+    paramError( "use_displaced_mesh", "This kernel must be run on the undisplaced mesh" );
+
   if ( _ndisp != 3 || _nmrot != 3 )
     mooseError( "Gradient-enhanced micropolar kernels are implemented only for 3D!" );
 
@@ -68,7 +74,7 @@ GradientEnhancedMicropolarDamage::GradientEnhancedMicropolarDamage(
 Real
 GradientEnhancedMicropolarDamage::computeQpResidual()
 {
-  return std::pow( _nonlocal_radius[_qp], 2 ) * _grad_test_undisplaced[_i][_qp] * _grad_u[_qp] +
+  return std::pow( _nonlocal_radius[_qp], 2 ) * _grad_test[_i][_qp] * _grad_u[_qp] +
          _test[_i][_qp] * ( _u[_qp] - _k_local[_qp] );
 }
 
@@ -99,7 +105,7 @@ GradientEnhancedMicropolarDamage::computeQpJacobianDisplacement( unsigned int co
   Real df_du_j = 0;
 
   for ( int K = 0; K < 3; K++ )
-    df_du_j += -1 * _dk_local_dF[_qp][comp_j][K] * _grad_phi_undisplaced[_j][_qp]( K );
+    df_du_j += -1 * _dk_local_dF[_qp][comp_j][K] * _grad_phi[_j][_qp]( K );
 
   return _test[_i][_qp] * df_du_j;
 }
@@ -110,7 +116,7 @@ GradientEnhancedMicropolarDamage::computeQpJacobianMicroRotation( unsigned int c
   Real df_dw_j = -1 * _dk_local_dw[_qp][comp_j] * _phi[_j][_qp];
 
   for ( int K = 0; K < 3; K++ )
-    df_dw_j += -1 * _dk_local_dgrad_w[_qp][comp_j][K] * _grad_phi_undisplaced[_j][_qp]( K );
+    df_dw_j += -1 * _dk_local_dgrad_w[_qp][comp_j][K] * _grad_phi[_j][_qp]( K );
 
   return _test[_i][_qp] * df_dw_j;
 }
@@ -118,7 +124,6 @@ GradientEnhancedMicropolarDamage::computeQpJacobianMicroRotation( unsigned int c
 Real
 GradientEnhancedMicropolarDamage::computeQpJacobianNonlocalDamage()
 {
-  return std::pow( _nonlocal_radius[_qp], 2 ) * _grad_test_undisplaced[_i][_qp] *
-             _grad_phi_undisplaced[_j][_qp] +
+  return std::pow( _nonlocal_radius[_qp], 2 ) * _grad_test[_i][_qp] * _grad_phi[_j][_qp] +
          _test[_i][_qp] * _phi[_j][_qp];
 }

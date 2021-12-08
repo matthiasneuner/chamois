@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "ALEKernel.h"
+#include "Kernel.h"
 
 using Arr3 = std::array< Real, 3 >;
 using Arr33 = std::array< Arr3, 3 >;
@@ -36,7 +36,7 @@ using Arr3333 = std::array< Arr333, 3 >;
 /**
  * Computes the classical 2.o Helmholtz like equation for nonlocal damage
  */
-class GradientEnhancedMicropolarDamage : public ALEKernel
+class GradientEnhancedMicropolarDamage : public Kernel
 {
 public:
   static InputParameters validParams();

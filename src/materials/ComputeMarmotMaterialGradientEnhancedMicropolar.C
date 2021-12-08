@@ -1,10 +1,10 @@
 /* ---------------------------------------------------------------------
- *       _                           _     
- *   ___| |__   __ _ _ __ ___   ___ (_)___ 
+ *       _                           _
+ *   ___| |__   __ _ _ __ ___   ___ (_)___
  *  / __| '_ \ / _` | '_ ` _ \ / _ \| / __|
  * | (__| | | | (_| | | | | | | (_) | \__ \
  *  \___|_| |_|\__,_|_| |_| |_|\___/|_|___/
- * 
+ *
  * Chamois - a MOOSE interface to constitutive models developed at the
  * Unit of Strength of Materials and Structural Analysis
  * University of Innsbruck,
@@ -54,6 +54,7 @@ ComputeMarmotMaterialGradientEnhancedMicropolar::validParams()
                                           "Material name for the MarmotMaterial" );
   params.addRequiredParam< std::vector< Real > >( "marmot_material_parameters",
                                                   "Material Parameters for the MarmotMaterial" );
+  params.set< bool >( "use_displaced_mesh" ) = false;
   return params;
 }
 
@@ -76,33 +77,41 @@ ComputeMarmotMaterialGradientEnhancedMicropolar::ComputeMarmotMaterialGradientEn
 
     _kirchhoff_moment( declareProperty< Arr3 >( _base_name + "kirchhoff_moment" ) ),
 
-    _dkirchhoff_moment_dF( declareProperty< Arr333 >( _base_name + "dkirchhoff_moment_dF" ) ),
-    _dkirchhoff_moment_dw( declareProperty< Arr33 >( _base_name + "dkirchhoff_moment_dw" ) ),
+    _dkirchhoff_moment_dF(
+        declarePropertyDerivative< Arr333 >( _base_name + "kirchhoff_moment", "grad_u" ) ),
+    _dkirchhoff_moment_dw(
+        declarePropertyDerivative< Arr33 >( _base_name + "kirchhoff_moment", "w" ) ),
     _dkirchhoff_moment_dgrad_w(
-        declareProperty< Arr333 >( _base_name + "dkirchhoff_moment_dgrad_w" ) ),
-    _dkirchhoff_moment_dk( declareProperty< Arr3 >( _base_name + "dkirchhoff_moment_dk" ) ),
+        declarePropertyDerivative< Arr333 >( _base_name + "kirchhoff_moment", "grad_w" ) ),
+    _dkirchhoff_moment_dk(
+        declarePropertyDerivative< Arr3 >( _base_name + "kirchhoff_moment", "k" ) ),
 
     _pk_i_stress( declareProperty< Arr33 >( _base_name + "pk_i_stress" ) ),
 
-    _dpk_i_stress_dF( declareProperty< Arr3333 >( _base_name + "dpk_i_stress_dF" ) ),
-    _dpk_i_stress_dw( declareProperty< Arr333 >( _base_name + "dpk_i_stress_dw" ) ),
-    _dpk_i_stress_dgrad_w( declareProperty< Arr3333 >( _base_name + "dpk_i_stress_dgrad_w" ) ),
-    _dpk_i_stress_dk( declareProperty< Arr33 >( _base_name + "dpk_i_stress_dk" ) ),
+    _dpk_i_stress_dF(
+        declarePropertyDerivative< Arr3333 >( _base_name + "pk_i_stress", "grad_u" ) ),
+    _dpk_i_stress_dw( declarePropertyDerivative< Arr333 >( _base_name + "pk_i_stress", "w" ) ),
+    _dpk_i_stress_dgrad_w(
+        declarePropertyDerivative< Arr3333 >( _base_name + "pk_i_stress", "grad_w" ) ),
+    _dpk_i_stress_dk( declarePropertyDerivative< Arr33 >( _base_name + "pk_i_stress", "k" ) ),
 
     _couple_pk_i_stress( declareProperty< Arr33 >( _base_name + "couple_pk_i_stress" ) ),
 
-    _dcouple_pk_i_stress_dF( declareProperty< Arr3333 >( _base_name + "dcouple_pk_i_stress_dF" ) ),
-    _dcouple_pk_i_stress_dw( declareProperty< Arr333 >( _base_name + "dcouple_pk_i_stress_dw" ) ),
+    _dcouple_pk_i_stress_dF(
+        declarePropertyDerivative< Arr3333 >( _base_name + "couple_pk_i_stress", "grad_u" ) ),
+    _dcouple_pk_i_stress_dw(
+        declarePropertyDerivative< Arr333 >( _base_name + "couple_pk_i_stress", "w" ) ),
     _dcouple_pk_i_stress_dgrad_w(
-        declareProperty< Arr3333 >( _base_name + "dcouple_pk_i_stress_dgrad_w" ) ),
-    _dcouple_pk_i_stress_dk( declareProperty< Arr33 >( _base_name + "dcouple_pk_i_stress_dk" ) ),
+        declarePropertyDerivative< Arr3333 >( _base_name + "couple_pk_i_stress", "grad_w" ) ),
+    _dcouple_pk_i_stress_dk(
+        declarePropertyDerivative< Arr33 >( _base_name + "couple_pk_i_stress", "k" ) ),
 
     _k_local( declareProperty< Real >( _base_name + "k_local" ) ),
 
-    _dk_local_dF( declareProperty< Arr33 >( _base_name + "dk_local_dF" ) ),
-    _dk_local_dw( declareProperty< Arr3 >( _base_name + "dk_local_dw" ) ),
-    _dk_local_dgrad_w( declareProperty< Arr33 >( _base_name + "dk_local_dgrad_w" ) ),
-    _dk_local_dk( declareProperty< Real >( _base_name + "dk_local_dk" ) ),
+    _dk_local_dF( declarePropertyDerivative< Arr33 >( _base_name + "k_local", "grad_u" ) ),
+    _dk_local_dw( declarePropertyDerivative< Arr3 >( _base_name + "k_local", "w" ) ),
+    _dk_local_dgrad_w( declarePropertyDerivative< Arr33 >( _base_name + "k_local", "grad_w" ) ),
+    _dk_local_dk( declarePropertyDerivative< Real >( _base_name + "k_local", "k" ) ),
 
     _nonlocal_radius( declareProperty< Real >( "nonlocal_radius" ) ),
 
@@ -110,6 +119,9 @@ ComputeMarmotMaterialGradientEnhancedMicropolar::ComputeMarmotMaterialGradientEn
     _statevars_old( getMaterialPropertyOld< std::vector< Real > >( _base_name + "state_vars" ) ),
     _time_old{ _t, _t }
 {
+  if ( getParam< bool >( "use_displaced_mesh" ) )
+    paramError( "use_displaced_mesh", "This material must be run on the undisplaced mesh" );
+
   const auto materialCode = MarmotLibrary::MarmotMaterialFactory::getMaterialCodeFromName(
       getParam< std::string >( "marmot_material_name" ) );
 

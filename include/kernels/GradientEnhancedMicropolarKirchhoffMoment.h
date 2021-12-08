@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "ALEKernel.h"
+#include "Kernel.h"
 
 using Arr3 = std::array< Real, 3 >;
 using Arr33 = std::array< Arr3, 3 >;
@@ -37,7 +37,7 @@ using Arr3333 = std::array< Arr333, 3 >;
  * Computes the contribution of the (nonsymmetric) kirchhoff stress tensor 
  * to the balane of angular momentum in the context of the micropolar continuum
  */
-class GradientEnhancedMicropolarKirchhoffMoment : public ALEKernel
+class GradientEnhancedMicropolarKirchhoffMoment : public Kernel
 {
 public:
   static InputParameters validParams();

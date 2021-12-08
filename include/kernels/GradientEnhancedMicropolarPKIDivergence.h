@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "ALEKernel.h"
+#include "Kernel.h"
 
 using Arr3 = std::array< Real, 3 >;
 using Arr33 = std::array< Arr3, 3 >;
@@ -38,7 +38,7 @@ using Arr3333 = std::array< Arr333, 3 >;
  * e.g, for the linear momentum equation (PKI stress) or
  * the angular momentum equation (nominal couple stress tensor)
  */
-class GradientEnhancedMicropolarPKIDivergence : public ALEKernel
+class GradientEnhancedMicropolarPKIDivergence : public  Kernel 
 {
 public:
   static InputParameters validParams();

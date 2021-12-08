@@ -1,10 +1,10 @@
 /* ---------------------------------------------------------------------
- *       _                           _     
- *   ___| |__   __ _ _ __ ___   ___ (_)___ 
+ *       _                           _
+ *   ___| |__   __ _ _ __ ___   ___ (_)___
  *  / __| '_ \ / _` | '_ ` _ \ / _ \| / __|
  * | (__| | | | (_| | | | | | | (_) | \__ \
  *  \___|_| |_|\__,_|_| |_| |_|\___/|_|___/
- * 
+ *
  * Chamois - a MOOSE interface to constitutive models developed at the
  * Unit of Strength of Materials and Structural Analysis
  * University of Innsbruck,
@@ -29,7 +29,7 @@ registerMooseObject( "ChamoisApp", GradientEnhancedMicropolarPKIDivergence );
 InputParameters
 GradientEnhancedMicropolarPKIDivergence::validParams()
 {
-  InputParameters params = ALEKernel::validParams();
+  InputParameters params = Kernel::validParams();
   params.addClassDescription(
       "Divergence of a gradient-enhanced rank two tensor PKI (stress, couple stress)" );
   params.addParam< std::string >( "base_name", "Material property base name" );
@@ -43,20 +43,23 @@ GradientEnhancedMicropolarPKIDivergence::validParams()
   params.addRequiredCoupledVar(
       "micro_rotations", "The string of micro rotations suitable for the problem statement" );
   params.addRequiredCoupledVar( "nonlocal_damage", "The nonlocal damage field" );
+  params.set< bool >( "use_displaced_mesh" ) = false;
   return params;
 }
 
 GradientEnhancedMicropolarPKIDivergence::GradientEnhancedMicropolarPKIDivergence(
     const InputParameters & parameters )
-  : ALEKernel( parameters ),
+  : Kernel( parameters ),
     _base_name( isParamValid( "base_name" ) ? getParam< std::string >( "base_name" ) + "_" : "" ),
     _tensor_name( getParam< std::string >( "tensor" ) ),
     _pk_i( getMaterialPropertyByName< Arr33 >( _base_name + _tensor_name ) ),
-    _dpk_i_dF( getMaterialPropertyByName< Arr3333 >( _base_name + "d" + _tensor_name + "_dF" ) ),
-    _dpk_i_dw( getMaterialPropertyByName< Arr333 >( _base_name + "d" + _tensor_name + "_dw" ) ),
+    _dpk_i_dF(
+        getMaterialPropertyByName< Arr3333 >( "d" + _base_name + _tensor_name + "/d" + "grad_u" ) ),
+    _dpk_i_dw(
+        getMaterialPropertyByName< Arr333 >( "d" + _base_name + _tensor_name + "/d" + "w" ) ),
     _dpk_i_dgrad_w(
-        getMaterialPropertyByName< Arr3333 >( _base_name + "d" + _tensor_name + "_dgrad_w" ) ),
-    _dpk_i_dk( getMaterialPropertyByName< Arr33 >( _base_name + "d" + _tensor_name + "_dk" ) ),
+        getMaterialPropertyByName< Arr3333 >( "d" + _base_name + _tensor_name + "/d" + "grad_w" ) ),
+    _dpk_i_dk( getMaterialPropertyByName< Arr33 >( "d" + _base_name + _tensor_name + "/d" + "k" ) ),
     _component( getParam< unsigned int >( "component" ) ),
     _ndisp( coupledComponents( "displacements" ) ),
     _disp_var( _ndisp ),
@@ -64,6 +67,9 @@ GradientEnhancedMicropolarPKIDivergence::GradientEnhancedMicropolarPKIDivergence
     _mrot_var( _nmrot ),
     _nonlocal_damage_var( coupled( "nonlocal_damage" ) )
 {
+  if ( getParam< bool >( "use_displaced_mesh" ) )
+    paramError( "use_displaced_mesh", "This kernel must be run on the undisplaced mesh" );
+
   if ( _ndisp != 3 || _nmrot != 3 )
     mooseError( "Gradient-enhanced micropolar kernels are implemented only for 3D!" );
 
@@ -79,7 +85,7 @@ GradientEnhancedMicropolarPKIDivergence::computeQpResidual()
   Real f_comp_i = 0;
 
   for ( int K = 0; K < 3; K++ )
-    f_comp_i += _grad_test_undisplaced[_i][_qp]( K ) * _pk_i[_qp][K][_component];
+    f_comp_i += _grad_test[_i][_qp]( K ) * _pk_i[_qp][K][_component];
 
   return f_comp_i;
 }
@@ -130,10 +136,9 @@ GradientEnhancedMicropolarPKIDivergence::computeQpJacobianDisplacement( unsigned
     Real dpk_i_stress_du_comp_j = 0;
 
     for ( int J = 0; J < 3; J++ )
-      dpk_i_stress_du_comp_j +=
-          _dpk_i_dF[_qp][K][comp_i][comp_j][J] * _grad_phi_undisplaced[_j][_qp]( J );
+      dpk_i_stress_du_comp_j += _dpk_i_dF[_qp][K][comp_i][comp_j][J] * _grad_phi[_j][_qp]( J );
 
-    df_comp_i_du_comp_j += _grad_test_undisplaced[_i][_qp]( K ) * dpk_i_stress_du_comp_j;
+    df_comp_i_du_comp_j += _grad_test[_i][_qp]( K ) * dpk_i_stress_du_comp_j;
   }
 
   return df_comp_i_du_comp_j;
@@ -152,10 +157,9 @@ GradientEnhancedMicropolarPKIDivergence::computeQpJacobianMicroRotation( unsigne
     dpk_i_stress_dw_comp_j += _dpk_i_dw[_qp][K][comp_i][comp_j] * _phi[_j][_qp];
 
     for ( int J = 0; J < 3; J++ )
-      dpk_i_stress_dw_comp_j +=
-          _dpk_i_dgrad_w[_qp][K][comp_i][comp_j][J] * _grad_phi_undisplaced[_j][_qp]( J );
+      dpk_i_stress_dw_comp_j += _dpk_i_dgrad_w[_qp][K][comp_i][comp_j][J] * _grad_phi[_j][_qp]( J );
 
-    df_comp_i_dw_comp_j += _grad_test_undisplaced[_i][_qp]( K ) * dpk_i_stress_dw_comp_j;
+    df_comp_i_dw_comp_j += _grad_test[_i][_qp]( K ) * dpk_i_stress_dw_comp_j;
   }
 
   return df_comp_i_dw_comp_j;
@@ -167,7 +171,7 @@ GradientEnhancedMicropolarPKIDivergence::computeQpJacobianNonlocalDamage( unsign
   Real df_comp_i_dk = 0.0;
 
   for ( int K = 0; K < 3; K++ )
-    df_comp_i_dk += _grad_test_undisplaced[_i][_qp]( K ) * _dpk_i_dk[_qp][K][comp_i];
+    df_comp_i_dk += _grad_test[_i][_qp]( K ) * _dpk_i_dk[_qp][K][comp_i];
 
   return df_comp_i_dk * _phi[_j][_qp];
 }
