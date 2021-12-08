@@ -25,11 +25,7 @@
 #pragma once
 
 #include "Kernel.h"
-
-using Arr3 = std::array< Real, 3 >;
-using Arr33 = std::array< Arr3, 3 >;
-using Arr333 = std::array< Arr33, 3 >;
-using Arr3333 = std::array< Arr333, 3 >;
+#include "FastorHelper.h"
 
 // Forward Declarations
 
@@ -58,9 +54,9 @@ protected:
   const MaterialProperty< Real > & _k_local;
   const MaterialProperty< Real > & _nonlocal_radius;
   /// Derivatives of the w.r.t. deformation gradient, micro rotations, material gradient of the micro rotations and the nonlocal damage driving field
-  const MaterialProperty< Arr33 > & _dk_local_dF;
-  const MaterialProperty< Arr3 > & _dk_local_dw;
-  const MaterialProperty< Arr33 > & _dk_local_dgrad_w;
+  const MaterialProperty< TensorData33R > & _dk_local_dF;
+  const MaterialProperty< TensorData3R > & _dk_local_dw;
+  const MaterialProperty< TensorData33R > & _dk_local_dgrad_w;
   const MaterialProperty< Real > & _dk_local_dk;
 
   /// Coupled displacement variables

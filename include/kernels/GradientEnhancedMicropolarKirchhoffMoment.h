@@ -25,11 +25,7 @@
 #pragma once
 
 #include "Kernel.h"
-
-using Arr3 = std::array< Real, 3 >;
-using Arr33 = std::array< Arr3, 3 >;
-using Arr333 = std::array< Arr33, 3 >;
-using Arr3333 = std::array< Arr333, 3 >;
+#include "FastorHelper.h"
 
 // Forward Declarations
 
@@ -58,13 +54,13 @@ protected:
   /// Tensor of which the moment is computed
   const std::string _moment_name;
   /// The tensor
-  const MaterialProperty< Arr3 > & _kirchhoff_moment;
+  const MaterialProperty< TensorData3R > & _kirchhoff_moment;
 
   //// Derivatives of the w.r.t. deformation gradient, micro rotations, material gradient of the micro rotations and the nonlocal damage driving field
-  const MaterialProperty< Arr333 > & _dkirchhoff_moment_dF;
-  const MaterialProperty< Arr33 > & _dkirchhoff_moment_dw;
-  const MaterialProperty< Arr333 > & _dkirchhoff_moment_dgrad_w;
-  const MaterialProperty< Arr3 > & _dkirchhoff_moment_dk;
+  const MaterialProperty< TensorData333R > & _dkirchhoff_moment_dF;
+  const MaterialProperty< TensorData33R > & _dkirchhoff_moment_dw;
+  const MaterialProperty< TensorData333R > & _dkirchhoff_moment_dgrad_w;
+  const MaterialProperty< TensorData3R > & _dkirchhoff_moment_dk;
 
   /// An integer corresponding to the direction this kernel acts in
   const unsigned int _component;

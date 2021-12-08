@@ -51,15 +51,15 @@ GradientEnhancedMicropolarKirchhoffMoment::GradientEnhancedMicropolarKirchhoffMo
   : Kernel( parameters ),
     _base_name( isParamValid( "base_name" ) ? getParam< std::string >( "base_name" ) + "_" : "" ),
     _moment_name( getParam< std::string >( "tensor" ) ),
-    _kirchhoff_moment( getMaterialPropertyByName< Arr3 >( _base_name + _moment_name ) ),
+    _kirchhoff_moment( getMaterialPropertyByName< TensorData3R >( _base_name + _moment_name ) ),
     _dkirchhoff_moment_dF(
-        getMaterialPropertyByName< Arr333 >("d" + _base_name +  _moment_name + "/d"+ "grad_u" ) ),
+        getMaterialPropertyByName< TensorData333R >("d" + _base_name +  _moment_name + "/d"+ "grad_u" ) ),
     _dkirchhoff_moment_dw(
-        getMaterialPropertyByName< Arr33 >("d" + _base_name +  _moment_name + "/d"+ "w" ) ),
+        getMaterialPropertyByName< TensorData33R >("d" + _base_name +  _moment_name + "/d"+ "w" ) ),
     _dkirchhoff_moment_dgrad_w(
-        getMaterialPropertyByName< Arr333 >("d" + _base_name +  _moment_name + "/d"+ "grad_w" ) ),
+        getMaterialPropertyByName< TensorData333R >("d" + _base_name +  _moment_name + "/d"+ "grad_w" ) ),
     _dkirchhoff_moment_dk(
-        getMaterialPropertyByName< Arr3 >("d" + _base_name +  _moment_name + "/d"+ "k" ) ),
+        getMaterialPropertyByName< TensorData3R >("d" + _base_name +  _moment_name + "/d"+ "k" ) ),
     _component( getParam< unsigned int >( "component" ) ),
     _ndisp( coupledComponents( "displacements" ) ),
     _disp_var( _ndisp ),
@@ -81,7 +81,7 @@ GradientEnhancedMicropolarKirchhoffMoment::GradientEnhancedMicropolarKirchhoffMo
 Real
 GradientEnhancedMicropolarKirchhoffMoment::computeQpResidual()
 {
-  return -1 * _test[_i][_qp] * _kirchhoff_moment[_qp][_component];
+  return -1 * _test[_i][_qp] * _kirchhoff_moment[_qp](_component);
 }
 
 Real
@@ -127,7 +127,7 @@ GradientEnhancedMicropolarKirchhoffMoment::computeQpJacobianDisplacement( unsign
 
   for ( int M = 0; M < 3; M++ )
     dmom_comp_i_du_comp_j +=
-        _dkirchhoff_moment_dF[_qp][comp_i][comp_j][M] * _grad_phi[_j][_qp]( M );
+        _dkirchhoff_moment_dF[_qp](comp_i,comp_j,M) * _grad_phi[_j][_qp]( M );
 
   return -1 * _test[_i][_qp] * dmom_comp_i_du_comp_j;
 }
@@ -137,11 +137,11 @@ GradientEnhancedMicropolarKirchhoffMoment::computeQpJacobianMicroRotation( unsig
                                                                            unsigned int comp_j )
 {
 
-  Real dmom_comp_i_dw_comp_j = _dkirchhoff_moment_dw[_qp][comp_i][comp_j] * _phi[_j][_qp];
+  Real dmom_comp_i_dw_comp_j = _dkirchhoff_moment_dw[_qp](comp_i,comp_j) * _phi[_j][_qp];
 
   for ( int M = 0; M < 3; M++ )
     dmom_comp_i_dw_comp_j +=
-        _dkirchhoff_moment_dgrad_w[_qp][comp_i][comp_j][M] * _grad_phi[_j][_qp]( M );
+        _dkirchhoff_moment_dgrad_w[_qp](comp_i,comp_j,M) * _grad_phi[_j][_qp]( M );
 
   return -1 * _test[_i][_qp] * dmom_comp_i_dw_comp_j;
 }
@@ -149,7 +149,7 @@ GradientEnhancedMicropolarKirchhoffMoment::computeQpJacobianMicroRotation( unsig
 Real
 GradientEnhancedMicropolarKirchhoffMoment::computeQpJacobianNonlocalDamage( unsigned int comp_i )
 {
-  const Real dmom_comp_i_dk = _dkirchhoff_moment_dk[_qp][comp_i];
+  const Real dmom_comp_i_dk = _dkirchhoff_moment_dk[_qp](comp_i);
 
   return -1 * _test[_i][_qp] * dmom_comp_i_dk * _phi[_j][_qp];
 }

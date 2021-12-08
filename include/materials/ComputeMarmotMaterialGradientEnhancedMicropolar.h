@@ -26,11 +26,7 @@
 
 #include "DerivativeMaterialInterface.h"
 #include "Marmot/MarmotMaterialGradientEnhancedMicropolar.h"
-
-using Arr3 = std::array< Real, 3 >;
-using Arr33 = std::array< Arr3, 3 >;
-using Arr333 = std::array< Arr33, 3 >;
-using Arr3333 = std::array< Arr333, 3 >;
+#include "FastorHelper.h"
 
 /**
  * ComputeMarmotMaterialGradientEnhancedMicropolar is a wrapper for gradient-enhanced micropolar
@@ -62,32 +58,32 @@ protected:
 
   const VariableValue & _k;
 
-  MaterialProperty< Arr3 > & _kirchhoff_moment;
+  MaterialProperty< TensorData3R > & _kirchhoff_moment;
 
-  MaterialProperty< Arr333 > & _dkirchhoff_moment_dF;
-  MaterialProperty< Arr33 > & _dkirchhoff_moment_dw;
-  MaterialProperty< Arr333 > & _dkirchhoff_moment_dgrad_w;
-  MaterialProperty< Arr3 > & _dkirchhoff_moment_dk;
+  MaterialProperty< TensorData333R > & _dkirchhoff_moment_dF;
+  MaterialProperty< TensorData33R > & _dkirchhoff_moment_dw;
+  MaterialProperty< TensorData333R > & _dkirchhoff_moment_dgrad_w;
+  MaterialProperty< TensorData3R > & _dkirchhoff_moment_dk;
 
-  MaterialProperty< Arr33 > & _pk_i_stress;
+  MaterialProperty< TensorData33R > & _pk_i_stress;
 
-  MaterialProperty< Arr3333 > & _dpk_i_stress_dF;
-  MaterialProperty< Arr333 > & _dpk_i_stress_dw;
-  MaterialProperty< Arr3333 > & _dpk_i_stress_dgrad_w;
-  MaterialProperty< Arr33 > & _dpk_i_stress_dk;
+  MaterialProperty< TensorData3333R > & _dpk_i_stress_dF;
+  MaterialProperty< TensorData333R > & _dpk_i_stress_dw;
+  MaterialProperty< TensorData3333R > & _dpk_i_stress_dgrad_w;
+  MaterialProperty< TensorData33R > & _dpk_i_stress_dk;
 
-  MaterialProperty< Arr33 > & _couple_pk_i_stress;
+  MaterialProperty< TensorData33R > & _pk_i_couple_stress;
 
-  MaterialProperty< Arr3333 > & _dcouple_pk_i_stress_dF;
-  MaterialProperty< Arr333 > & _dcouple_pk_i_stress_dw;
-  MaterialProperty< Arr3333 > & _dcouple_pk_i_stress_dgrad_w;
-  MaterialProperty< Arr33 > & _dcouple_pk_i_stress_dk;
+  MaterialProperty< TensorData3333R > & _dpk_i_couple_stress_dF;
+  MaterialProperty< TensorData333R > & _dpk_i_couple_stress_dw;
+  MaterialProperty< TensorData3333R > & _dpk_i_couple_stress_dgrad_w;
+  MaterialProperty< TensorData33R > & _dpk_i_couple_stress_dk;
 
   MaterialProperty< Real > & _k_local;
 
-  MaterialProperty< Arr33 > & _dk_local_dF;
-  MaterialProperty< Arr3 > & _dk_local_dw;
-  MaterialProperty< Arr33 > & _dk_local_dgrad_w;
+  MaterialProperty< TensorData33R > & _dk_local_dF;
+  MaterialProperty< TensorData3R > & _dk_local_dw;
+  MaterialProperty< TensorData33R > & _dk_local_dgrad_w;
   MaterialProperty< Real > & _dk_local_dk;
 
   MaterialProperty< Real > & _nonlocal_radius;

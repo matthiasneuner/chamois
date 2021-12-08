@@ -48,10 +48,10 @@ GradientEnhancedMicropolarDamage::GradientEnhancedMicropolarDamage(
     _k_local( getMaterialPropertyByName< Real >( _base_name + "k_local" ) ),
     _nonlocal_radius( getMaterialPropertyByName< Real >( _base_name + "nonlocal_radius" ) ),
     _dk_local_dF(
-        getMaterialPropertyByName< Arr33 >( "d" + _base_name + "k_local" + "/d" + "grad_u" ) ),
-    _dk_local_dw( getMaterialPropertyByName< Arr3 >( "d" + _base_name + "k_local" + "/d" + "w" ) ),
+        getMaterialPropertyByName< TensorData33R >( "d" + _base_name + "k_local" + "/d" + "grad_u" ) ),
+    _dk_local_dw( getMaterialPropertyByName< TensorData3R >( "d" + _base_name + "k_local" + "/d" + "w" ) ),
     _dk_local_dgrad_w(
-        getMaterialPropertyByName< Arr33 >( "d" + _base_name + "k_local" + "/d" + "grad_w" ) ),
+        getMaterialPropertyByName< TensorData33R >( "d" + _base_name + "k_local" + "/d" + "grad_w" ) ),
     _dk_local_dk( getMaterialPropertyByName< Real >( "d" + _base_name + "k_local" + "/d" + "k" ) ),
     _ndisp( coupledComponents( "displacements" ) ),
     _disp_var( _ndisp ),
@@ -105,7 +105,7 @@ GradientEnhancedMicropolarDamage::computeQpJacobianDisplacement( unsigned int co
   Real df_du_j = 0;
 
   for ( int K = 0; K < 3; K++ )
-    df_du_j += -1 * _dk_local_dF[_qp][comp_j][K] * _grad_phi[_j][_qp]( K );
+    df_du_j += -1 * _dk_local_dF[_qp](comp_j,K) * _grad_phi[_j][_qp]( K );
 
   return _test[_i][_qp] * df_du_j;
 }
@@ -113,10 +113,10 @@ GradientEnhancedMicropolarDamage::computeQpJacobianDisplacement( unsigned int co
 Real
 GradientEnhancedMicropolarDamage::computeQpJacobianMicroRotation( unsigned int comp_j )
 {
-  Real df_dw_j = -1 * _dk_local_dw[_qp][comp_j] * _phi[_j][_qp];
+  Real df_dw_j = -1 * _dk_local_dw[_qp](comp_j) * _phi[_j][_qp];
 
   for ( int K = 0; K < 3; K++ )
-    df_dw_j += -1 * _dk_local_dgrad_w[_qp][comp_j][K] * _grad_phi[_j][_qp]( K );
+    df_dw_j += -1 * _dk_local_dgrad_w[_qp](comp_j,K) * _grad_phi[_j][_qp]( K );
 
   return _test[_i][_qp] * df_dw_j;
 }
