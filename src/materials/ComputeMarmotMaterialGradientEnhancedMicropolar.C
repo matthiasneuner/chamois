@@ -264,12 +264,15 @@ ComputeMarmotMaterialGradientEnhancedMicropolar::computeQpProperties()
     _dpk_i_stress_dk[_qp]             = Fastor::einsum < Ii, ij >            ( FInv, _algorithmic_moduli.dS_dN ) ;
 
     _dpk_i_couple_stress_dF[_qp]      = Fastor::evaluate(Fastor::einsum < Ii, ijkK >          ( FInv, _algorithmic_moduli.dM_dF ) +
-                                   Fastor::einsum < IikK, ij, to_IjkK > ( dFInv_dF,        _response.M ));
+                                        Fastor::einsum < IikK, ij, to_IjkK > ( dFInv_dF,        _response.M ));
     _dpk_i_couple_stress_dw[_qp]      = Fastor::einsum < Ii, ijk >           ( FInv, _algorithmic_moduli.dM_dW ) ;
     _dpk_i_couple_stress_dgrad_w[_qp] = Fastor::einsum < Ii, ijkK >          ( FInv, _algorithmic_moduli.dM_ddWdX ) ;
     _dpk_i_couple_stress_dk[_qp]      = Fastor::einsum < Ii, ij >            ( FInv, _algorithmic_moduli.dM_dN ) ;
 
-    _dk_local_dk[_qp] = _algorithmic_moduli.dL_dN;
+    _dk_local_dF[_qp]                 = _algorithmic_moduli.dL_dF;
+    _dk_local_dw[_qp]                 = _algorithmic_moduli.dL_dW;
+    _dk_local_dgrad_w[_qp]            = _algorithmic_moduli.dL_ddWdX;
+    _dk_local_dk[_qp]                 = _algorithmic_moduli.dL_dN;
   }
   // clang-format on
 }
