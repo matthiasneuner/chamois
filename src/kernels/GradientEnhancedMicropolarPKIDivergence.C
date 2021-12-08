@@ -52,14 +52,14 @@ GradientEnhancedMicropolarPKIDivergence::GradientEnhancedMicropolarPKIDivergence
   : Kernel( parameters ),
     _base_name( isParamValid( "base_name" ) ? getParam< std::string >( "base_name" ) + "_" : "" ),
     _tensor_name( getParam< std::string >( "tensor" ) ),
-    _pk_i( getMaterialPropertyByName< Arr33 >( _base_name + _tensor_name ) ),
+    _pk_i( getMaterialPropertyByName< TensorData33R >( _base_name + _tensor_name ) ),
     _dpk_i_dF(
-        getMaterialPropertyByName< Arr3333 >( "d" + _base_name + _tensor_name + "/d" + "grad_u" ) ),
+        getMaterialPropertyByName< TensorData3333R >( "d" + _base_name + _tensor_name + "/d" + "grad_u" ) ),
     _dpk_i_dw(
-        getMaterialPropertyByName< Arr333 >( "d" + _base_name + _tensor_name + "/d" + "w" ) ),
+        getMaterialPropertyByName< TensorData333R >( "d" + _base_name + _tensor_name + "/d" + "w" ) ),
     _dpk_i_dgrad_w(
-        getMaterialPropertyByName< Arr3333 >( "d" + _base_name + _tensor_name + "/d" + "grad_w" ) ),
-    _dpk_i_dk( getMaterialPropertyByName< Arr33 >( "d" + _base_name + _tensor_name + "/d" + "k" ) ),
+        getMaterialPropertyByName< TensorData3333R >( "d" + _base_name + _tensor_name + "/d" + "grad_w" ) ),
+    _dpk_i_dk( getMaterialPropertyByName< TensorData33R >( "d" + _base_name + _tensor_name + "/d" + "k" ) ),
     _component( getParam< unsigned int >( "component" ) ),
     _ndisp( coupledComponents( "displacements" ) ),
     _disp_var( _ndisp ),
@@ -85,7 +85,7 @@ GradientEnhancedMicropolarPKIDivergence::computeQpResidual()
   Real f_comp_i = 0;
 
   for ( int K = 0; K < 3; K++ )
-    f_comp_i += _grad_test[_i][_qp]( K ) * _pk_i[_qp][K][_component];
+    f_comp_i += _grad_test[_i][_qp]( K ) * _pk_i[_qp](K,_component);
 
   return f_comp_i;
 }
@@ -136,7 +136,7 @@ GradientEnhancedMicropolarPKIDivergence::computeQpJacobianDisplacement( unsigned
     Real dpk_i_stress_du_comp_j = 0;
 
     for ( int J = 0; J < 3; J++ )
-      dpk_i_stress_du_comp_j += _dpk_i_dF[_qp][K][comp_i][comp_j][J] * _grad_phi[_j][_qp]( J );
+      dpk_i_stress_du_comp_j += _dpk_i_dF[_qp](K,comp_i,comp_j,J) * _grad_phi[_j][_qp]( J );
 
     df_comp_i_du_comp_j += _grad_test[_i][_qp]( K ) * dpk_i_stress_du_comp_j;
   }
@@ -154,10 +154,10 @@ GradientEnhancedMicropolarPKIDivergence::computeQpJacobianMicroRotation( unsigne
   {
     Real dpk_i_stress_dw_comp_j = 0;
 
-    dpk_i_stress_dw_comp_j += _dpk_i_dw[_qp][K][comp_i][comp_j] * _phi[_j][_qp];
+    dpk_i_stress_dw_comp_j += _dpk_i_dw[_qp](K,comp_i,comp_j) * _phi[_j][_qp];
 
     for ( int J = 0; J < 3; J++ )
-      dpk_i_stress_dw_comp_j += _dpk_i_dgrad_w[_qp][K][comp_i][comp_j][J] * _grad_phi[_j][_qp]( J );
+      dpk_i_stress_dw_comp_j += _dpk_i_dgrad_w[_qp](K,comp_i,comp_j,J) * _grad_phi[_j][_qp]( J );
 
     df_comp_i_dw_comp_j += _grad_test[_i][_qp]( K ) * dpk_i_stress_dw_comp_j;
   }
@@ -171,7 +171,7 @@ GradientEnhancedMicropolarPKIDivergence::computeQpJacobianNonlocalDamage( unsign
   Real df_comp_i_dk = 0.0;
 
   for ( int K = 0; K < 3; K++ )
-    df_comp_i_dk += _grad_test[_i][_qp]( K ) * _dpk_i_dk[_qp][K][comp_i];
+    df_comp_i_dk += _grad_test[_i][_qp]( K ) * _dpk_i_dk[_qp](K, comp_i);
 
   return df_comp_i_dk * _phi[_j][_qp];
 }

@@ -135,7 +135,7 @@ GradientEnhancedMicropolarContinuumAction::addKernels()
     pki_stress_kernel_params.set< unsigned int >( "component" ) = i;
     pki_stress_kernel_params.set< NonlinearVariableName >( "variable" ) =
         getParam< std::vector< VariableName > >( "micro_rotations" )[i];
-    pki_stress_kernel_params.set< std::string >( "tensor" ) = "couple_pk_i_stress";
+    pki_stress_kernel_params.set< std::string >( "tensor" ) = "pk_i_couple_stress";
 
     _problem->addKernel( pki_stress_kernel, kernel_name, pki_stress_kernel_params );
   }

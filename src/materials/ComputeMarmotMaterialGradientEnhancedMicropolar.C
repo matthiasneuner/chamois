@@ -30,11 +30,6 @@
 #undef registerMaterial
 #include "Marmot/Marmot.h"
 
-using Tensor3d = Fastor::Tensor< double, 3 >;
-using Tensor33d = Fastor::Tensor< double, 3, 3 >;
-using Tensor333d = Fastor::Tensor< double, 3, 3, 3 >;
-using Tensor3333d = Fastor::Tensor< double, 3, 3, 3, 3 >;
-
 registerMooseObject( "ChamoisApp", ComputeMarmotMaterialGradientEnhancedMicropolar );
 
 InputParameters
@@ -75,42 +70,42 @@ ComputeMarmotMaterialGradientEnhancedMicropolar::ComputeMarmotMaterialGradientEn
 
     _k( coupledValue( "nonlocal_damage" ) ),
 
-    _kirchhoff_moment( declareProperty< Arr3 >( _base_name + "kirchhoff_moment" ) ),
+    _kirchhoff_moment( declareProperty< TensorData3R >( _base_name + "kirchhoff_moment" ) ),
 
     _dkirchhoff_moment_dF(
-        declarePropertyDerivative< Arr333 >( _base_name + "kirchhoff_moment", "grad_u" ) ),
+        declarePropertyDerivative< TensorData333R >( _base_name + "kirchhoff_moment", "grad_u" ) ),
     _dkirchhoff_moment_dw(
-        declarePropertyDerivative< Arr33 >( _base_name + "kirchhoff_moment", "w" ) ),
+        declarePropertyDerivative< TensorData33R >( _base_name + "kirchhoff_moment", "w" ) ),
     _dkirchhoff_moment_dgrad_w(
-        declarePropertyDerivative< Arr333 >( _base_name + "kirchhoff_moment", "grad_w" ) ),
+        declarePropertyDerivative< TensorData333R >( _base_name + "kirchhoff_moment", "grad_w" ) ),
     _dkirchhoff_moment_dk(
-        declarePropertyDerivative< Arr3 >( _base_name + "kirchhoff_moment", "k" ) ),
+        declarePropertyDerivative< TensorData3R >( _base_name + "kirchhoff_moment", "k" ) ),
 
-    _pk_i_stress( declareProperty< Arr33 >( _base_name + "pk_i_stress" ) ),
+    _pk_i_stress( declareProperty< TensorData33R >( _base_name + "pk_i_stress" ) ),
 
     _dpk_i_stress_dF(
-        declarePropertyDerivative< Arr3333 >( _base_name + "pk_i_stress", "grad_u" ) ),
-    _dpk_i_stress_dw( declarePropertyDerivative< Arr333 >( _base_name + "pk_i_stress", "w" ) ),
+        declarePropertyDerivative< TensorData3333R >( _base_name + "pk_i_stress", "grad_u" ) ),
+    _dpk_i_stress_dw( declarePropertyDerivative< TensorData333R >( _base_name + "pk_i_stress", "w" ) ),
     _dpk_i_stress_dgrad_w(
-        declarePropertyDerivative< Arr3333 >( _base_name + "pk_i_stress", "grad_w" ) ),
-    _dpk_i_stress_dk( declarePropertyDerivative< Arr33 >( _base_name + "pk_i_stress", "k" ) ),
+        declarePropertyDerivative< TensorData3333R >( _base_name + "pk_i_stress", "grad_w" ) ),
+    _dpk_i_stress_dk( declarePropertyDerivative< TensorData33R >( _base_name + "pk_i_stress", "k" ) ),
 
-    _couple_pk_i_stress( declareProperty< Arr33 >( _base_name + "couple_pk_i_stress" ) ),
+    _pk_i_couple_stress( declareProperty< TensorData33R >( _base_name + "pk_i_couple_stress" ) ),
 
-    _dcouple_pk_i_stress_dF(
-        declarePropertyDerivative< Arr3333 >( _base_name + "couple_pk_i_stress", "grad_u" ) ),
-    _dcouple_pk_i_stress_dw(
-        declarePropertyDerivative< Arr333 >( _base_name + "couple_pk_i_stress", "w" ) ),
-    _dcouple_pk_i_stress_dgrad_w(
-        declarePropertyDerivative< Arr3333 >( _base_name + "couple_pk_i_stress", "grad_w" ) ),
-    _dcouple_pk_i_stress_dk(
-        declarePropertyDerivative< Arr33 >( _base_name + "couple_pk_i_stress", "k" ) ),
+    _dpk_i_couple_stress_dF(
+        declarePropertyDerivative< TensorData3333R >( _base_name + "pk_i_couple_stress", "grad_u" ) ),
+    _dpk_i_couple_stress_dw(
+        declarePropertyDerivative< TensorData333R >( _base_name + "pk_i_couple_stress", "w" ) ),
+    _dpk_i_couple_stress_dgrad_w(
+        declarePropertyDerivative< TensorData3333R >( _base_name + "pk_i_couple_stress", "grad_w" ) ),
+    _dpk_i_couple_stress_dk(
+        declarePropertyDerivative< TensorData33R >( _base_name + "pk_i_couple_stress", "k" ) ),
 
     _k_local( declareProperty< Real >( _base_name + "k_local" ) ),
 
-    _dk_local_dF( declarePropertyDerivative< Arr33 >( _base_name + "k_local", "grad_u" ) ),
-    _dk_local_dw( declarePropertyDerivative< Arr3 >( _base_name + "k_local", "w" ) ),
-    _dk_local_dgrad_w( declarePropertyDerivative< Arr33 >( _base_name + "k_local", "grad_w" ) ),
+    _dk_local_dF( declarePropertyDerivative< TensorData33R >( _base_name + "k_local", "grad_u" ) ),
+    _dk_local_dw( declarePropertyDerivative< TensorData3R >( _base_name + "k_local", "w" ) ),
+    _dk_local_dgrad_w( declarePropertyDerivative< TensorData33R >( _base_name + "k_local", "grad_w" ) ),
     _dk_local_dk( declarePropertyDerivative< Real >( _base_name + "k_local", "k" ) ),
 
     _nonlocal_radius( declareProperty< Real >( "nonlocal_radius" ) ),
@@ -249,51 +244,51 @@ ComputeMarmotMaterialGradientEnhancedMicropolar::computeQpProperties()
   const Tensor33d    FInv    =   Fastor::inverse ( F_np );
   const Tensor3333d dFInv_dF = - Fastor::einsum< Ik, Ki, to_IikK > ( FInv, FInv);
 
-  const Tensor33d pk_i_stress                = Fastor::einsum < Ii, ij >  ( FInv,            _response.S ) ;
-  const Tensor33d pk_i_couple_stress         = Fastor::einsum < Ii, ij >  ( FInv,            _response.M ) ;
-  const Tensor3d  kirchhoff_moment           = Fastor::einsum < ijl, ij > ( LeCi,            _response.S ) ;
+  _pk_i_stress[_qp]                = Fastor::einsum < Ii, ij >  ( FInv,            _response.S ) ;
+  _pk_i_couple_stress[_qp]         = Fastor::einsum < Ii, ij >  ( FInv,            _response.M ) ;
+  _kirchhoff_moment[_qp]           = Fastor::einsum < ijl, ij > ( LeCi,            _response.S ) ;
 
   _k_local[_qp]         = _response.L;
   _nonlocal_radius[_qp] = _response.nonLocalRadius;
 
-  std::copy (  pk_i_stress.data(),                 pk_i_stress.data()                + 9,      &_pk_i_stress[_qp][0][0] );
-  std::copy (  pk_i_couple_stress.data(),          pk_i_couple_stress.data()         + 9,      &_couple_pk_i_stress[_qp][0][0] );
-  std::copy (  kirchhoff_moment.data(),            kirchhoff_moment.data()           + 3,      &_kirchhoff_moment[_qp][0] );
+  /* std::copy (  pk_i_stress.data(),                 pk_i_stress.data()                + 9,      &_pk_i_stress[_qp][0][0] ); */
+  /* std::copy (  pk_i_couple_stress.data(),          pk_i_couple_stress.data()         + 9,      &_pk_i_couple_stress[_qp][0][0] ); */
+  /* std::copy (  kirchhoff_moment.data(),            kirchhoff_moment.data()           + 3,      &_kirchhoff_moment[_qp][0] ); */
 
   if ( need_jacobian ) {
-    const Tensor333d dkirchhoff_moment_dF          = Fastor::einsum < ijl, ijkK >          ( LeCi, _algorithmic_moduli.dS_dF );
-    const Tensor33d  dkirchhoff_moment_dw          = Fastor::einsum < ijl, ijk >           ( LeCi, _algorithmic_moduli.dS_dW ) ;
-    const Tensor333d dkirchhoff_moment_dgrad_w     = Fastor::einsum < ijl, ijkK >          ( LeCi, _algorithmic_moduli.dS_ddWdX ) ;
-    const Tensor3d   dkirchhoff_moment_dk          = Fastor::einsum < ijl, ij >            ( LeCi, _algorithmic_moduli.dS_dN ) ;
-    std::copy ( dkirchhoff_moment_dF.data(),        dkirchhoff_moment_dF.data()        + 3 * 9, &_dkirchhoff_moment_dF[_qp][0][0][0] );
-    std::copy ( dkirchhoff_moment_dw.data(),        dkirchhoff_moment_dw.data()        + 3 * 3, &_dkirchhoff_moment_dw[_qp][0][0] );
-    std::copy ( dkirchhoff_moment_dgrad_w.data(),   dkirchhoff_moment_dgrad_w.data()   + 3 * 9, &_dkirchhoff_moment_dgrad_w[_qp][0][0][0] );
-    std::copy ( dkirchhoff_moment_dk.data(),        dkirchhoff_moment_dk.data()        + 3 * 1, &_dkirchhoff_moment_dk[_qp][0] );
+    _dkirchhoff_moment_dF[_qp]          = Fastor::einsum < ijl, ijkK >          ( LeCi, _algorithmic_moduli.dS_dF );
+    _dkirchhoff_moment_dw[_qp]          = Fastor::einsum < ijl, ijk >           ( LeCi, _algorithmic_moduli.dS_dW ) ;
+    _dkirchhoff_moment_dgrad_w[_qp]     = Fastor::einsum < ijl, ijkK >          ( LeCi, _algorithmic_moduli.dS_ddWdX ) ;
+    _dkirchhoff_moment_dk[_qp]          = Fastor::einsum < ijl, ij >            ( LeCi, _algorithmic_moduli.dS_dN ) ;
+    /* std::copy ( dkirchhoff_moment_dF.data(),        dkirchhoff_moment_dF.data()        + 3 * 9, &_dkirchhoff_moment_dF[_qp][0][0][0] ); */
+    /* std::copy ( dkirchhoff_moment_dw.data(),        dkirchhoff_moment_dw.data()        + 3 * 3, &_dkirchhoff_moment_dw[_qp][0][0] ); */
+    /* std::copy ( dkirchhoff_moment_dgrad_w.data(),   dkirchhoff_moment_dgrad_w.data()   + 3 * 9, &_dkirchhoff_moment_dgrad_w[_qp][0][0][0] ); */
+    /* std::copy ( dkirchhoff_moment_dk.data(),        dkirchhoff_moment_dk.data()        + 3 * 1, &_dkirchhoff_moment_dk[_qp][0] ); */
 
-    const Tensor3333d dpk_i_stress_dF             = Fastor::einsum < Ii, ijkK >          ( FInv, _algorithmic_moduli.dS_dF ) +
-                                                    Fastor::einsum < IikK, ij, to_IjkK > ( dFInv_dF,        _response.S );
-    const Tensor333d  dpk_i_stress_dw             = Fastor::einsum < Ii, ijk >           ( FInv, _algorithmic_moduli.dS_dW ) ;
-    const Tensor3333d dpk_i_stress_dgrad_w        = Fastor::einsum < Ii, ijkK >          ( FInv, _algorithmic_moduli.dS_ddWdX ) ;
-    const Tensor33d   dpk_i_stress_dk             = Fastor::einsum < Ii, ij >            ( FInv, _algorithmic_moduli.dS_dN ) ;
-    std::copy ( dpk_i_stress_dF.data(),             dpk_i_stress_dF.data()             + 9 * 9, &_dpk_i_stress_dF[_qp][0][0][0][0] );
-    std::copy ( dpk_i_stress_dw.data(),             dpk_i_stress_dw.data()             + 9 * 3, &_dpk_i_stress_dw[_qp][0][0][0] );
-    std::copy ( dpk_i_stress_dgrad_w.data(),        dpk_i_stress_dgrad_w.data()        + 9 * 9, &_dpk_i_stress_dgrad_w[_qp][0][0][0][0] );
-    std::copy ( dpk_i_stress_dk.data(),             dpk_i_stress_dk.data()             + 9 * 1, &_dpk_i_stress_dk[_qp][0][0] );
+    _dpk_i_stress_dF[_qp]             = Fastor::evaluate(Fastor::einsum < Ii, ijkK >          ( FInv, _algorithmic_moduli.dS_dF ) +
+                                        Fastor::einsum < IikK, ij, to_IjkK > ( dFInv_dF,        _response.S ));
+    _dpk_i_stress_dw[_qp]             = Fastor::einsum < Ii, ijk >           ( FInv, _algorithmic_moduli.dS_dW ) ;
+    _dpk_i_stress_dgrad_w[_qp]        = Fastor::einsum < Ii, ijkK >          ( FInv, _algorithmic_moduli.dS_ddWdX ) ;
+    _dpk_i_stress_dk[_qp]             = Fastor::einsum < Ii, ij >            ( FInv, _algorithmic_moduli.dS_dN ) ;
+    /* std::copy ( dpk_i_stress_dF.data(),             dpk_i_stress_dF.data()             + 9 * 9, &_dpk_i_stress_dF[_qp][0][0][0][0] ); */
+    /* std::copy ( dpk_i_stress_dw.data(),             dpk_i_stress_dw.data()             + 9 * 3, &_dpk_i_stress_dw[_qp][0][0][0] ); */
+    /* std::copy ( dpk_i_stress_dgrad_w.data(),        dpk_i_stress_dgrad_w.data()        + 9 * 9, &_dpk_i_stress_dgrad_w[_qp][0][0][0][0] ); */
+    /* std::copy ( dpk_i_stress_dk.data(),             dpk_i_stress_dk.data()             + 9 * 1, &_dpk_i_stress_dk[_qp][0][0] ); */
 
-    const Tensor3333d dpk_i_couple_stress_dF      = Fastor::einsum < Ii, ijkK >          ( FInv, _algorithmic_moduli.dM_dF ) +
-                                                    Fastor::einsum < IikK, ij, to_IjkK > ( dFInv_dF,        _response.M );
-    const Tensor333d  dpk_i_couple_stress_dw      = Fastor::einsum < Ii, ijk >           ( FInv, _algorithmic_moduli.dM_dW ) ;
-    const Tensor3333d dpk_i_couple_stress_dgrad_w = Fastor::einsum < Ii, ijkK >          ( FInv, _algorithmic_moduli.dM_ddWdX ) ;
-    const Tensor33d   dpk_i_couple_stress_dk      = Fastor::einsum < Ii, ij >            ( FInv, _algorithmic_moduli.dM_dN ) ;
-    std::copy ( dpk_i_couple_stress_dF.data(),      dpk_i_couple_stress_dF.data()      + 9 * 9, &_dcouple_pk_i_stress_dF[_qp][0][0][0][0] );
-    std::copy ( dpk_i_couple_stress_dw.data(),      dpk_i_couple_stress_dw.data()      + 9 * 3, &_dcouple_pk_i_stress_dw[_qp][0][0][0] );
-    std::copy ( dpk_i_couple_stress_dgrad_w.data(), dpk_i_couple_stress_dgrad_w.data() + 9 * 9, &_dcouple_pk_i_stress_dgrad_w[_qp][0][0][0][0] );
-    std::copy ( dpk_i_couple_stress_dk.data(),      dpk_i_couple_stress_dk.data()      + 9 * 1, &_dcouple_pk_i_stress_dk[_qp][0][0] );
+    _dpk_i_couple_stress_dF[_qp]      = Fastor::evaluate(Fastor::einsum < Ii, ijkK >          ( FInv, _algorithmic_moduli.dM_dF ) +
+                                   Fastor::einsum < IikK, ij, to_IjkK > ( dFInv_dF,        _response.M ));
+    _dpk_i_couple_stress_dw[_qp]      = Fastor::einsum < Ii, ijk >           ( FInv, _algorithmic_moduli.dM_dW ) ;
+    _dpk_i_couple_stress_dgrad_w[_qp] = Fastor::einsum < Ii, ijkK >          ( FInv, _algorithmic_moduli.dM_ddWdX ) ;
+    _dpk_i_couple_stress_dk[_qp]      = Fastor::einsum < Ii, ij >            ( FInv, _algorithmic_moduli.dM_dN ) ;
+    /* std::copy ( dpk_i_couple_stress_dF.data(),      dpk_i_couple_stress_dF.data()      + 9 * 9, &_dpk_i_couple_stress_dF[_qp][0][0][0][0] ); */
+    /* std::copy ( dpk_i_couple_stress_dw.data(),      dpk_i_couple_stress_dw.data()      + 9 * 3, &_dpk_i_couple_stress_dw[_qp][0][0][0] ); */
+    /* std::copy ( dpk_i_couple_stress_dgrad_w.data(), dpk_i_couple_stress_dgrad_w.data() + 9 * 9, &_dpk_i_couple_stress_dgrad_w[_qp][0][0][0][0] ); */
+    /* std::copy ( dpk_i_couple_stress_dk.data(),      dpk_i_couple_stress_dk.data()      + 9 * 1, &_dpk_i_couple_stress_dk[_qp][0][0] ); */
 
     _dk_local_dk[_qp] = _algorithmic_moduli.dL_dN;
-    std::copy ( _algorithmic_moduli.dL_dF.data(),     _algorithmic_moduli.dL_dF.data()    + 1 * 9, &_dk_local_dF[_qp][0][0] );
-    std::copy ( _algorithmic_moduli.dL_dW.data(),     _algorithmic_moduli.dL_dW.data()    + 1 * 3, &_dk_local_dw[_qp][0] );
-    std::copy ( _algorithmic_moduli.dL_ddWdX.data(),  _algorithmic_moduli.dL_ddWdX.data() + 1 * 9, &_dk_local_dgrad_w[_qp][0][0] );
+    /* std::copy ( _algorithmic_moduli.dL_dF.data(),     _algorithmic_moduli.dL_dF.data()    + 1 * 9, &_dk_local_dF[_qp][0][0] ); */
+    /* std::copy ( _algorithmic_moduli.dL_dW.data(),     _algorithmic_moduli.dL_dW.data()    + 1 * 3, &_dk_local_dw[_qp][0] ); */
+    /* std::copy ( _algorithmic_moduli.dL_ddWdX.data(),  _algorithmic_moduli.dL_ddWdX.data() + 1 * 9, &_dk_local_dgrad_w[_qp][0][0] ); */
   }
   // clang-format on
 }

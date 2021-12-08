@@ -25,11 +25,7 @@
 #pragma once
 
 #include "Kernel.h"
-
-using Arr3 = std::array< Real, 3 >;
-using Arr33 = std::array< Arr3, 3 >;
-using Arr333 = std::array< Arr33, 3 >;
-using Arr3333 = std::array< Arr333, 3 >;
+#include "FastorHelper.h"
 
 // Forward Declarations
 
@@ -59,13 +55,13 @@ protected:
   /// Tensor of which the divergence is computed
   const std::string _tensor_name;
   /// The tensor
-  const MaterialProperty< Arr33 > & _pk_i;
+  const MaterialProperty< TensorData33R > & _pk_i;
 
   //// Derivatives of the w.r.t. deformation gradient, micro rotations, material gradient of the micro rotations and the nonlocal damage driving field
-  const MaterialProperty< Arr3333 > & _dpk_i_dF;
-  const MaterialProperty< Arr333 > & _dpk_i_dw;
-  const MaterialProperty< Arr3333 > & _dpk_i_dgrad_w;
-  const MaterialProperty< Arr33 > & _dpk_i_dk;
+  const MaterialProperty< TensorData3333R > & _dpk_i_dF;
+  const MaterialProperty< TensorData333R > & _dpk_i_dw;
+  const MaterialProperty< TensorData3333R > & _dpk_i_dgrad_w;
+  const MaterialProperty< TensorData33R > & _dpk_i_dk;
 
   /// An integer corresponding to the direction this kernel acts in
   const unsigned int _component;
