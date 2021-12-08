@@ -26,7 +26,6 @@
 
 #include "DerivativeMaterialInterface.h"
 #include "FastorHelper.h"
-#include <Fastor/Fastor.h>
 
 class ComputeDeformedBoundaryNormalVector
   : public DerivativeMaterialInterface< Material >
@@ -41,8 +40,8 @@ protected:
 
   const std::vector< const VariableGradient * > _grad_disp;
 
-  MaterialProperty< TensorData3R > & _n;
+  MaterialProperty< Tensor3R > & _n;
 
-  MaterialProperty< TensorData333R > & _dn_dF;
+  MaterialProperty< Tensor333R > & _dn_dF;
 
 };

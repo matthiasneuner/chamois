@@ -24,10 +24,6 @@
 
 #include "ComputeDeformedBoundaryNormalVector.h"
 
-using Tensor3d = Fastor::Tensor< double, 3 >;
-using Tensor33d = Fastor::Tensor< double, 3, 3 >;
-using Tensor333d = Fastor::Tensor< double, 3, 3, 3 >;
-using Tensor3333d = Fastor::Tensor< double, 3, 3, 3, 3 >;
 
 registerMooseObject( "ChamoisApp", ComputeDeformedBoundaryNormalVector );
 
@@ -46,8 +42,8 @@ ComputeDeformedBoundaryNormalVector::ComputeDeformedBoundaryNormalVector(
     const InputParameters & parameters )
   : DerivativeMaterialInterface< Material >( parameters ),
     _grad_disp( coupledGradients( "displacements" ) ),
-    _n ( declareProperty< TensorData3R > ( "boundary_normal_vector" ) ),
-    _dn_dF ( declarePropertyDerivative< TensorData333R > ( "boundary_normal_vector" , "grad_u" ) )
+    _n ( declareProperty< Tensor3R > ( "boundary_normal_vector" ) ),
+    _dn_dF ( declarePropertyDerivative< Tensor333R > ( "boundary_normal_vector" , "grad_u" ) )
 {
   if ( getParam< bool >( "use_displaced_mesh" ) )
     paramError( "use_displaced_mesh", "This material must be run on the undisplaced mesh" );

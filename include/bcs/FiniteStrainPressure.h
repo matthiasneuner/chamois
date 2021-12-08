@@ -55,7 +55,7 @@ protected:
 
   /* const MaterialProperty < Ten33d > & theTensor; */
 
-  const MaterialProperty< TensorData3R > & _n;
+  const MaterialProperty< Tensor3R > & _n;
 
-  const MaterialProperty< TensorData333R  > & _dn_dF;
+  const MaterialProperty< Tensor333R  > & _dn_dF;
 };
