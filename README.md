@@ -19,3 +19,8 @@ Contour plot indicates the equivalent inelastic strain.
 Tube squash test after Bažant, Kim and Brocca, 1999.
 Simulation of the steel tube filled with concrete using the finite strain GMCDP model.
 Contour plot indicates damage in concrete.
+
+![Plane_strain_test_full](share/gosford_full.gif)
+![Plane_strain_test_detail](share/gosford_detail.gif)
+Plane strain compression tests on Gosford sandstone after Ord, Vardoulakis and Kajewski, 1991.
+Contour plot indicates damage in sandstone.
