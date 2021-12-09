@@ -10,7 +10,7 @@
 #include "FiniteStrainPressure.h"
 #include "Function.h"
 #include "MooseError.h"
-#include <Fastor/Fastor.h>
+#include "Marmot/MarmotMicromorphicTensorBasics.h"
 
 registerMooseObject("ChamoisApp", FiniteStrainPressure);
 
@@ -70,6 +70,8 @@ FiniteStrainPressure::computeQpResidual()
 Real
 FiniteStrainPressure::componentJacobian(unsigned int j)
 {
+  using namespace Marmot::FastorIndices;
+
   Real factor = _factor;
 
   if (_function)
@@ -78,29 +80,9 @@ FiniteStrainPressure::componentJacobian(unsigned int j)
   if (_postprocessor)
     factor *= *_postprocessor;
 
+   const Tensor3R dN_dX { _grad_phi[_j][_qp](0), _grad_phi[_j][_qp](1), _grad_phi[_j][_qp](2)};
 
-  using Tensor3d = Fastor::Tensor< double, 3 >;
-  using Tensor33d = Fastor::Tensor< double, 3, 3 >;
-  using Tensor333d = Fastor::Tensor< double, 3, 3, 3 >;
-  using Tensor3333d = Fastor::Tensor< double, 3, 3, 3, 3 >;
-  enum{I_,J_,K_, i_,j_,k_, l_};
-  using I = Fastor::Index < I_>;
-  using K = Fastor::Index < K_>;
-  using Ii = Fastor::Index < I_, i_>;
-  using i = Fastor::Index <  i_>;
-  using ij = Fastor::Index < i_, j_>;
-  using ijk = Fastor::Index < i_, j_, k_>;
-  using ijK = Fastor::Index < i_, j_, K_>;
-  using ijl = Fastor::Index < i_, j_, l_>;
-  using ijkK = Fastor::Index < i_, j_, k_, K_>;
-  using Ik = Fastor::Index < I_, k_>;
-  using Ki = Fastor::Index < K_, i_>;
-  using IikK = Fastor::Index < I_, i_, k_, K_>;
-
-
-   const Tensor3d dN_dX { _grad_phi[_j][_qp](0), _grad_phi[_j][_qp](1), _grad_phi[_j][_qp](2)};
-
-   const Tensor33d dn_dq = Fastor::einsum< ijK, K> ( _dn_dF[_qp], dN_dX ) ;
+   const Tensor33R dn_dq = Fastor::einsum< ijk, k> ( _dn_dF[_qp], dN_dX ) ;
 
    return factor * dn_dq(_component, j) * _test[_i][_qp]    ;
 }

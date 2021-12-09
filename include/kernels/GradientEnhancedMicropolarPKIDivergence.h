@@ -1,10 +1,10 @@
 /* ---------------------------------------------------------------------
- *       _                           _     
- *   ___| |__   __ _ _ __ ___   ___ (_)___ 
+ *       _                           _
+ *   ___| |__   __ _ _ __ ___   ___ (_)___
  *  / __| '_ \ / _` | '_ ` _ \ / _ \| / __|
  * | (__| | | | (_| | | | | | | (_) | \__ \
  *  \___|_| |_|\__,_|_| |_| |_|\___/|_|___/
- * 
+ *
  * Chamois - a MOOSE interface to constitutive models developed at the
  * Unit of Strength of Materials and Structural Analysis
  * University of Innsbruck,
@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include "DerivativeMaterialInterface.h"
 #include "Kernel.h"
 #include "FastorHelper.h"
 
@@ -34,7 +35,7 @@
  * e.g, for the linear momentum equation (PKI stress) or
  * the angular momentum equation (nominal couple stress tensor)
  */
-class GradientEnhancedMicropolarPKIDivergence : public  Kernel 
+class GradientEnhancedMicropolarPKIDivergence : public DerivativeMaterialInterface< Kernel >
 {
 public:
   static InputParameters validParams();

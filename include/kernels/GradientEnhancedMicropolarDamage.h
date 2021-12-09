@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include "DerivativeMaterialInterface.h"
 #include "Kernel.h"
 #include "FastorHelper.h"
 
@@ -32,7 +33,7 @@
 /**
  * Computes the classical 2.o Helmholtz like equation for nonlocal damage
  */
-class GradientEnhancedMicropolarDamage : public Kernel
+    class GradientEnhancedMicropolarDamage : public DerivativeMaterialInterface < Kernel >
 {
 public:
   static InputParameters validParams();

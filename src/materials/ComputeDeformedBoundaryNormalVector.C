@@ -23,6 +23,7 @@
  */
 
 #include "ComputeDeformedBoundaryNormalVector.h"
+#include "Marmot/MarmotMicromorphicTensorBasics.h"
 
 
 registerMooseObject( "ChamoisApp", ComputeDeformedBoundaryNormalVector );
@@ -53,48 +54,27 @@ ComputeDeformedBoundaryNormalVector::ComputeDeformedBoundaryNormalVector(
 void
 ComputeDeformedBoundaryNormalVector::computeQpProperties()
 {
-    using Tensor3d = Fastor::Tensor< double, 3 >;
-    using Tensor33d = Fastor::Tensor< double, 3, 3 >;
-    using Tensor333d = Fastor::Tensor< double, 3, 3, 3 >;
-    using Tensor3333d = Fastor::Tensor< double, 3, 3, 3, 3 >;
+  using namespace Marmot::FastorIndices;
 
-  const static Tensor33d eye = { { 1, 0, 0 }, 
-                               { 0, 1, 0 }, 
-                               { 0, 0, 1 } };
+  const auto& I = Marmot::FastorStandardTensors::Spatial3D::I;
 
-    const Tensor33d F = Tensor33d {
+    const Tensor33R F = Tensor33R {
       { (*_grad_disp[0])[_qp](0), (*_grad_disp[0])[_qp](1), (*_grad_disp[0])[_qp](2) },
       { (*_grad_disp[1])[_qp](0), (*_grad_disp[1])[_qp](1), (*_grad_disp[1])[_qp](2) },
       { (*_grad_disp[2])[_qp](0), (*_grad_disp[2])[_qp](1), (*_grad_disp[2])[_qp](2) } }
-      + eye;
+      + I;
 
-  enum{I_,J_,K_, i_,j_,k_, l_};
-  using I = Fastor::Index < I_>;
-  using K = Fastor::Index < K_>;
-  using Ii = Fastor::Index < I_, i_>;
-  using i = Fastor::Index <  i_>;
-  using ij = Fastor::Index < i_, j_>;
-  using ijk = Fastor::Index < i_, j_, k_>;
-  using ijK = Fastor::Index < i_, j_, K_>;
-  using ijl = Fastor::Index < i_, j_, l_>;
-  using ijkK = Fastor::Index < i_, j_, k_, K_>;
-  using Ik = Fastor::Index < I_, k_>;
-  using Ki = Fastor::Index < K_, i_>;
-  using IikK = Fastor::Index < I_, i_, k_, K_>;
-
-  using to_IikK = Fastor::OIndex < I_, i_, k_, K_>;
-
-  const Tensor33d    FInv    =   Fastor::inverse ( F );
-  const Tensor3333d dFInv_dF = - Fastor::einsum< Ik, Ki, to_IikK > ( FInv, FInv);
+  const Tensor33R    FInv    =   Fastor::inverse ( F );
+  const Tensor3333R dFInv_dF = - Fastor::einsum< Ik, Ki, to_IikK > ( FInv, FInv);
 
   const double J = Fastor::determinant(F);
 
-  const Tensor33d dJ_dF = J * Fastor::transpose ( FInv );
+  const Tensor33R dJ_dF = J * Fastor::transpose ( FInv );
 
-  const Tensor3d N = Tensor3d{_normals[_qp](0), _normals[_qp](1), _normals[_qp](2)};
+  const Tensor3R N = Tensor3R{_normals[_qp](0), _normals[_qp](1), _normals[_qp](2)};
 
-  const Tensor3d  n = J * Fastor::transpose( FInv ) % N;
-  const Tensor333d dn_dF = Fastor::einsum<i, Ik>( Fastor::transpose( FInv ) % N , dJ_dF ) + J * Fastor::einsum< IikK, I> ( dFInv_dF, N );
+  const Tensor3R  n = J * Fastor::transpose( FInv ) % N;
+  const Tensor333R dn_dF = Fastor::einsum<i, Ik>( Fastor::transpose( FInv ) % N , dJ_dF ) + J * Fastor::einsum< IikK, Fastor::Index<I_>> ( dFInv_dF, N );
 
   _n[_qp] = n;
   _dn_dF[_qp] = dn_dF;

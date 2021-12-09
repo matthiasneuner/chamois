@@ -43,16 +43,15 @@ GradientEnhancedMicropolarDamage::validParams()
 
 GradientEnhancedMicropolarDamage::GradientEnhancedMicropolarDamage(
     const InputParameters & parameters )
-  : Kernel( parameters ),
+  : DerivativeMaterialInterface< Kernel >( parameters ),
     _base_name( isParamValid( "base_name" ) ? getParam< std::string >( "base_name" ) + "_" : "" ),
     _k_local( getMaterialPropertyByName< Real >( _base_name + "k_local" ) ),
     _nonlocal_radius( getMaterialPropertyByName< Real >( _base_name + "nonlocal_radius" ) ),
-    _dk_local_dF(
-        getMaterialPropertyByName< Tensor33R >( "d" + _base_name + "k_local" + "/d" + "grad_u" ) ),
-    _dk_local_dw( getMaterialPropertyByName< Tensor3R >( "d" + _base_name + "k_local" + "/d" + "w" ) ),
+    _dk_local_dF( getMaterialPropertyDerivative< Tensor33R >( _base_name + "k_local", "grad_u" ) ),
+    _dk_local_dw( getMaterialPropertyDerivative< Tensor3R >( _base_name + "k_local", "w" ) ),
     _dk_local_dgrad_w(
-        getMaterialPropertyByName< Tensor33R >( "d" + _base_name + "k_local" + "/d" + "grad_w" ) ),
-    _dk_local_dk( getMaterialPropertyByName< Real >( "d" + _base_name + "k_local" + "/d" + "k" ) ),
+        getMaterialPropertyDerivative< Tensor33R >( _base_name + "k_local", "grad_w" ) ),
+    _dk_local_dk( getMaterialPropertyDerivative< Real >( _base_name + "k_local", "k" ) ),
     _ndisp( coupledComponents( "displacements" ) ),
     _disp_var( _ndisp ),
     _nmrot( coupledComponents( "micro_rotations" ) ),
@@ -105,7 +104,7 @@ GradientEnhancedMicropolarDamage::computeQpJacobianDisplacement( unsigned int co
   Real df_du_j = 0;
 
   for ( int K = 0; K < 3; K++ )
-    df_du_j += -1 * _dk_local_dF[_qp](comp_j,K) * _grad_phi[_j][_qp]( K );
+    df_du_j += -1 * _dk_local_dF[_qp]( comp_j, K ) * _grad_phi[_j][_qp]( K );
 
   return _test[_i][_qp] * df_du_j;
 }
@@ -113,10 +112,10 @@ GradientEnhancedMicropolarDamage::computeQpJacobianDisplacement( unsigned int co
 Real
 GradientEnhancedMicropolarDamage::computeQpJacobianMicroRotation( unsigned int comp_j )
 {
-  Real df_dw_j = -1 * _dk_local_dw[_qp](comp_j) * _phi[_j][_qp];
+  Real df_dw_j = -1 * _dk_local_dw[_qp]( comp_j ) * _phi[_j][_qp];
 
   for ( int K = 0; K < 3; K++ )
-    df_dw_j += -1 * _dk_local_dgrad_w[_qp](comp_j,K) * _grad_phi[_j][_qp]( K );
+    df_dw_j += -1 * _dk_local_dgrad_w[_qp]( comp_j, K ) * _grad_phi[_j][_qp]( K );
 
   return _test[_i][_qp] * df_dw_j;
 }

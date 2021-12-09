@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include "DerivativeMaterialInterface.h"
 #include "Kernel.h"
 #include "FastorHelper.h"
 
@@ -33,7 +34,7 @@
  * Computes the contribution of the (nonsymmetric) kirchhoff stress tensor 
  * to the balane of angular momentum in the context of the micropolar continuum
  */
-class GradientEnhancedMicropolarKirchhoffMoment : public Kernel
+class GradientEnhancedMicropolarKirchhoffMoment : public DerivativeMaterialInterface< Kernel > 
 {
 public:
   static InputParameters validParams();

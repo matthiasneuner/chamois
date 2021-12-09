@@ -29,6 +29,7 @@
 // registerMaterial function in namespace Marmot
 #undef registerMaterial
 #include "Marmot/Marmot.h"
+#include "Marmot/MarmotMicromorphicTensorBasics.h"
 
 registerMooseObject( "ChamoisApp", ComputeMarmotMaterialGradientEnhancedMicropolar );
 
@@ -142,19 +143,19 @@ ComputeMarmotMaterialGradientEnhancedMicropolar::initQpStatefulProperties()
   _the_material->initializeYourself();
 }
 
-static Fastor::Tensor< double, 3, 3, 3 >
-levi_civita_pd()
-{
-  Fastor::Tensor< double, 3, 3, 3 > LeCi_pd( 0.0 );
-  LeCi_pd( 0, 1, 2 ) = 1.;
-  LeCi_pd( 1, 2, 0 ) = 1.;
-  LeCi_pd( 2, 0, 1 ) = 1.;
-  LeCi_pd( 1, 0, 2 ) = -1.;
-  LeCi_pd( 2, 1, 0 ) = -1.;
-  LeCi_pd( 0, 2, 1 ) = -1.;
+/* static Fastor::Tensor< double, 3, 3, 3 > */
+/* levi_civita_pd() */
+/* { */
+/*   Fastor::Tensor< double, 3, 3, 3 > LeCi_pd( 0.0 ); */
+/*   LeCi_pd( 0, 1, 2 ) = 1.; */
+/*   LeCi_pd( 1, 2, 0 ) = 1.; */
+/*   LeCi_pd( 2, 0, 1 ) = 1.; */
+/*   LeCi_pd( 1, 0, 2 ) = -1.; */
+/*   LeCi_pd( 2, 1, 0 ) = -1.; */
+/*   LeCi_pd( 0, 2, 1 ) = -1.; */
 
-  return LeCi_pd;
-}
+/*   return LeCi_pd; */
+/* } */
 
 void
 ComputeMarmotMaterialGradientEnhancedMicropolar::computeQpProperties()
@@ -166,11 +167,7 @@ ComputeMarmotMaterialGradientEnhancedMicropolar::computeQpProperties()
   double pNewDt = 1e36;
 
   // clang-format off
-  const static Tensor33R I = { { 1, 0, 0 }, 
-                               { 0, 1, 0 }, 
-                               { 0, 0, 1 } };
-
-  const static Tensor333R LeCi = levi_civita_pd () ;
+  const auto& I = Marmot::FastorStandardTensors::Spatial3D::I;
 
   const MarmotMaterialGradientEnhancedMicropolar::DeformationIncrement< 3 > _deformation_increment{
     .F_n = Tensor33R{
@@ -226,18 +223,9 @@ ComputeMarmotMaterialGradientEnhancedMicropolar::computeQpProperties()
   // and compute the moment of the kirchhoff stress tensor
 
   // clang-format off
-  enum{I_,J_,K_, i_,j_,k_, l_};
-  using Ii = Fastor::Index < I_, i_>;
-  using ij = Fastor::Index < i_, j_>;
-  using ijk = Fastor::Index < i_, j_, k_>;
-  using ijl = Fastor::Index < i_, j_, l_>;
-  using ijkK = Fastor::Index < i_, j_, k_, K_>;
-  using Ik = Fastor::Index < I_, k_>;
-  using Ki = Fastor::Index < K_, i_>;
-  using IikK = Fastor::Index < I_, i_, k_, K_>;
+  using namespace Marmot::FastorIndices;
 
-  using to_IikK = Fastor::OIndex < I_, i_, k_, K_>;
-  using to_IjkK = Fastor::OIndex < I_, j_, k_, K_>;
+  const auto& LeCi = Marmot::FastorStandardTensors::Spatial3D::LeviCivita;
 
   const auto& F_np = _deformation_increment.F_np;
 
