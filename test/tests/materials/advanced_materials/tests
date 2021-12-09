@@ -4,4 +4,9 @@
     input = 'gm_druckerprager.i'
     exodiff = 'gm_druckerprager_out.e'
   []
+  [test_gosford_sandstone]
+    type = 'Exodiff'
+    input = 'gosford_sandstone.i'
+    exodiff = 'gosford_sandstone_out.e'
+  []
 []
