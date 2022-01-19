@@ -1,24 +1,30 @@
 Content:
-    Chamois:
-        root_dir: ${ROOT_DIR}/doc/content
+    ChamoisApp:
+         root_dir: ${ROOT_DIR}/doc/content
     moose:
-        root_dir: ${MOOSE_DIR}/framework/doc/content
-        content:
-            - js/*
-            - css/*
-            - contrib/**
-            - media/**
-
+         root_dir: ${MOOSE_DIR}/framework/doc/content
+    tensor_mechanics:
+         root_dir: ${MOOSE_DIR}/modules/tensor_mechanics/doc/content
 Renderer:
     type: MooseDocs.base.MaterializeRenderer
-
+    favicon:                          media/chamois_logo.png
 Extensions:
+    MooseDocs.extensions.common:
+        shortcuts:                     !include ${MOOSE_DIR}/framework/doc/globals.yml
     MooseDocs.extensions.navigation:
         name: Chamois
+        repo:                          https://github.com/matthiasneuner/chamois
+        breadcrumbs:                   False
+        scrollspy:                     False
+        menu:                          !include ${ROOT_DIR}/doc/menu.yml
     MooseDocs.extensions.appsyntax:
         executable: ${ROOT_DIR}
-        hide:
-            framework: !include ${MOOSE_DIR}/framework/doc/hidden.yml
         remove: !include ${MOOSE_DIR}/framework/doc/remove.yml
         includes:
             - include
+    MooseDocs.extensions.acronym:
+      acronyms:                      !include ${MOOSE_DIR}/framework/doc/acronyms.yml
+    MooseDocs.extensions.template:
+      active:                        True
+    MooseDocs.extensions.sqa:
+      active:                        False
