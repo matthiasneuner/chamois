@@ -23,4 +23,7 @@ Plane strain compression tests on Gosford sandstone after Ord, Vardoulakis and K
 
 !card media/gosford_detail.gif.mp4 title=Gosford sandstone plane strain test
 Plane strain compression tests on Gosford sandstone after Ord, Vardoulakis and Kajewski, 1991.  Contour plot indicates damage in sandstone.
+
+!card media/gosford_triax.mp4 title=Gosford sandstone triaxial compression test
+Triaxial compression test on Gosford sandstone.  Contour plot indicates damage in sandstone.
 !gallery-end!
