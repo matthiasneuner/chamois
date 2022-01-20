@@ -1,0 +1,7 @@
+Applications:
+  ChamoisApp:
+    exe_directory:     ${ROOT_DIR}
+    exe_name:          chamois
+    app_types:
+      - ChamoisApp
+    content_directory: doc/content
