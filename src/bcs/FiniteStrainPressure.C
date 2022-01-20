@@ -57,7 +57,7 @@ FiniteStrainPressure::FiniteStrainPressure( const InputParameters & parameters )
     _dvars( _ndisp ),
     _grad_disp( coupledGradients( "displacements" ) ),
     _n( getMaterialProperty< Tensor3R >( "boundary_normal_vector" ) ),
-    _dn_dF( getMaterialPropertyDerivative< Tensor333R >( "boundary_normal_vector","grad_u" ) )
+    _dn_dF( getMaterialPropertyDerivative< Tensor333R >( "boundary_normal_vector", "grad_u" ) )
 {
   if ( _component > 2 )
     mooseError( "Invalid component given for ", name(), ": ", _component, ".\n" );

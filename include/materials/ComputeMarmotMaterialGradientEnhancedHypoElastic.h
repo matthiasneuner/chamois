@@ -1,10 +1,10 @@
 /* ---------------------------------------------------------------------
- *       _                           _     
- *   ___| |__   __ _ _ __ ___   ___ (_)___ 
+ *       _                           _
+ *   ___| |__   __ _ _ __ ___   ___ (_)___
  *  / __| '_ \ / _` | '_ ` _ \ / _ \| / __|
  * | (__| | | | (_| | | | | | | (_) | \__ \
  *  \___|_| |_|\__,_|_| |_| |_|\___/|_|___/
- * 
+ *
  * Chamois - a MOOSE interface to constitutive models developed at the
  * Unit of Strength of Materials and Structural Analysis
  * University of Innsbruck,
@@ -31,7 +31,8 @@
  * ComputeMarmotMaterialGradientEnhancedHypoElastic is a wrapper for hypoelastic constitutive models
  * provided by the MarmotUserLibrary.
  */
-class ComputeMarmotMaterialGradientEnhancedHypoElastic : public DerivativeMaterialInterface< Material >
+class ComputeMarmotMaterialGradientEnhancedHypoElastic
+  : public DerivativeMaterialInterface< Material >
 {
 public:
   static InputParameters validParams();

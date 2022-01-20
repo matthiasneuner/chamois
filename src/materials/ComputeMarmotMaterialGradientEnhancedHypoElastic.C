@@ -1,10 +1,10 @@
 /* ---------------------------------------------------------------------
- *       _                           _     
- *   ___| |__   __ _ _ __ ___   ___ (_)___ 
+ *       _                           _
+ *   ___| |__   __ _ _ __ ___   ___ (_)___
  *  / __| '_ \ / _` | '_ ` _ \ / _ \| / __|
  * | (__| | | | (_| | | | | | | (_) | \__ \
  *  \___|_| |_|\__,_|_| |_| |_|\___/|_|___/
- * 
+ *
  * Chamois - a MOOSE interface to constitutive models developed at the
  * Unit of Strength of Materials and Structural Analysis
  * University of Innsbruck,
@@ -63,8 +63,8 @@ ComputeMarmotMaterialGradientEnhancedHypoElastic::ComputeMarmotMaterialGradientE
     _stress_voigt_old(
         getMaterialPropertyOld< std::array< Real, 6 > >( _base_name + "stress_voigt" ) ),
     _dstrain_voigt( getMaterialProperty< std::array< Real, 6 > >( "strain_increment_voigt" ) ),
-    _dstress_voigt_dstrain_voigt(
-        declareProperty< std::array< Real, 6 * 6 > >( _base_name + "dstress_voigt_dstrain_voigt" ) ),
+    _dstress_voigt_dstrain_voigt( declareProperty< std::array< Real, 6 * 6 > >(
+        _base_name + "dstress_voigt_dstrain_voigt" ) ),
     _k_local( declareProperty< Real >( "local_damage" ) ),
     _nonlocal_radius( declareProperty< Real >( "nonlocal_radius" ) ),
     _dstress_voigt_dk(
@@ -79,10 +79,11 @@ ComputeMarmotMaterialGradientEnhancedHypoElastic::ComputeMarmotMaterialGradientE
   _the_material = std::unique_ptr< MarmotMaterialGradientEnhancedHypoElastic >(
       dynamic_cast< MarmotMaterialGradientEnhancedHypoElastic * >(
           MarmotLibrary::MarmotMaterialFactory::createMaterial(
-              materialCode, _material_parameters.data(), _material_parameters.size(), 0  ) ) );
+              materialCode, _material_parameters.data(), _material_parameters.size(), 0 ) ) );
   if ( !_the_material )
-    mooseError( "Failed to instance a MarmotMaterialGradientEnhancedHypoElastic material with name " +
-                getParam< std::string >( "marmot_material_name" ) );
+    mooseError(
+        "Failed to instance a MarmotMaterialGradientEnhancedHypoElastic material with name " +
+        getParam< std::string >( "marmot_material_name" ) );
 }
 void
 ComputeMarmotMaterialGradientEnhancedHypoElastic::initQpStatefulProperties()
@@ -120,16 +121,10 @@ ComputeMarmotMaterialGradientEnhancedHypoElastic::computeQpProperties()
 
   if ( pNewDt < 1.0 )
   {
-      _console 
-          << _dstrain_voigt[_qp][0] << " " 
-          << _dstrain_voigt[_qp][1] << " " 
-          << _dstrain_voigt[_qp][2] << " " 
-          << _dstrain_voigt[_qp][3] << " " 
-          << _dstrain_voigt[_qp][4] << " " 
-          << _dstrain_voigt[_qp][5] << "\n" ;
+    _console << _dstrain_voigt[_qp][0] << " " << _dstrain_voigt[_qp][1] << " "
+             << _dstrain_voigt[_qp][2] << " " << _dstrain_voigt[_qp][3] << " "
+             << _dstrain_voigt[_qp][4] << " " << _dstrain_voigt[_qp][5] << "\n";
     throw MooseException( "MarmotMaterial " + getParam< std::string >( "marmot_material_name" ) +
                           " requests a smaller timestep." );
-
-
   }
 }

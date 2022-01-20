@@ -16,12 +16,11 @@ class FiniteStrainPressureAction : public Action
 public:
   static InputParameters validParams();
 
-  FiniteStrainPressureAction(const InputParameters & params);
+  FiniteStrainPressureAction( const InputParameters & params );
 
   virtual void act() override;
 
 protected:
-
-  std::vector<std::vector<AuxVariableName>> _save_in_vars;
-  std::vector<bool> _has_save_in_vars;
+  std::vector< std::vector< AuxVariableName > > _save_in_vars;
+  std::vector< bool > _has_save_in_vars;
 };

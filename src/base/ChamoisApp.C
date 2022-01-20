@@ -30,8 +30,8 @@ ChamoisApp::registerAll( Factory & f, ActionFactory & af, Syntax & s )
   s.registerActionSyntax( "GradientEnhancedMicropolarContinuumAction",
                           "GradientEnhancedMicropolarContinuum/*" );
 
-  s.registerActionSyntax("EmptyAction", "BCs/FiniteStrainPressure");
-  s.registerActionSyntax("FiniteStrainPressureAction", "BCs/FiniteStrainPressure/*");
+  s.registerActionSyntax( "EmptyAction", "BCs/FiniteStrainPressure" );
+  s.registerActionSyntax( "FiniteStrainPressureAction", "BCs/FiniteStrainPressure/*" );
 }
 
 void

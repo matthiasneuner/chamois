@@ -1,10 +1,10 @@
 /* ---------------------------------------------------------------------
- *       _                           _     
- *   ___| |__   __ _ _ __ ___   ___ (_)___ 
+ *       _                           _
+ *   ___| |__   __ _ _ __ ___   ___ (_)___
  *  / __| '_ \ / _` | '_ ` _ \ / _ \| / __|
  * | (__| | | | (_| | | | | | | (_) | \__ \
  *  \___|_| |_|\__,_|_| |_| |_|\___/|_|___/
- * 
+ *
  * Chamois - a MOOSE interface to constitutive models developed at the
  * Unit of Strength of Materials and Structural Analysis
  * University of Innsbruck,
@@ -30,9 +30,11 @@ InputParameters
 ImplicitGradientEnhancedDamage::validParams()
 {
   InputParameters params = Kernel::validParams();
-  params.addClassDescription( "Classical 'Helmholtz'-like equation used for implicit gradient-enhanced damage or plasticity models" );
+  params.addClassDescription( "Classical 'Helmholtz'-like equation used for implicit "
+                              "gradient-enhanced damage or plasticity models" );
   params.addRequiredCoupledVar( "nonlocal_damage", "The nonlocal damage field" );
-  params.addRequiredCoupledVar( "displacements", "The string of displacements suitable for the problem statement" );
+  params.addRequiredCoupledVar( "displacements",
+                                "The string of displacements suitable for the problem statement" );
   params.set< bool >( "use_displaced_mesh" ) = false;
   return params;
 }
@@ -54,21 +56,26 @@ ImplicitGradientEnhancedDamage::ImplicitGradientEnhancedDamage( const InputParam
 Real
 ImplicitGradientEnhancedDamage::computeQpResidual()
 {
-  return std::pow( _nonlocal_radius[_qp], 2 ) *  _grad_test[_i][_qp] * _grad_u[_qp] + _test[_i][_qp] * ( _u[_qp] - _k_local[_qp] );
+  return std::pow( _nonlocal_radius[_qp], 2 ) * _grad_test[_i][_qp] * _grad_u[_qp] +
+         _test[_i][_qp] * ( _u[_qp] - _k_local[_qp] );
 }
 
 Real
 ImplicitGradientEnhancedDamage::computeQpJacobian()
 {
-  return std::pow( _nonlocal_radius[_qp], 2 ) * _grad_test[_i][_qp] * _grad_phi[_j][_qp] + _test[_i][_qp] * _phi[_j][_qp];
+  return std::pow( _nonlocal_radius[_qp], 2 ) * _grad_test[_i][_qp] * _grad_phi[_j][_qp] +
+         _test[_i][_qp] * _phi[_j][_qp];
 }
 
 Real
-ImplicitGradientEnhancedDamage::computeQpOffDiagJacobian(unsigned int jvar)
+ImplicitGradientEnhancedDamage::computeQpOffDiagJacobian( unsigned int jvar )
 {
-  for (unsigned int i = 0; i < _ndisp; ++i)
-      if (jvar == _disp_var[i])
-             return - _test[_i][_qp] * ( _dk_local_dstrain[_qp] * _grad_phi[_j][_qp] ) ( i ) ; // TODO: check notation used in MOOSE, because according to theory left index of dkde should contract with grad_phi instead of right one
+  for ( unsigned int i = 0; i < _ndisp; ++i )
+    if ( jvar == _disp_var[i] )
+      return -_test[_i][_qp] *
+             ( _dk_local_dstrain[_qp] * _grad_phi[_j][_qp] )(
+                 i ); // TODO: check notation used in MOOSE, because according to theory left index
+                      // of dkde should contract with grad_phi instead of right one
 
   return 0.0;
 }

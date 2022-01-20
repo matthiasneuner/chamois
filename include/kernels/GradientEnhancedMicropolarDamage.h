@@ -1,10 +1,10 @@
 /* ---------------------------------------------------------------------
- *       _                           _     
- *   ___| |__   __ _ _ __ ___   ___ (_)___ 
+ *       _                           _
+ *   ___| |__   __ _ _ __ ___   ___ (_)___
  *  / __| '_ \ / _` | '_ ` _ \ / _ \| / __|
  * | (__| | | | (_| | | | | | | (_) | \__ \
  *  \___|_| |_|\__,_|_| |_| |_|\___/|_|___/
- * 
+ *
  * Chamois - a MOOSE interface to constitutive models developed at the
  * Unit of Strength of Materials and Structural Analysis
  * University of Innsbruck,
@@ -33,7 +33,7 @@
 /**
  * Computes the classical 2.o Helmholtz like equation for nonlocal damage
  */
-    class GradientEnhancedMicropolarDamage : public DerivativeMaterialInterface < Kernel >
+class GradientEnhancedMicropolarDamage : public DerivativeMaterialInterface< Kernel >
 {
 public:
   static InputParameters validParams();

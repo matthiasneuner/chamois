@@ -1,10 +1,10 @@
 /* ---------------------------------------------------------------------
- *       _                           _     
- *   ___| |__   __ _ _ __ ___   ___ (_)___ 
+ *       _                           _
+ *   ___| |__   __ _ _ __ ___   ___ (_)___
  *  / __| '_ \ / _` | '_ ` _ \ / _ \| / __|
  * | (__| | | | (_| | | | | | | (_) | \__ \
  *  \___|_| |_|\__,_|_| |_| |_|\___/|_|___/
- * 
+ *
  * Chamois - a MOOSE interface to constitutive models developed at the
  * Unit of Strength of Materials and Structural Analysis
  * University of Innsbruck,
@@ -59,18 +59,20 @@ ComputeMarmotMaterialHypoElastic::ComputeMarmotMaterialHypoElastic(
     _stress_voigt( declareProperty< std::array< Real, 6 > >( _base_name + "stress_voigt" ) ),
     _stress_voigt_old(
         getMaterialPropertyOld< std::array< Real, 6 > >( _base_name + "stress_voigt" ) ),
-    _dstress_voigt_dstrain_voigt(
-        declareProperty< std::array< Real, 6 * 6 > >( _base_name + "dstress_voigt_dstrain_voigt" ) ),
+    _dstress_voigt_dstrain_voigt( declareProperty< std::array< Real, 6 * 6 > >(
+        _base_name + "dstress_voigt_dstrain_voigt" ) ),
     _dstrain_voigt( getMaterialProperty< std::array< Real, 6 > >( "strain_increment_voigt" ) ),
-    _characteristic_element_length( getMaterialProperty< Real >( "characteristic_element_length" ) ),
+    _characteristic_element_length(
+        getMaterialProperty< Real >( "characteristic_element_length" ) ),
     _time_old{ _t, _t }
 {
   const auto materialCode = MarmotLibrary::MarmotMaterialFactory::getMaterialCodeFromName(
       getParam< std::string >( "marmot_material_name" ) );
 
-  _the_material = std::unique_ptr< MarmotMaterialHypoElastic >(
-      dynamic_cast< MarmotMaterialHypoElastic * >( MarmotLibrary::MarmotMaterialFactory::createMaterial(
-          materialCode, _material_parameters.data(), _material_parameters.size(), 0 ) ) );
+  _the_material =
+      std::unique_ptr< MarmotMaterialHypoElastic >( dynamic_cast< MarmotMaterialHypoElastic * >(
+          MarmotLibrary::MarmotMaterialFactory::createMaterial(
+              materialCode, _material_parameters.data(), _material_parameters.size(), 0 ) ) );
 }
 void
 ComputeMarmotMaterialHypoElastic::initQpStatefulProperties()
@@ -94,23 +96,17 @@ ComputeMarmotMaterialHypoElastic::computeQpProperties()
 
   double pNewDt = 1e36;
   _the_material->computeStress( _stress_voigt[_qp].data(),
-                               _dstress_voigt_dstrain_voigt[_qp].data(),
-                               _dstrain_voigt[_qp].data(),
-                               _time_old,
-                               _dt,
-                               pNewDt );
+                                _dstress_voigt_dstrain_voigt[_qp].data(),
+                                _dstrain_voigt[_qp].data(),
+                                _time_old,
+                                _dt,
+                                pNewDt );
   if ( pNewDt < 1.0 )
   {
-      _console 
-          << _dstrain_voigt[_qp][0] << " " 
-          << _dstrain_voigt[_qp][1] << " " 
-          << _dstrain_voigt[_qp][2] << " " 
-          << _dstrain_voigt[_qp][3] << " " 
-          << _dstrain_voigt[_qp][4] << " " 
-          << _dstrain_voigt[_qp][5] << "\n" ;
+    _console << _dstrain_voigt[_qp][0] << " " << _dstrain_voigt[_qp][1] << " "
+             << _dstrain_voigt[_qp][2] << " " << _dstrain_voigt[_qp][3] << " "
+             << _dstrain_voigt[_qp][4] << " " << _dstrain_voigt[_qp][5] << "\n";
     throw MooseException( "MarmotMaterial " + getParam< std::string >( "marmot_material_name" ) +
                           " requests a smaller timestep." );
-
-
   }
 }

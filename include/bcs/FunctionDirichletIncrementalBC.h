@@ -1,10 +1,10 @@
 /* ---------------------------------------------------------------------
- *       _                           _     
- *   ___| |__   __ _ _ __ ___   ___ (_)___ 
+ *       _                           _
+ *   ___| |__   __ _ _ __ ___   ___ (_)___
  *  / __| '_ \ / _` | '_ ` _ \ / _ \| / __|
  * | (__| | | | (_| | | | | | | (_) | \__ \
  *  \___|_| |_|\__,_|_| |_| |_|\___/|_|___/
- * 
+ *
  * Chamois - a MOOSE interface to constitutive models developed at the
  * Unit of Strength of Materials and Structural Analysis
  * University of Innsbruck,
@@ -31,7 +31,7 @@ class FunctionDirichletIncrementalBC;
 class Function;
 
 template <>
-InputParameters validParams<FunctionDirichletIncrementalBC>();
+InputParameters validParams< FunctionDirichletIncrementalBC >();
 
 /**
  * Defines a boundary condition that forces the value to be a user specified
@@ -42,7 +42,7 @@ class FunctionDirichletIncrementalBC : public FunctionDirichletBC
 public:
   static InputParameters validParams();
 
-  FunctionDirichletIncrementalBC(const InputParameters & parameters);
+  FunctionDirichletIncrementalBC( const InputParameters & parameters );
 
 protected:
   virtual Real computeQpValue() override;
@@ -50,7 +50,7 @@ protected:
   virtual void timestepSetup() override;
   virtual void initialSetup() override;
 
-  std::vector <Real> _reset_times;
+  std::vector< Real > _reset_times;
 
-  VariableValue  _the_offset;
+  VariableValue _the_offset;
 };

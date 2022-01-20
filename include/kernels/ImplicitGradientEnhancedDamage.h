@@ -1,10 +1,10 @@
 /* ---------------------------------------------------------------------
- *       _                           _     
- *   ___| |__   __ _ _ __ ___   ___ (_)___ 
+ *       _                           _
+ *   ___| |__   __ _ _ __ ___   ___ (_)___
  *  / __| '_ \ / _` | '_ ` _ \ / _ \| / __|
  * | (__| | | | (_| | | | | | | (_) | \__ \
  *  \___|_| |_|\__,_|_| |_| |_|\___/|_|___/
- * 
+ *
  * Chamois - a MOOSE interface to constitutive models developed at the
  * Unit of Strength of Materials and Structural Analysis
  * University of Innsbruck,
@@ -42,21 +42,20 @@ public:
   ImplicitGradientEnhancedDamage( const InputParameters & parameters );
 
 protected:
-  Real computeQpResidual() override ;
+  Real computeQpResidual() override;
 
-  Real computeQpJacobian() override ;
+  Real computeQpJacobian() override;
 
-  virtual Real computeQpOffDiagJacobian(unsigned int jvar) override;
-
+  virtual Real computeQpOffDiagJacobian( unsigned int jvar ) override;
 
   const unsigned int _nonlocal_damage_var;
   unsigned int _ndisp;
-  std::vector<unsigned int> _disp_var;
+  std::vector< unsigned int > _disp_var;
 
   /// Base name of the material system that this kernel applies to
-  const std::string                     _base_name;
+  const std::string _base_name;
 
-  const MaterialProperty<Real>          & _nonlocal_radius;
-  const MaterialProperty<Real>          & _k_local;
-  const MaterialProperty<RankTwoTensor> & _dk_local_dstrain;
+  const MaterialProperty< Real > & _nonlocal_radius;
+  const MaterialProperty< Real > & _k_local;
+  const MaterialProperty< RankTwoTensor > & _dk_local_dstrain;
 };

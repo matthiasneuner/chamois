@@ -1,10 +1,10 @@
 /* ---------------------------------------------------------------------
- *       _                           _     
- *   ___| |__   __ _ _ __ ___   ___ (_)___ 
+ *       _                           _
+ *   ___| |__   __ _ _ __ ___   ___ (_)___
  *  / __| '_ \ / _` | '_ ` _ \ / _ \| / __|
  * | (__| | | | (_| | | | | | | (_) | \__ \
  *  \___|_| |_|\__,_|_| |_| |_|\___/|_|___/
- * 
+ *
  * Chamois - a MOOSE interface to constitutive models developed at the
  * Unit of Strength of Materials and Structural Analysis
  * University of Innsbruck,
@@ -27,8 +27,7 @@
 #include "DerivativeMaterialInterface.h"
 #include "FastorHelper.h"
 
-class ComputeDeformedBoundaryNormalVector
-  : public DerivativeMaterialInterface< Material >
+class ComputeDeformedBoundaryNormalVector : public DerivativeMaterialInterface< Material >
 {
 public:
   static InputParameters validParams();
@@ -43,5 +42,4 @@ protected:
   MaterialProperty< Tensor3R > & _n;
 
   MaterialProperty< Tensor333R > & _dn_dF;
-
 };

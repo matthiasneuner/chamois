@@ -1,10 +1,10 @@
 /* ---------------------------------------------------------------------
- *       _                           _     
- *   ___| |__   __ _ _ __ ___   ___ (_)___ 
+ *       _                           _
+ *   ___| |__   __ _ _ __ ___   ___ (_)___
  *  / __| '_ \ / _` | '_ ` _ \ / _ \| / __|
  * | (__| | | | (_| | | | | | | (_) | \__ \
  *  \___|_| |_|\__,_|_| |_| |_|\___/|_|___/
- * 
+ *
  * Chamois - a MOOSE interface to constitutive models developed at the
  * Unit of Strength of Materials and Structural Analysis
  * University of Innsbruck,
@@ -33,21 +33,21 @@ class Function;
 /**
  * FiniteStrainPressure applies a pressure on a given boundary in the direction defined by component
  */
-class FiniteStrainPressure : public DerivativeMaterialInterface < IntegratedBC > 
+class FiniteStrainPressure : public DerivativeMaterialInterface< IntegratedBC >
 {
 public:
   static InputParameters validParams();
 
-  FiniteStrainPressure(const InputParameters & parameters);
+  FiniteStrainPressure( const InputParameters & parameters );
 
 protected:
   virtual Real computeQpResidual();
 
   virtual Real computeQpJacobian();
 
-  virtual Real computeQpOffDiagJacobian(unsigned int);
+  virtual Real computeQpOffDiagJacobian( unsigned int );
 
-  Real componentJacobian(unsigned int component);
+  Real componentJacobian( unsigned int component );
 
   const int _component;
 
@@ -63,11 +63,11 @@ protected:
   /// number of coupled displacement variables
   const unsigned int _ndisp;
   /// coupled displacement variables
-  std::vector<unsigned int> _dvars;
+  std::vector< unsigned int > _dvars;
 
   const std::vector< const VariableGradient * > _grad_disp;
 
   const MaterialProperty< Tensor3R > & _n;
 
-  const MaterialProperty< Tensor333R  > & _dn_dF;
+  const MaterialProperty< Tensor333R > & _dn_dF;
 };
