@@ -26,8 +26,6 @@
 
 registerMooseObject( "ChamoisApp", FunctionDirichletIncrementalBC );
 
-defineLegacyParams( FunctionDirichletIncrementalBC );
-
 InputParameters
 FunctionDirichletIncrementalBC::validParams()
 {

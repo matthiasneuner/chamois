@@ -26,13 +26,6 @@
 
 #include "FunctionDirichletBC.h"
 
-// Forward Declarations
-class FunctionDirichletIncrementalBC;
-class Function;
-
-template <>
-InputParameters validParams< FunctionDirichletIncrementalBC >();
-
 /**
  * Defines a boundary condition that forces the value to be a user specified
  * function at the boundary with possibility of an offset.
