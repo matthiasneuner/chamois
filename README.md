@@ -3,6 +3,8 @@ Chamois
 
 A MOOSE application for simulating complex materials using the [Marmot](https://github.com/MAteRialMOdelingToolbox/marmot) library.
 
+[![Documentation](https://github.com/matthiasneuner/chamois/actions/workflows/build_documentation.yml/badge.svg?branch=master)](https://github.com/matthiasneuner/chamois/tree/master/.github/workflows/build_documentation.yml)
+
 ## Gallery
 
 ![Brokenshire torsion test](share/brokenshire_animation.gif)
