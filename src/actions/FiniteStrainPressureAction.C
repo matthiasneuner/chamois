@@ -43,6 +43,7 @@ FiniteStrainPressureAction::validParams()
                            "by HHT time integration scheme" );
   params.addDeprecatedParam< Real >(
       "alpha", "alpha parameter for HHT time integration", "Please use hht_alpha" );
+  params.addCoupledVar( "lambda", "load controlling parameter, e.g., for arc length method" );
   params.addParam< FunctionName >( "function", "The function that describes the pressure" );
   return params;
 }
@@ -89,7 +90,6 @@ FiniteStrainPressureAction::act()
       if ( _has_save_in_vars[i] )
         params.set< std::vector< AuxVariableName > >( "save_in" ) = _save_in_vars[i];
 
-      else
         params.set< Real >( "factor" ) = getParam< Real >( "factor" );
       _problem->addBoundaryCondition( kernel_name, unique_kernel_name, params );
     }
