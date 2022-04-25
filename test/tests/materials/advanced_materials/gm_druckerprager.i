@@ -116,14 +116,10 @@
   [marmot_material]
     type = ComputeMarmotMaterialGradientEnhancedMicropolar
     marmot_material_name = GMDRUCKERPRAGER
-                                  # E,          nu,     GcToG,      lb,     lt,     polarRatio,     sigmaYield,     
-                                  # hLin,       hExp,   hDeltaExp,  phi(deg),       psi(deg)    
-                                  # a1,         a2,     a3,         a4,     lJ2,           
-                                  # epsF,       m,      maxDmg,     nonLocalRadius
-    marmot_material_parameters = '  100   0.33    .1          .1      .2       1.4999999      250e-3
-                                    0.2         10       380e-3      20.0     20.0 
-                                    0.5         0.0     0.5         0.0     1e10
-                                    1e-0        1.0     0.00        4.0'
+                                  #**E,     nu,    GcToG,  lb,   lt,       polarRatio,     sigmaYield,     h,      phi(deg), psi(deg) 
+                                  #**a1,   a2,     a3,     a4,   lJ2,      softeningModulus,   weightingParemeter,     maxDamage,  nonLocalRadius
+    marmot_material_parameters = '100 0.25   .5    4   8     1.4999999          0.06         0           25      0.0 
+                                  0.5   0.0   0.5     0.0   10.0        1e-0               1.0                    0.90       8.0'
   []
 []
 
@@ -211,9 +207,9 @@
   nl_max_its = 20
   nl_div_tol = 1e2
 
-  automatic_scaling=true
-  compute_scaling_once =true
-  verbose=false
+#  automatic_scaling=true
+#  compute_scaling_once =true
+#  verbose=false
 
   line_search = none
 
