@@ -16,10 +16,10 @@ class ChamoisTestApp : public MooseApp
 public:
   static InputParameters validParams();
 
-  ChamoisTestApp(InputParameters parameters);
+  ChamoisTestApp( InputParameters parameters );
   virtual ~ChamoisTestApp();
 
   static void registerApps();
-  static void registerAll(Factory & f, ActionFactory & af, Syntax & s, bool use_test_objs = false);
+  static void
+  registerAll( Factory & f, ActionFactory & af, Syntax & s, bool use_test_objs = false );
 };
-

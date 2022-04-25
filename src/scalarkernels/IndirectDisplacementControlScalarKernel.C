@@ -42,20 +42,19 @@ IndirectDisplacementControlScalarKernel::IndirectDisplacementControlScalarKernel
 {
   if ( _n_constrained_nodes * _n_constrained_variables != _c_vector.size() )
     mooseError( "c vector does not match total number of constrained dofs" );
-    
+
   const auto & node_to_elem_map = _mesh.nodeToElemMap();
 
   // Add elements connected to constrained nodes to Ghosted Elements
-  for (const auto & dof : _node_ids)
+  for ( const auto & dof : _node_ids )
   {
-    auto node_to_elem_pair = node_to_elem_map.find(dof);
-    mooseAssert(node_to_elem_pair != node_to_elem_map.end(), "Missing entry in node to elem map");
-    const std::vector<dof_id_type> & elems = node_to_elem_pair->second;
+    auto node_to_elem_pair = node_to_elem_map.find( dof );
+    mooseAssert( node_to_elem_pair != node_to_elem_map.end(), "Missing entry in node to elem map" );
+    const std::vector< dof_id_type > & elems = node_to_elem_pair->second;
 
-    for (const auto & elem_id : elems)
-      _subproblem.addGhostedElem(elem_id);
+    for ( const auto & elem_id : elems )
+      _subproblem.addGhostedElem( elem_id );
   }
-
 }
 
 Real

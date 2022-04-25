@@ -20,30 +20,30 @@ ChamoisTestApp::validParams()
   return params;
 }
 
-ChamoisTestApp::ChamoisTestApp(InputParameters parameters) : MooseApp(parameters)
+ChamoisTestApp::ChamoisTestApp( InputParameters parameters ) : MooseApp( parameters )
 {
   ChamoisTestApp::registerAll(
-      _factory, _action_factory, _syntax, getParam<bool>("allow_test_objects"));
+      _factory, _action_factory, _syntax, getParam< bool >( "allow_test_objects" ) );
 }
 
 ChamoisTestApp::~ChamoisTestApp() {}
 
 void
-ChamoisTestApp::registerAll(Factory & f, ActionFactory & af, Syntax & s, bool use_test_objs)
+ChamoisTestApp::registerAll( Factory & f, ActionFactory & af, Syntax & s, bool use_test_objs )
 {
-  ChamoisApp::registerAll(f, af, s);
-  if (use_test_objs)
+  ChamoisApp::registerAll( f, af, s );
+  if ( use_test_objs )
   {
-    Registry::registerObjectsTo(f, {"ChamoisTestApp"});
-    Registry::registerActionsTo(af, {"ChamoisTestApp"});
+    Registry::registerObjectsTo( f, { "ChamoisTestApp" } );
+    Registry::registerActionsTo( af, { "ChamoisTestApp" } );
   }
 }
 
 void
 ChamoisTestApp::registerApps()
 {
-  registerApp(ChamoisApp);
-  registerApp(ChamoisTestApp);
+  registerApp( ChamoisApp );
+  registerApp( ChamoisTestApp );
 }
 
 /***************************************************************************************************
@@ -51,9 +51,9 @@ ChamoisTestApp::registerApps()
  **************************************************************************************************/
 // External entry point for dynamic application loading
 extern "C" void
-ChamoisTestApp__registerAll(Factory & f, ActionFactory & af, Syntax & s)
+ChamoisTestApp__registerAll( Factory & f, ActionFactory & af, Syntax & s )
 {
-  ChamoisTestApp::registerAll(f, af, s);
+  ChamoisTestApp::registerAll( f, af, s );
 }
 extern "C" void
 ChamoisTestApp__registerApps()

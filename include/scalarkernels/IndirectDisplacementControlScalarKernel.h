@@ -26,7 +26,7 @@ class IndirectDisplacementControlScalarKernel : public NodalScalarKernel
 public:
   static InputParameters validParams();
 
-  IndirectDisplacementControlScalarKernel(const InputParameters & parameters);
+  IndirectDisplacementControlScalarKernel( const InputParameters & parameters );
 
   virtual void computeResidual() override;
   virtual void computeJacobian() override;
@@ -35,15 +35,14 @@ protected:
   Real getStep();
 
   const unsigned int _n_constrained_variables;
-  const std::vector<unsigned int> _constrained_variables_numbers;
-  const std::vector<const VariableValue *> _constrained_variables_values;
+  const std::vector< unsigned int > _constrained_variables_numbers;
+  const std::vector< const VariableValue * > _constrained_variables_values;
 
   const Function * const _function;
 
-  const std::vector<Real> _c_vector;
+  const std::vector< Real > _c_vector;
 
   const Real _l_parameter;
 
   const unsigned int _n_constrained_nodes;
-
 };

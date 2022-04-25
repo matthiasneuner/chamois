@@ -57,8 +57,8 @@ FiniteStrainPressure::FiniteStrainPressure( const InputParameters & parameters )
     _ndisp( this->coupledComponents( "displacements" ) ),
     _dvars( _ndisp ),
     _grad_disp( coupledGradients( "displacements" ) ),
-    _lambda_var( isCoupledScalar("lambda") ? coupledScalar("lambda") : 0 ),
-    _lambda_value( isCoupledScalar("lambda") ? &coupledScalarValue("lambda") : nullptr),
+    _lambda_var( isCoupledScalar( "lambda" ) ? coupledScalar( "lambda" ) : 0 ),
+    _lambda_value( isCoupledScalar( "lambda" ) ? &coupledScalarValue( "lambda" ) : nullptr ),
     _n( getMaterialProperty< Tensor3R >( "boundary_normal_vector" ) ),
     _dn_dF( getMaterialPropertyDerivative< Tensor333R >( "boundary_normal_vector", "grad_u" ) )
 {
@@ -69,7 +69,6 @@ FiniteStrainPressure::FiniteStrainPressure( const InputParameters & parameters )
   {
     _dvars[i] = this->getVar( "displacements", i )->number();
   }
-
 }
 
 Real
@@ -86,15 +85,16 @@ FiniteStrainPressure::computeQpPressure()
   return factor * _n[_qp]( _component ) * _test[_i][_qp];
 }
 
-Real FiniteStrainPressure::getAmplification()
+Real
+FiniteStrainPressure::getAmplification()
 {
-   return _lambda_value ? (*_lambda_value)[0] : 1.0 ;
+  return _lambda_value ? ( *_lambda_value )[0] : 1.0;
 }
 
 Real
 FiniteStrainPressure::computeQpResidual()
 {
-    return getAmplification() * computeQpPressure();
+  return getAmplification() * computeQpPressure();
 }
 
 Real
@@ -129,7 +129,7 @@ FiniteStrainPressure::computeQpOffDiagJacobian( unsigned int jvar )
   for ( unsigned int i = 0; i < _ndisp; ++i )
     if ( jvar == _dvars[i] )
       return getAmplification() * componentJacobianDisplacement( i );
-  
+
   return 0.0;
 }
 
@@ -138,7 +138,7 @@ FiniteStrainPressure::computeQpOffDiagJacobianScalar( unsigned int jvar )
 {
   if ( jvar == _lambda_var )
   {
-      return computeQpPressure();
+    return computeQpPressure();
   }
 
   return 0.0;

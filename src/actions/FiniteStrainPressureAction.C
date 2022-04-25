@@ -90,7 +90,7 @@ FiniteStrainPressureAction::act()
       if ( _has_save_in_vars[i] )
         params.set< std::vector< AuxVariableName > >( "save_in" ) = _save_in_vars[i];
 
-        params.set< Real >( "factor" ) = getParam< Real >( "factor" );
+      params.set< Real >( "factor" ) = getParam< Real >( "factor" );
       _problem->addBoundaryCondition( kernel_name, unique_kernel_name, params );
     }
   }
