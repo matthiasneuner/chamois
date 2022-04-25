@@ -205,7 +205,7 @@
 
 
 [Preconditioning]
-  active='smp2'
+  active='smp'
   [smp]
     type = SMP
     full = true
@@ -257,10 +257,10 @@
   nl_max_its = 20
   nl_div_tol = 1e4
 
-#  automatic_scaling = true
-#  compute_scaling_once = true
-#  verbose = false
-#
+  #automatic_scaling = true
+  #compute_scaling_once = true
+  #verbose = false
+
   line_search = 'none'
 
   dtmin = 1e-7

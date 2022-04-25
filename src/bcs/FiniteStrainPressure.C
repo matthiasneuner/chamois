@@ -70,10 +70,6 @@ FiniteStrainPressure::FiniteStrainPressure( const InputParameters & parameters )
     _dvars[i] = this->getVar( "displacements", i )->number();
   }
 
-  /* if( !isCoupledScalar("lambda") ){ */
-  /*     mooseError( "lambda not coupled"); */
-    
-  /* } */
 }
 
 Real
@@ -81,8 +77,8 @@ FiniteStrainPressure::computeQpPressure()
 {
   Real factor = 1.0;
 
-  /* if ( _function ) */
-  /*   factor *= _function->value( _t + _alpha * _dt, _q_point[_qp] ); */
+  if ( _function )
+    factor *= _function->value( _t + _alpha * _dt, _q_point[_qp] );
 
   if ( _postprocessor )
     factor *= *_postprocessor;
@@ -92,14 +88,12 @@ FiniteStrainPressure::computeQpPressure()
 
 Real FiniteStrainPressure::getAmplification()
 {
-    /* std::cout <<  << std::endl; */
-   return _lambda_var ? (*_lambda_value)[0] : 1.0 ;
+   return _lambda_value ? (*_lambda_value)[0] : 1.0 ;
 }
 
 Real
 FiniteStrainPressure::computeQpResidual()
 {
-    /* std::cout << getAmplification() * computeQpPressure() << std::endl; */
     return getAmplification() * computeQpPressure();
 }
 
@@ -110,8 +104,8 @@ FiniteStrainPressure::componentJacobianDisplacement( unsigned int j )
 
   Real factor = 1.0;
 
-  /* if ( _function ) */
-  /*   factor *= _function->value( _t + _alpha * _dt, _q_point[_qp] ); */
+  if ( _function )
+    factor *= _function->value( _t + _alpha * _dt, _q_point[_qp] );
 
   if ( _postprocessor )
     factor *= *_postprocessor;
@@ -144,7 +138,6 @@ FiniteStrainPressure::computeQpOffDiagJacobianScalar( unsigned int jvar )
 {
   if ( jvar == _lambda_var )
   {
-      /* std::cout << computeQpPressure() << std::endl; */
       return computeQpPressure();
   }
 
