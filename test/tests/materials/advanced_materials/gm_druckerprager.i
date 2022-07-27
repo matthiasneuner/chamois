@@ -5,11 +5,11 @@
   ny = 2
   nz = 2
   xmin = 0
-  xmax = 100
+  xmax = 10
   ymin = 0
-  ymax = 200
+  ymax = 20
   zmin = 0
-  zmax = 100
+  zmax = 10
   elem_type = HEX20
 []
 
@@ -116,14 +116,10 @@
   [marmot_material]
     type = ComputeMarmotMaterialGradientEnhancedMicropolar
     marmot_material_name = GMDRUCKERPRAGER
-                                  # E,          nu,     GcToG,      lb,     lt,     polarRatio,     sigmaYield,     
-                                  # hLin,       hExp,   hDeltaExp,  phi(deg),       psi(deg)    
-                                  # a1,         a2,     a3,         a4,     lJ2,           
-                                  # epsF,       m,      maxDmg,     nonLocalRadius
-    marmot_material_parameters = '  100   0.33    .1          .1      .2       1.4999999      250e-3
-                                    0.2         10       380e-3      20.0     20.0 
-                                    0.5         0.0     0.5         0.0     1e10
-                                    1e-0        1.0     0.00        4.0'
+                                  #**E,     nu,    GcToG,  lb,   lt,       polarRatio,     sigmaYield,     h,      phi(deg), psi(deg) 
+                                  #**a1,   a2,     a3,     a4,   lJ2,      softeningModulus,   weightingParemeter,     maxDamage,  nonLocalRadius
+    marmot_material_parameters = '10e3       0.25   .1       4   8           1.4999999          0.06e3         0           25      0.0 
+                                  0.5   0.0   0.5     0.0       4.0        1e-0               1.0                    0.90       8.0'
   []
 []
 
@@ -156,7 +152,7 @@
     type = FunctionDirichletBC
     variable = disp_y
     boundary = top 
-    function = '-1.0 * t'
+    function = '-0.1 * t'
   []
   [top_x]
     type = FunctionDirichletBC
@@ -167,9 +163,12 @@
 []
 
 [Preconditioning]
+  active='smp'
   [smp]
     type = SMP
     full = true
+    petsc_options_iname = '-pc_type -pc_factor_mat_solver_package'
+    petsc_options_value = ' lu       strumpack'
   []
 []
 
@@ -177,45 +176,11 @@
   type = Transient
   solve_type = 'NEWTON'
 
-    petsc_options_iname = '     -pc_type
-                                -pc_hypre_type
-                                -ksp_type
-                                -ksp_gmres_restart
-                                -pc_hypre_boomeramg_relax_type_all
-                                -pc_hypre_boomeramg_strong_threshold
-                                -pc_hypre_boomeramg_agg_nl
-                                -pc_hypre_boomeramg_agg_num_paths
-                                -pc_hypre_boomeramg_max_levels
-                                -pc_hypre_boomeramg_coarsen_type
-                                -pc_hypre_boomeramg_interp_type
-                                -pc_hypre_boomeramg_P_max
-                                -pc_hypre_boomeramg_truncfactor' 
-
-    petsc_options_value = '     hypre
-                                boomeramg
-                                gmres
-                                301
-                                Chebyshev
-                                0.65
-                                5 
-                                2
-                                25
-                                HMIS
-                                ext+i
-                                4
-                                0.4 '
   nl_rel_tol = 1e-8
-  nl_abs_tol = 1e-10
-  l_tol = 1e-3
-  l_max_its = 250
+  nl_abs_tol = 1e-8
   nl_max_its = 20
   nl_div_tol = 1e2
 
-  automatic_scaling=true
-  compute_scaling_once =true
-  verbose=false
-
-  line_search = none
 
   dtmin = 1e-4
   dtmax= 1e-1

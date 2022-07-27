@@ -41,6 +41,7 @@ FiniteStrainPressure::validParams()
   params.addParam< Real >(
       "alpha", 0.0, "alpha parameter required for HHT time integration scheme" );
   params.addRequiredCoupledVar( "displacements", "The 3 displacement components" );
+  params.addCoupledVar( "lambda", "load controlling parameter, e.g., for arc length method" );
   params.set< bool >( "use_displaced_mesh" ) = false;
   return params;
 }
@@ -56,6 +57,8 @@ FiniteStrainPressure::FiniteStrainPressure( const InputParameters & parameters )
     _ndisp( this->coupledComponents( "displacements" ) ),
     _dvars( _ndisp ),
     _grad_disp( coupledGradients( "displacements" ) ),
+    _lambda_var( isCoupledScalar( "lambda" ) ? coupledScalar( "lambda" ) : 0 ),
+    _lambda_value( isCoupledScalar( "lambda" ) ? &coupledScalarValue( "lambda" ) : nullptr ),
     _n( getMaterialProperty< Tensor3R >( "boundary_normal_vector" ) ),
     _dn_dF( getMaterialPropertyDerivative< Tensor333R >( "boundary_normal_vector", "grad_u" ) )
 {
@@ -69,9 +72,9 @@ FiniteStrainPressure::FiniteStrainPressure( const InputParameters & parameters )
 }
 
 Real
-FiniteStrainPressure::computeQpResidual()
+FiniteStrainPressure::computeQpPressure()
 {
-  Real factor = _factor;
+  Real factor = 1.0;
 
   if ( _function )
     factor *= _function->value( _t + _alpha * _dt, _q_point[_qp] );
@@ -83,11 +86,23 @@ FiniteStrainPressure::computeQpResidual()
 }
 
 Real
-FiniteStrainPressure::componentJacobian( unsigned int j )
+FiniteStrainPressure::getAmplification()
+{
+  return _lambda_value ? ( *_lambda_value )[0] : 1.0;
+}
+
+Real
+FiniteStrainPressure::computeQpResidual()
+{
+  return getAmplification() * computeQpPressure();
+}
+
+Real
+FiniteStrainPressure::componentJacobianDisplacement( unsigned int j )
 {
   using namespace Marmot::FastorIndices;
 
-  Real factor = _factor;
+  Real factor = 1.0;
 
   if ( _function )
     factor *= _function->value( _t + _alpha * _dt, _q_point[_qp] );
@@ -105,7 +120,7 @@ FiniteStrainPressure::componentJacobian( unsigned int j )
 Real
 FiniteStrainPressure::computeQpJacobian()
 {
-  return componentJacobian( _component );
+  return getAmplification() * componentJacobianDisplacement( _component );
 }
 
 Real
@@ -113,7 +128,18 @@ FiniteStrainPressure::computeQpOffDiagJacobian( unsigned int jvar )
 {
   for ( unsigned int i = 0; i < _ndisp; ++i )
     if ( jvar == _dvars[i] )
-      return componentJacobian( i );
+      return getAmplification() * componentJacobianDisplacement( i );
+
+  return 0.0;
+}
+
+Real
+FiniteStrainPressure::computeQpOffDiagJacobianScalar( unsigned int jvar )
+{
+  if ( jvar == _lambda_var )
+  {
+    return computeQpPressure();
+  }
 
   return 0.0;
 }

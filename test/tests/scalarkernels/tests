@@ -1,0 +1,7 @@
+[Tests]
+  [test_indirect_displacement_control]
+    type = 'Exodiff'
+    input = 'indirect_displacement_control.i'
+    exodiff = 'indirect_displacement_control_out.e'
+  []
+[]

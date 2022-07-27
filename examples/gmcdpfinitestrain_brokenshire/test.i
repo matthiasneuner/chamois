@@ -44,19 +44,19 @@
   [div_pki_couple_stress_x]
     type = GradientEnhancedMicropolarPKIDivergence
     variable = microrot_x
-    tensor = couple_pk_i_stress
+    tensor = pk_i_couple_stress
     component = 0
   []
   [div_pki_couple_stress_y]
     type = GradientEnhancedMicropolarPKIDivergence
     variable = microrot_y 
-    tensor = couple_pk_i_stress
+    tensor = pk_i_couple_stress
     component = 1
   []
   [div_pki_couple_stress_z]
     type = GradientEnhancedMicropolarPKIDivergence
     variable = microrot_z 
-    tensor = couple_pk_i_stress
+    tensor = pk_i_couple_stress
     component = 2
   []
   [mom_pki_couple_stress_x]

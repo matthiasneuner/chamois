@@ -43,11 +43,17 @@ public:
 protected:
   virtual Real computeQpResidual();
 
+  virtual Real computeQpPressure();
+
+  virtual Real getAmplification();
+
   virtual Real computeQpJacobian();
 
   virtual Real computeQpOffDiagJacobian( unsigned int );
 
-  Real componentJacobian( unsigned int component );
+  virtual Real computeQpOffDiagJacobianScalar( unsigned int ) override;
+
+  Real componentJacobianDisplacement( unsigned int component );
 
   const int _component;
 
@@ -66,6 +72,10 @@ protected:
   std::vector< unsigned int > _dvars;
 
   const std::vector< const VariableGradient * > _grad_disp;
+
+  const unsigned int _lambda_var;
+
+  const VariableValue * const _lambda_value;
 
   const MaterialProperty< Tensor3R > & _n;
 

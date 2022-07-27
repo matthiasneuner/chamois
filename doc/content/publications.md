@@ -1,1 +1,1 @@
-TODO
+M. Neuner, R. A. Regueiro, and C. Linder, “A unified finite strain gradient-enhanced micropolar continuum approach for modeling quasi-brittle failure of cohesive-frictional materials,” International Journal of Solids and Structures, vol. 254–255, p. 111841, Nov. 2022, doi: 10.1016/j.ijsolstr.2022.111841.
