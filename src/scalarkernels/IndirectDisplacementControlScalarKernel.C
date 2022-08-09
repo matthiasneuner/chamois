@@ -78,7 +78,7 @@ IndirectDisplacementControlScalarKernel::getStep()
   Real step = _t;
 
   if ( _function )
-    step = _function->value( _t, point_zero );
+    step = _function->value( _t, _point_zero );
 
   return step;
 }
