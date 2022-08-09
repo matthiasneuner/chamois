@@ -1,11 +1,26 @@
-//* This file is part of the MOOSE framework
-//* https://www.mooseframework.org
-//*
-//* All rights reserved, see COPYRIGHT for full restrictions
-//* https://github.com/idaholab/moose/blob/master/COPYRIGHT
-//*
-//* Licensed under LGPL 2.1, please see LICENSE for details
-//* https://www.gnu.org/licenses/lgpl-2.1.html
+/* ---------------------------------------------------------------------
+ *       _                           _
+ *   ___| |__   __ _ _ __ ___   ___ (_)___
+ *  / __| '_ \ / _` | '_ ` _ \ / _ \| / __|
+ * | (__| | | | (_| | | | | | | (_) | \__ \
+ *  \___|_| |_|\__,_|_| |_| |_|\___/|_|___/
+ *
+ * Chamois - a MOOSE interface to constitutive models developed at the
+ * Unit of Strength of Materials and Structural Analysis
+ * University of Innsbruck,
+ * 2020 - today
+ *
+ * Matthias Neuner matthias.neuner@uibk.ac.at
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * The full text of the license can be found in the file LICENSE.md at
+ * the top level directory of chamois.
+ * ---------------------------------------------------------------------
+ */
 
 #pragma once
 
@@ -14,12 +29,8 @@
 class Function;
 
 /**
- * Constraint to enforce equal values (in 1D)
+ * An exact indirect diplacement control contraint.
  *
- * This has to take 2 nodes and will enforce equality of values.
- * The form of the constraint is: r = value[0] - value[1] = 0.
- * This dictates the sign of the 'vg' parameter in the OneDEqualValueConstraintBC
- * class. It has a positive sign on the first node and negative on the other one.
  */
 class IndirectDisplacementControlScalarKernel : public NodalScalarKernel
 {
