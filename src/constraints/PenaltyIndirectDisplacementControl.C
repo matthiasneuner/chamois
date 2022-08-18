@@ -22,12 +22,12 @@
  * ---------------------------------------------------------------------
  */
 
-#include "PenaltyIndirectDisplacementControl.h"
-
 // MOOSE includes
-#include "Assembly.h"
-#include "MooseVariableScalar.h"
+#include "MooseError.h"
+#include "PenaltyIndirectDisplacementControl.h"
+#include "MooseMesh.h"
 #include "Function.h"
+#include <iostream>
 
 registerMooseObject( "MooseApp", PenaltyIndirectDisplacementControl );
 
@@ -35,9 +35,18 @@ InputParameters
 PenaltyIndirectDisplacementControl::validParams()
 {
   InputParameters params = NodalConstraint::validParams();
-  params.addClassDescription( "Add an constraint enforcing indirect displacement control." );
-  params.addRequiredCoupledVar( "constrained_variables", "Variable(s) to put the constraint on" );
+  params.addClassDescription(
+      "Constrains secondary node to move as a linear combination of primary nodes." );
+  params.addParam< BoundaryName >(
+      "primary_node_set", "NaN", "The boundary ID associated with the primary side" );
+  params.addParam< BoundaryName >(
+      "secondary_node_set", "NaN", "The boundary ID associated with the secondary side" );
+  params.addRequiredParam< Real >( "penalty", "The penalty used for the boundary term" );
   params.addParam< FunctionName >( "function", "the function" );
+  params.addParam< bool >(
+      "normalize_load",
+      true,
+      "Normalize the applied load with respect to the number of pimary nodes" );
   params.addRequiredParam< std::vector< Real > >( "c_vector",
                                                   "the projection vector for the constraint" );
   params.addRequiredParam< Real >( "l", "length paremeter" );
@@ -47,33 +56,96 @@ PenaltyIndirectDisplacementControl::validParams()
 PenaltyIndirectDisplacementControl::PenaltyIndirectDisplacementControl(
     const InputParameters & parameters )
   : NodalConstraint( parameters ),
-    _n_constrained_variables( coupledComponents( "constrained_variables" ) ),
-    _constrained_variables_numbers( coupledIndices( "constrained_variables" ) ),
-    _constrained_variables_values( coupledValues( "constrained_variables" ) ),
+    _primary_node_set_id( getParam< BoundaryName >( "primary_node_set" ) ),
+    _secondary_node_set_id( getParam< BoundaryName >( "secondary_node_set" ) ),
+    _penalty( getParam< Real >( "penalty" ) ),
     _function( isParamValid( "function" ) ? &getFunction( "function" ) : NULL ),
+    _normalize_load( getParam< bool >( "normalize_load" ) ),
     _c_vector( getParam< std::vector< Real > >( "c_vector" ) ),
-    _l_parameter( getParam< Real >( "l" ) ),
-    _n_constrained_nodes( _node_ids.size() )
+    _l_parameter( getParam< Real >( "l" ) )
 {
-  if ( _n_constrained_nodes * _n_constrained_variables != _c_vector.size() )
-    mooseError( "c vector does not match total number of constrained dofs" );
+
+  // we get an instance of the libmesh mesh
+  const auto & lm_mesh = _mesh.getMesh();
+
+  if ( _secondary_node_set_id == "NaN" )
+    mooseError( "Please specify secondary_node_set." );
+
+  if ( _primary_node_set_id == "NaN" )
+    mooseError( "Please specify primary_node_set." );
+
+  std::vector< dof_id_type > secondary_node_list =
+      _mesh.getNodeList( _mesh.getBoundaryID( _secondary_node_set_id ) );
+
+  // We fill the connected nodes vector. This is actually the vector of secondary nodes
+  // But we do that only if the node is on our current partition
+  /* for (auto n :  nodelist) */
+  for ( unsigned int i = 0; i < secondary_node_list.size(); i++ )
+  {
+    const auto n = secondary_node_list[i];
+
+    const Node * const node = lm_mesh.query_node_ptr( n );
+    if ( node && node->processor_id() == _subproblem.processor_id() )
+    {
+      _connected_nodes.push_back( n ); // defining secondary nodes in the base class
+
+      const auto c = _c_vector[i];
+      _connected_nodes_c_vector.push_back( c ); // Also store the respective c vector
+    }
+  }
+
+  _share_per_secondary_node = 1. / secondary_node_list.size();
 
   const auto & node_to_elem_map = _mesh.nodeToElemMap();
 
-  // Add elements connected to constrained nodes to Ghosted Elements
-  for ( const auto & dof : _node_ids )
+  // In contrast to the secondary nodes, all partitions get access to all primary nodes.
+  // Accordingly, we need to ghost the attached elements for all partitions to make the variable
+  // values accessible
+
+  // Add elements connected to primary node to Ghosted Elements
+  // We traverse all primary dofs ...
+  std::vector< dof_id_type > primary_nodelist =
+      _mesh.getNodeList( _mesh.getBoundaryID( _primary_node_set_id ) );
+
+  // We fill the connected nodes vector. This is actually the vector of secondary nodes
+  // But we do that only if the node is on our current partition
+  for ( auto dof_id : primary_nodelist )
   {
-    auto node_to_elem_pair = node_to_elem_map.find( dof );
-    mooseAssert( node_to_elem_pair != node_to_elem_map.end(), "Missing entry in node to elem map" );
+
+    auto node_to_elem_pair = node_to_elem_map.find( dof_id );
+
+    // Our mesh may be distributed
+    // The following actually does not work, so we should revisit this section for
+    // distributed meshes!
+    if ( node_to_elem_pair == node_to_elem_map.end() )
+      continue;
+
+    // defining primary nodes in base class
+    // As mentioned, all paritions get access to all primary nodes, so no matter what, add them!
+    _primary_node_vector.push_back( dof_id );
+
     const std::vector< dof_id_type > & elems = node_to_elem_pair->second;
 
+    // In order to really get access to variable values on all partitions,
+    // we ghost the attached elements
     for ( const auto & elem_id : elems )
       _subproblem.addGhostedElem( elem_id );
+  }
+
+  // Determine the actual penalty stiffness
+  _load_factor = _penalty;
+
+  // We may account for the number of nodes where we apply the load
+  // by normalizing the penalty stiffness
+  if ( _normalize_load )
+  {
+    Real normalization = 1. / primary_nodelist.size();
+    _load_factor *= normalization;
   }
 }
 
 Real
-PenaltyIndirectDisplacementControl::getStep()
+PenaltyIndirectDisplacementControl::computeQpStep()
 {
   Real step = _t;
 
@@ -83,42 +155,36 @@ PenaltyIndirectDisplacementControl::getStep()
   return step;
 }
 
-void
-PenaltyIndirectDisplacementControl::computeResidual()
+Real
+PenaltyIndirectDisplacementControl::computeQpResidual( Moose::ConstraintType type )
 {
-  prepareVectorTag( _assembly, _var.number() );
-
-  auto step = getStep();
-
-  _local_re( 0 ) = -_l_parameter * step;
-
-  for ( unsigned int iNode = 0; iNode < _n_constrained_nodes; iNode++ )
-    for ( unsigned int jDim = 0; jDim < _n_constrained_variables; jDim++ )
-      _local_re( 0 ) += _c_vector[iNode * _n_constrained_variables + jDim] *
-                        ( *_constrained_variables_values[jDim] )[iNode];
-
-  assignTaggedLocalResidual();
+  switch ( type )
+  {
+    case Moose::Primary:
+      return _load_factor * ( _connected_nodes_c_vector[_i] * _u_secondary[_i] -
+                              computeQpStep() * _l_parameter * _share_per_secondary_node );
+    case Moose::Secondary:
+      return 0;
+  }
+  return 0.;
 }
 
-void
-PenaltyIndirectDisplacementControl::computeJacobian()
+Real
+PenaltyIndirectDisplacementControl::computeQpJacobian( Moose::ConstraintJacobianType type )
 {
-  auto step = getStep();
-
-  prepareMatrixTag( _assembly, _var.number(), _var.number() );
-
-  // put zeroes on the diagonal (we have to do it, otherwise PETSc will complain!)
-  for ( unsigned int i = 0; i < _local_ke.m(); i++ )
-    for ( unsigned int j = 0; j < _local_ke.n(); j++ )
-      _local_ke( i, j ) = 0.;
-
-  assignTaggedLocalMatrix();
-
-  for ( unsigned int jDim = 0; jDim < _n_constrained_variables; jDim++ )
+  switch ( type )
   {
-    prepareMatrixTag( _assembly, _var.number(), _constrained_variables_numbers[jDim] );
-    for ( unsigned int iNode = 0; iNode < _n_constrained_nodes; iNode++ )
-      _local_ke( 0, iNode ) = _c_vector[iNode * _n_constrained_variables + jDim];
-    assignTaggedLocalMatrix();
+    case Moose::PrimaryPrimary:
+      return 0;
+    case Moose::PrimarySecondary:
+      return _load_factor * _connected_nodes_c_vector[_i];
+    case Moose::SecondarySecondary:
+      return 0;
+    case Moose::SecondaryPrimary:
+      return 0;
+    default:
+      mooseError( "Unsupported type" );
+      break;
   }
+  return 0.;
 }

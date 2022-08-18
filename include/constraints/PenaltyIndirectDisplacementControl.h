@@ -26,11 +26,8 @@
 
 #include "NodalConstraint.h"
 
-class Function;
-
 /**
- * An exact indirect diplacement control contraint.
- *
+ * A penalty based implementation of the indirect displacement control technique.
  */
 class PenaltyIndirectDisplacementControl : public NodalConstraint
 {
@@ -39,21 +36,52 @@ public:
 
   PenaltyIndirectDisplacementControl( const InputParameters & parameters );
 
-  virtual void computeQpResidual() override;
-  virtual void computeQpJacobian() override;
-
 protected:
-  Real getStep();
+  /**
+   * Computes the residual for the current secondary node
+   */
+  virtual Real computeQpResidual( Moose::ConstraintType type ) override;
 
-  const unsigned int _n_constrained_variables;
-  const std::vector< unsigned int > _constrained_variables_numbers;
-  const std::vector< const VariableValue * > _constrained_variables_values;
+  /**
+   * Computes the jacobian for the constraint
+   */
+  virtual Real computeQpJacobian( Moose::ConstraintJacobianType type ) override;
 
+  Real computeQpStep();
+
+  // Holds the priamry node set or side set
+  std::string _primary_node_set_id;
+  // Holds the secondary node set or side set
+  std::string _secondary_node_set_id;
+  // Penalty if constraint is not satisfied
+  Real _penalty;
+
+  // We may use a function to describe the loading scheme
   const Function * const _function;
 
+  // We may normalize the load wrt to the number of primary nodes
+  const bool _normalize_load;
+
+  // The c vector used for computation of the linear constraint
   const std::vector< Real > _c_vector;
 
+  // The l parameter
   const Real _l_parameter;
 
-  const unsigned int _n_constrained_nodes;
+  // The c vector used for computation of the linear constraint, only for the connected nodes
+  std::vector< Real > _connected_nodes_c_vector;
+
+  // This is the penalty parameter, and a potential reduction factor if we normalize wrt to the
+  // number of primary nodes
+  Real _load_factor;
+
+  // For computing the linear constraint per secondary node incrementally, we need to know each
+  // nodes share in the total residual!
+  //
+  // (c^T * u_secondary - L) --> (c^T * ( u_secondary - L * _share_per_secondary_node) )
+  //
+  // Clearly, _share_per_secondary_node is just 1./number_of_secondary_nodes
+  //
+  // This way, we can traverse per node!
+  Real _share_per_secondary_node;
 };
