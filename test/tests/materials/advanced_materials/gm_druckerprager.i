@@ -116,10 +116,10 @@
   [marmot_material]
     type = ComputeMarmotMaterialGradientEnhancedMicropolar
     marmot_material_name = GMDRUCKERPRAGER
-                                  #**E,     nu,    GcToG,  lb,   lt,       polarRatio,     sigmaYield,     h,      phi(deg), psi(deg) 
-                                  #**a1,   a2,     a3,     a4,   lJ2,      softeningModulus,   weightingParemeter,     maxDamage,  nonLocalRadius
-    marmot_material_parameters = '10e3       0.25   .1       4   8           1.4999999          0.06e3         0           25      0.0 
-                                  0.5   0.0   0.5     0.0       4.0        1e-0               1.0                    0.90       8.0'
+                                #**E,     nu,    GcToG,  lb,   lt,       polarRatio,     sigmaYield,     hlin,  hExp,  hDeltaExp         phi(deg), psi(deg) 
+                                #**a1,   a2,     a3,     a4,   lJ2,      softeningModulus,   weightingParemeter,     maxDamage,  nonLocalRadius
+    marmot_material_parameters = '100        0.25   .5    4   8         1.4999999        0.06           0     1     0                 25      0.0 
+                                  0.5   0.0   0.5     0.0   10.0        1e-0               1.0                    0.90       8.0'
   []
 []
 
@@ -176,11 +176,14 @@
   type = Transient
   solve_type = 'NEWTON'
 
-  nl_rel_tol = 1e-8
-  nl_abs_tol = 1e-8
+  nl_rel_tol = 1e-12
+  nl_abs_tol = 1e-12
   nl_max_its = 20
   nl_div_tol = 1e2
 
+  automatic_scaling = true
+
+  line_search = 'none'
 
   dtmin = 1e-4
   dtmax= 1e-1

@@ -1,0 +1,10 @@
+[Tests]
+  [penalty_control]
+    type = 'Exodiff'
+    input = 'indirect_displacement_control.i'
+    exodiff = 'indirect_displacement_control_out.e'
+    max_parallel = 1
+    max_threads = 1 
+    requirement = "The system shall support the ability perform indirect displacement control using a penalty based formulation."
+  []
+[]

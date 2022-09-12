@@ -251,15 +251,13 @@
   solve_type = 'NEWTON'
 
   nl_rel_tol = 1e-12
-  nl_abs_tol = 1e-9
+  nl_abs_tol = 1e-12
   l_tol = 1e-4
   l_max_its = 300
   nl_max_its = 20
   nl_div_tol = 1e4
 
-  #automatic_scaling = true
-  #compute_scaling_once = true
-  #verbose = false
+  automatic_scaling = true
 
   line_search = 'none'
 
