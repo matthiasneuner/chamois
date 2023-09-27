@@ -1,0 +1,66 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>BoundingValueNodalDamper | Chamois</title><link rel="icon" type="image/x-icon" href="../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="64ae9e43-9b53-4766-8556-765e019ae9d6" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="50c93fc7-1ec1-475d-a772-969b728281c6"><i class="material-icons">menu</i></a><ul class="sidenav" id="50c93fc7-1ec1-475d-a772-969b728281c6"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="bbdb9405-3041-41d4-b2dc-2c255bbfe0ba" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="64ae9e43-9b53-4766-8556-765e019ae9d6"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="bbdb9405-3041-41d4-b2dc-2c255bbfe0ba"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="056fe9f0-4b19-4a7d-bf0a-8e38df062afa" data-section-level="1" data-section-text="BoundingValueNodalDamper"><h1 id="boundingvaluenodaldamper">BoundingValueNodalDamper</h1><p>Limits the value of a variable to be within user-specified bounds.</p><p>The value of the damper is modified at every quadrature point based on how far out of the defined bounds the variable is there, and in which direction the variable is &#x27;incremented&#x27; between successive iterations, away or closer to the bound. The damping increases when the variable is moving further away from the prescribed bounds.</p><p>More information about dampers may be found on the <a href="../../syntax/Dampers/index.html">Dampers syntax documentation</a>.</p><section id="c0cfd819-fc96-4ed8-a8a5-5c0c74277382" data-section-level="2" data-section-text="Example input syntax"><h2 id="example-input-syntax">Example input syntax</h2><p>In this example, the variable <code>u</code> is being damped with minimum and maximum values of -1.5 and 1.5 respectively, with a minimum damping factor of 0.001.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[Dampers]
+  [./limit]
+    type = BoundingValueNodalDamper
+    variable = u
+    max_value = 1.5
+    min_value = -1.5
+    min_damping = 0.001
+  [../]
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#5189317b-d768-48cb-b731-4d05374d617d">(moose/test/tests/dampers/min_damping/min_nodal_damping.i)</a></section><section id="f7a55fb9-382b-4cb2-aef0-af542c8427e7" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="ff3f4427-f05e-464d-b3b9-5a5c092df5f7" data-section-level="3" data-section-text="Required Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">variable</span><span class="moose-parameter-header-description">The name of the variable that this damper operates on</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>NonlinearVariableName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of the variable that this damper operates on</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Required Parameters</h3></summary></details></section><section id="838210ef-480b-4a37-8929-d76749e04f61" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">max_value</span><span class="moose-parameter-header-default">1.79769e+308</span><span class="moose-parameter-header-description">The maximum permissible iterative value for the variable.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>1.79769e+308</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The maximum permissible iterative value for the variable.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">min_damping</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">Minimum value of computed damping. Damping lower than this will result in an exception being thrown and cutting the time step</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Minimum value of computed damping. Damping lower than this will result in an exception being thrown and cutting the time step</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">min_value</span><span class="moose-parameter-header-default">-1.79769e+308</span><span class="moose-parameter-header-description">The minimum permissible iterative value for the variable.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>-1.79769e+308</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The minimum permissible iterative value for the variable.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">prop_getter_suffix</span><span class="moose-parameter-header-description">An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="6f87f2e6-3bd3-4f7e-b98a-0f65140d3401" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>Yes</p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section></section></section><div class="moose-modal modal" id="5189317b-d768-48cb-b731-4d05374d617d"><div class="modal-content"><h4>(moose/test/tests/dampers/min_damping/min_nodal_damping.i)</h4><pre class="moose-pre"><code class="language-text">[Mesh]
+  type = GeneratedMesh
+  dim = 1
+  nx = 10
+[]
+
+[Variables]
+  [./u]
+  [../]
+[]
+
+[Kernels]
+  [./u_dt]
+    type = TimeDerivative
+    variable = u
+  [../]
+  [./u_source]
+    type = BodyForce
+    variable = u
+    value = 1
+  [../]
+[]
+
+[BCs]
+  [./u_left]
+    type = DirichletBC
+    boundary = left
+    variable = u
+    value = 0.0
+  [../]
+[]
+
+[Dampers]
+  [./limit]
+    type = BoundingValueNodalDamper
+    variable = u
+    max_value = 1.5
+    min_value = -1.5
+    min_damping = 0.001
+  [../]
+[]
+
+[Executioner]
+  type = Transient
+  num_steps = 2
+[]
+
+[Postprocessors]
+  [./u_avg]
+    type = ElementAverageValue
+    variable = u
+  [../]
+  [./dt]
+    type = TimestepSize
+  [../]
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>

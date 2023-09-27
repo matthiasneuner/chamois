@@ -1,0 +1,78 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>PartitionerAction | Chamois</title><link rel="icon" type="image/x-icon" href="../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="1a1f7cee-047c-4980-98a5-f2cafe4f2250" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="134db799-0c76-4026-8e88-60d3bd68e514"><i class="material-icons">menu</i></a><ul class="sidenav" id="134db799-0c76-4026-8e88-60d3bd68e514"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="20159c16-b4a7-4be7-bc85-a2478c5f8975" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="1a1f7cee-047c-4980-98a5-f2cafe4f2250"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="20159c16-b4a7-4be7-bc85-a2478c5f8975"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="9bca8eac-72c0-4e0a-a467-63bda52b69e8" data-section-level="1" data-section-text="PartitionerAction"><h1 id="partitioneraction">PartitionerAction</h1><p>Add a Partitioner object to the simulation.</p><p><code>Partitioners</code> are specified as an object inside the <code>[Partitioner]</code> block within the <code>[Mesh]</code> block, as shown below</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[Mesh]
+  type = GeneratedMesh
+  dim = 2
+  nx = 10
+  ny = 10
+  [Partitioner]
+    type = GridPartitioner
+    nx = 2
+    ny = 2
+    nz = 1
+  []
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#160c5d11-84a2-471c-a56d-7aec0b0f46b9">(moose/test/tests/partitioners/grid_partitioner/grid_partitioner.i)</a><p>More information about <code>Partitioners</code> may be found on the <a href="../../syntax/Mesh/Partitioner/index.html">Partitioners syntax documentation</a>.</p><section id="f83d9225-3152-480e-9637-e73a34aba258" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="61742006-6b6e-4655-b665-708285d2663e" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">active</span><span class="moose-parameter-header-default">__all__ </span><span class="moose-parameter-header-description">If specified only the blocks named will be visited and made active</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>__all__ </p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>If specified only the blocks named will be visited and made active</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">inactive</span><span class="moose-parameter-header-description">If specified blocks matching these identifiers will be skipped.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>If specified blocks matching these identifiers will be skipped.</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="f1ae2c0b-cf2b-42c8-9c49-c4cb700c711d" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">isObjectAction</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Indicates that this is a MooseObjectAction.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Indicates that this is a MooseObjectAction.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section></section></section><div class="moose-modal modal" id="160c5d11-84a2-471c-a56d-7aec0b0f46b9"><div class="modal-content"><h4>(moose/test/tests/partitioners/grid_partitioner/grid_partitioner.i)</h4><pre class="moose-pre"><code class="language-text">[Mesh]
+  type = GeneratedMesh
+  dim = 2
+  nx = 10
+  ny = 10
+  [Partitioner]
+    type = GridPartitioner
+    nx = 2
+    ny = 2
+    nz = 1
+  []
+[]
+
+[Variables]
+  [u]
+  []
+[]
+
+[Kernels]
+  [diff]
+    type = Diffusion
+    variable = u
+  []
+[]
+
+[BCs]
+  [left]
+    type = DirichletBC
+    variable = u
+    boundary = &#x27;left&#x27;
+    value = 0
+  []
+  [right]
+    type = DirichletBC
+    variable = u
+    boundary = &#x27;right&#x27;
+    value = 1
+  []
+[]
+
+[Executioner]
+  type = Steady
+  solve_type = PJFNK
+  petsc_options_iname = &#x27;-pc_type -pc_hypre_type&#x27;
+  petsc_options_value = &#x27;hypre boomeramg&#x27;
+[]
+
+[Outputs]
+  exodus = true
+[]
+
+[AuxVariables]
+  [pid]
+    family = MONOMIAL
+    order = CONSTANT
+  []
+[]
+
+[AuxKernels]
+  [pid_aux]
+    type = ProcessorIDAux
+    variable = pid
+    execute_on = &#x27;INITIAL&#x27;
+  []
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>

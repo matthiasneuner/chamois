@@ -1,0 +1,683 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>Frequency Domain Analysis | Chamois</title><link rel="icon" type="image/x-icon" href="../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="f4d28fa8-050e-4a70-810b-367b0d99d9ba" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="1806598d-a58c-4ff8-a9c9-8d87a023a783"><i class="material-icons">menu</i></a><ul class="sidenav" id="1806598d-a58c-4ff8-a9c9-8d87a023a783"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="c74e2dfa-e670-4bbd-8604-978c06fec63f" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="f4d28fa8-050e-4a70-810b-367b0d99d9ba"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="c74e2dfa-e670-4bbd-8604-978c06fec63f"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="e9e15389-30f5-4bf2-92bd-54780d9efe01" data-section-level="1" data-section-text="Frequency Domain Analysis"><h1 id="frequency-domain-analysis">Frequency Domain Analysis</h1><p>The following example presents two frequency domain analysis of a cantilever beam done in the MOOSE Tensor Mechanics module. The first example computes a frequency response function of the cantilever beam and identifies the first two eigenvalues of beam.  The second analysis computes the dynamic response at a single frequency (time-harmonic problem). A frequency domain analysis provides the structural response at a discrete set of frequencies. At each frequency, an independent steady state simulation is performed. This document provides an example of modeling a dynamic problem at a single frequency (time-harmonic problem).</p><p>Frequency domain analysis is often used to determine a frequency response function (FRF). An FRF describes the relationship between an input (frequency and amplitude of the input forcing source) and output (displacement response of a system). For simple systems, an analytic FRF can be derived. For more complex systems, the FRF is numerically obtained by determining the system response over a range of frequencies. The frequencies corresponding to the peaks on the FRF plot indicate natural frequencies of the system (eigen/fundumental frequencies). The mode shape (eigenvector) is given by the displacement profile at a natural frequency.</p><p>Other applications of frequency domain dynamics are: (1) computation of band structure (dispersion curves) of lattices/metamaterial, (2) inverse design for vibration control, e.g. design a system so that it has as minimum/maximum response at particular frequency, (3) material properties inversion/optimization given discrete responses.</p><p>Frequency domain analyses can be advantageous over its time domain counterpart in several cases, for example, when the frequency spectrum of a signal consists of a few frequencies, or, when it is needed to have a better control of the numerical dispersion.</p></section><section id="3342677e-6230-48f8-8f10-f94f6177b9a1" data-section-level="1" data-section-text="Problem Description"><h1 id="problem-description">Problem Description</h1><p>The equations of motion for a one dimensional isotropic elastic solid is given by the following partial differential equation: <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-c9ea1341-8007-4a41-ac45-c50e758c6b01"></span><span class="moose-katex-equation-number">(1)</span><script>var element = document.getElementById("moose-equation-c9ea1341-8007-4a41-ac45-c50e758c6b01");katex.render("    -E\\frac{\\partial^2 u}{\\partial x^2}+\\rho \\frac{\\partial^2 u}{\\partial t^2}=0 ", element, {displayMode:true,throwOnError:false});</script></span> where <span class="moose-katex-inline-equation" id="moose-equation-c379557f-4e0c-4edd-9ea3-dae6b6d297a3"><script>var element = document.getElementById("moose-equation-c379557f-4e0c-4edd-9ea3-dae6b6d297a3");katex.render("E", element, {displayMode:false,throwOnError:false});</script></span> is the modulus of elasticity, and <span class="moose-katex-inline-equation" id="moose-equation-51295cb2-c61b-464f-b7d4-41283c716fe4"><script>var element = document.getElementById("moose-equation-51295cb2-c61b-464f-b7d4-41283c716fe4");katex.render("\\rho", element, {displayMode:false,throwOnError:false});</script></span> is the density.   To convert to the frequency domain, we consider that a plane wave given by <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-b2fdce7a-100e-4200-a888-008417f89b7c"></span><span class="moose-katex-equation-number">(2)</span><script>var element = document.getElementById("moose-equation-b2fdce7a-100e-4200-a888-008417f89b7c");katex.render("  u(x,t)= B e^{i(\\omega t - k x)}   ", element, {displayMode:true,throwOnError:false});</script></span> is a solution to <a href="#moose-equation-c9ea1341-8007-4a41-ac45-c50e758c6b01">Eq. (1)</a> where <span class="moose-katex-inline-equation" id="moose-equation-607a548c-3bb6-4132-8350-fb97a9013ecc"><script>var element = document.getElementById("moose-equation-607a548c-3bb6-4132-8350-fb97a9013ecc");katex.render("B", element, {displayMode:false,throwOnError:false});</script></span> is in general a complex number depending on the boundary conditions, <span class="moose-katex-inline-equation" id="moose-equation-bbb6132f-1390-41aa-ba28-fd4fab06cdde"><script>var element = document.getElementById("moose-equation-bbb6132f-1390-41aa-ba28-fd4fab06cdde");katex.render("k^2=\\omega^2\\rho/E", element, {displayMode:false,throwOnError:false});</script></span> is the wave number, <span class="moose-katex-inline-equation" id="moose-equation-3e0a1f1f-9eb2-426b-9259-321b7db59fa5"><script>var element = document.getElementById("moose-equation-3e0a1f1f-9eb2-426b-9259-321b7db59fa5");katex.render("\\omega=2 \\pi f", element, {displayMode:false,throwOnError:false});</script></span> where <span class="moose-katex-inline-equation" id="moose-equation-d9de1a37-d45c-4224-b2e6-56b31cfa0569"><script>var element = document.getElementById("moose-equation-d9de1a37-d45c-4224-b2e6-56b31cfa0569");katex.render("f", element, {displayMode:false,throwOnError:false});</script></span> is the frequency, and <span class="moose-katex-inline-equation" id="moose-equation-6f810901-903d-40ad-af08-54735c7c47d2"><script>var element = document.getElementById("moose-equation-6f810901-903d-40ad-af08-54735c7c47d2");katex.render("i=\\sqrt{-1}", element, {displayMode:false,throwOnError:false});</script></span>.   By assuming <a href="#moose-equation-b2fdce7a-100e-4200-a888-008417f89b7c">Eq. (2)</a> is a a solution to <a href="#moose-equation-c9ea1341-8007-4a41-ac45-c50e758c6b01">Eq. (1)</a> we can solve <a href="#moose-equation-c9ea1341-8007-4a41-ac45-c50e758c6b01">Eq. (1)</a> in the frequency domain by taking a Fourier transform of <span class="moose-katex-inline-equation" id="moose-equation-213912eb-e7fc-449e-857f-3b795dbb2c24"><script>var element = document.getElementById("moose-equation-213912eb-e7fc-449e-857f-3b795dbb2c24");katex.render("u(x,t)", element, {displayMode:false,throwOnError:false});</script></span> to get <span class="moose-katex-inline-equation" id="moose-equation-eb79b0fd-ff07-4873-8a5e-e89fc603137c"><script>var element = document.getElementById("moose-equation-eb79b0fd-ff07-4873-8a5e-e89fc603137c");katex.render("U(x,\\omega)", element, {displayMode:false,throwOnError:false});</script></span>.  The frequency domain version of <a href="#moose-equation-c9ea1341-8007-4a41-ac45-c50e758c6b01">Eq. (1)</a> is the Helmholtz equation given by <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-8796b7b0-3100-4616-a237-a108e1fc3d98"></span><span class="moose-katex-equation-number">(3)</span><script>var element = document.getElementById("moose-equation-8796b7b0-3100-4616-a237-a108e1fc3d98");katex.render("    E\\frac{\\partial^2 U}{\\partial x^2}-\\rho\\omega^2 U=0. ", element, {displayMode:true,throwOnError:false});</script></span> <a href="#moose-equation-8796b7b0-3100-4616-a237-a108e1fc3d98">Eq. (3)</a> is easily solved in MOOSE where <span class="moose-katex-inline-equation" id="moose-equation-73b522b9-8367-46b8-a90f-adef3fc15da4"><script>var element = document.getElementById("moose-equation-73b522b9-8367-46b8-a90f-adef3fc15da4");katex.render("U", element, {displayMode:false,throwOnError:false});</script></span> is the state variable.  The first term on the right hand side is still captured by the <a href="StressDivergence.html">Stress Divergence</a> kernel.  The second RHS term, <span class="moose-katex-inline-equation" id="moose-equation-a20624bd-6642-4a98-8712-87bcdc9cbe12"><script>var element = document.getElementById("moose-equation-a20624bd-6642-4a98-8712-87bcdc9cbe12");katex.render("\\rho\\omega^2 U", element, {displayMode:false,throwOnError:false});</script></span>, is captured by the <a href="../../source/kernels/Reaction.html">Reaction</a> kernel where the <code>Reaction</code> rate is given by <span class="moose-katex-inline-equation" id="moose-equation-7b23b3e8-db12-4f37-8e81-99e37ecb30b1"><script>var element = document.getElementById("moose-equation-7b23b3e8-db12-4f37-8e81-99e37ecb30b1");katex.render("-\\omega^2", element, {displayMode:false,throwOnError:false});</script></span>.  <a href="#moose-equation-8796b7b0-3100-4616-a237-a108e1fc3d98">Eq. (3)</a> is only valid for small displacements and linear elasticity.  A damping term can also be included in <a href="#moose-equation-c9ea1341-8007-4a41-ac45-c50e758c6b01">Eq. (1)</a> and <a href="#moose-equation-8796b7b0-3100-4616-a237-a108e1fc3d98">Eq. (3)</a>.</p><p>The boundary conditions also need to be converted to the frequency domain through a Fourier transform.  A time harmonic Neumann BC given by <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-81dc91f8-54ad-4150-bec2-1a629f15567a"></span><span class="moose-katex-equation-number">(4)</span><script>var element = document.getElementById("moose-equation-81dc91f8-54ad-4150-bec2-1a629f15567a");katex.render("    f= A \\, cos(2 \\pi f t) \\qquad \\text{at} \\, x=L     ", element, {displayMode:true,throwOnError:false});</script></span> with amplitude <span class="moose-katex-inline-equation" id="moose-equation-9e6adbac-e990-4cbe-a2e8-2323c6e0837d"><script>var element = document.getElementById("moose-equation-9e6adbac-e990-4cbe-a2e8-2323c6e0837d");katex.render("A", element, {displayMode:false,throwOnError:false});</script></span> and frequency <span class="moose-katex-inline-equation" id="moose-equation-a03f500d-ad43-4110-aefa-c09340b6934a"><script>var element = document.getElementById("moose-equation-a03f500d-ad43-4110-aefa-c09340b6934a");katex.render("f", element, {displayMode:false,throwOnError:false});</script></span>, is transformed to <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-a6aa6425-e413-45d1-a826-e0bf4d373c73"></span><span class="moose-katex-equation-number">(5)</span><script>var element = document.getElementById("moose-equation-a6aa6425-e413-45d1-a826-e0bf4d373c73");katex.render("    F= A \\, \\qquad \\text{at} \\, x=L     ", element, {displayMode:true,throwOnError:false});</script></span></p></section><section id="59806c15-0f35-4e2e-82ad-3189fb34b238" data-section-level="1" data-section-text="Cantilever Beam Example"><h1 id="cantilever-beam-example">Cantilever Beam Example</h1><p>The cantilever beam shown in <a href="#cantilever">Figure 1</a> is subjected to a time harmonic force on the right side in the out-of-plane and vertical directions.  In this example the frequency of the time varying load is swept over a range.  The displacement at the midpoint of the beam is recorded at each frequency.  This type of output, displacement as a function of frequency, is a frequency response function (FRF) or transfer function.  Frequencies corresponding to the displacement peaks in the FRF indicate natural frequencies/modes.</p><div class="card moose-float" style="width:60%;" id="cantilever"><div class="card-content"><picture class="materialboxed moose-image"><img src="../../media/tensor_mechanics/Cantilever_beam.png"></img></picture><p class="moose-caption"><span class="moose-caption-heading">Figure 1: </span><span class="moose-caption-text" id="cantilever">2D cantilever problem with a prescribed displacement boundary condition on the right end.</span></p></div></div><p>The analytic solution for the free vibration of a cantilever <a href="https://en.wikipedia.org/wiki/Euler%E2%80%93Bernoulli_beam_theory">Euler Bernoulli beam</a>.  The analytic eigenvalues, <span class="moose-katex-inline-equation" id="moose-equation-dc376450-5495-42ec-8ef8-c1f348950c8a"><script>var element = document.getElementById("moose-equation-dc376450-5495-42ec-8ef8-c1f348950c8a");katex.render("\\omega_n", element, {displayMode:false,throwOnError:false});</script></span>, are given by <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-c8d37a02-964c-4915-8f5a-5db37fff9e69"></span><script>var element = document.getElementById("moose-equation-c8d37a02-964c-4915-8f5a-5db37fff9e69");katex.render("  \\omega_n=k^2_n\\sqrt\\frac{EI^2}{\\rho A L^4}", element, {displayMode:true,throwOnError:false});</script></span> where <span class="moose-katex-inline-equation" id="moose-equation-c84b51cf-8b5c-4b78-9776-b5905f046549"><script>var element = document.getElementById("moose-equation-c84b51cf-8b5c-4b78-9776-b5905f046549");katex.render("I", element, {displayMode:false,throwOnError:false});</script></span> is the moment of inertia, <span class="moose-katex-inline-equation" id="moose-equation-179146e4-54a0-4e1f-ac7d-f1ef3c726378"><script>var element = document.getElementById("moose-equation-179146e4-54a0-4e1f-ac7d-f1ef3c726378");katex.render("A", element, {displayMode:false,throwOnError:false});</script></span> the cross sectional area, <span class="moose-katex-inline-equation" id="moose-equation-0070dcd4-1511-4487-9bd0-b7bd86d2b2c2"><script>var element = document.getElementById("moose-equation-0070dcd4-1511-4487-9bd0-b7bd86d2b2c2");katex.render("L", element, {displayMode:false,throwOnError:false});</script></span> the beam length, and <span class="moose-katex-inline-equation" id="moose-equation-504bfb5a-7c7a-4a0d-b996-c49242c1716d"><script>var element = document.getElementById("moose-equation-504bfb5a-7c7a-4a0d-b996-c49242c1716d");katex.render("k_n", element, {displayMode:false,throwOnError:false});</script></span> are the wave numbers. For a cantilever beam, the first three wave numbers, <span class="moose-katex-inline-equation" id="moose-equation-27dda953-08fb-4a01-b4ac-aee4e3e4973a"><script>var element = document.getElementById("moose-equation-27dda953-08fb-4a01-b4ac-aee4e3e4973a");katex.render("k_n", element, {displayMode:false,throwOnError:false});</script></span>, given for the Euler Bernoulli beam dimensions given as the dimensions of the cantilever beam are <span class="moose-katex-inline-equation" id="moose-equation-028101fe-a6ce-43df-b3f7-76eaec9ccad3"><script>var element = document.getElementById("moose-equation-028101fe-a6ce-43df-b3f7-76eaec9ccad3");katex.render("L=", element, {displayMode:false,throwOnError:false});</script></span>1m with cross section dimensions <span class="moose-katex-inline-equation" id="moose-equation-e76a5490-34a5-4f6d-9f72-4930d9632368"><script>var element = document.getElementById("moose-equation-e76a5490-34a5-4f6d-9f72-4930d9632368");katex.render("a=", element, {displayMode:false,throwOnError:false});</script></span>0.1m and <span class="moose-katex-inline-equation" id="moose-equation-d85bfaba-4e85-4aa4-a56d-5cd8668ac330"><script>var element = document.getElementById("moose-equation-d85bfaba-4e85-4aa4-a56d-5cd8668ac330");katex.render("b=", element, {displayMode:false,throwOnError:false});</script></span>0.15m are<br><span class="moose-katex-inline-equation" id="moose-equation-b44710d6-3516-4a91-a51a-ae337cc1fb58"><script>var element = document.getElementById("moose-equation-b44710d6-3516-4a91-a51a-ae337cc1fb58");katex.render("k_1=1.875", element, {displayMode:false,throwOnError:false});</script></span><br><span class="moose-katex-inline-equation" id="moose-equation-58823e8c-f79b-4d4f-aefb-add453e10c40"><script>var element = document.getElementById("moose-equation-58823e8c-f79b-4d4f-aefb-add453e10c40");katex.render("k_2=4.694", element, {displayMode:false,throwOnError:false});</script></span><br><span class="moose-katex-inline-equation" id="moose-equation-5867ec89-da51-4320-bb55-9067e1ba9953"><script>var element = document.getElementById("moose-equation-5867ec89-da51-4320-bb55-9067e1ba9953");katex.render("k_3=7.855", element, {displayMode:false,throwOnError:false});</script></span><br>The moment of inertia for a rectangular cross section beam is <span class="moose-katex-inline-equation" id="moose-equation-6744d4ee-5910-498c-a360-e028ce8b4f0e"><script>var element = document.getElementById("moose-equation-6744d4ee-5910-498c-a360-e028ce8b4f0e");katex.render("I=\\frac{wh^3}{12}", element, {displayMode:false,throwOnError:false});</script></span>, where <span class="moose-katex-inline-equation" id="moose-equation-88817486-f68e-4d57-9db9-ff1e2d3d5fd9"><script>var element = document.getElementById("moose-equation-88817486-f68e-4d57-9db9-ff1e2d3d5fd9");katex.render("h", element, {displayMode:false,throwOnError:false});</script></span> is the dimension in the direction being loaded and <span class="moose-katex-inline-equation" id="moose-equation-125d978c-0a04-4cd2-8c27-44481a5fdf0a"><script>var element = document.getElementById("moose-equation-125d978c-0a04-4cd2-8c27-44481a5fdf0a");katex.render("w", element, {displayMode:false,throwOnError:false});</script></span> is the other cross sectional dimension.  </p><p>For an aluminum cantilever beam, <span class="moose-katex-inline-equation" id="moose-equation-400ec101-1b2e-4e1a-a8e6-d6edfe2337ee"><script>var element = document.getElementById("moose-equation-400ec101-1b2e-4e1a-a8e6-d6edfe2337ee");katex.render("E=", element, {displayMode:false,throwOnError:false});</script></span>68e9 Pa, <span class="moose-katex-inline-equation" id="moose-equation-9ec774df-895f-4c2b-b4f1-100cba841163"><script>var element = document.getElementById("moose-equation-9ec774df-895f-4c2b-b4f1-100cba841163");katex.render("\\nu=", element, {displayMode:false,throwOnError:false});</script></span>0.36, <span class="moose-katex-inline-equation" id="moose-equation-c975bd26-10c2-41cd-8bd5-83b68a57faaa"><script>var element = document.getElementById("moose-equation-c975bd26-10c2-41cd-8bd5-83b68a57faaa");katex.render("\\rho=", element, {displayMode:false,throwOnError:false});</script></span>27.e3 kg/m<span class="moose-katex-inline-equation" id="moose-equation-52ec1d03-d11b-4c2c-ae02-94829837f3c4"><script>var element = document.getElementById("moose-equation-52ec1d03-d11b-4c2c-ae02-94829837f3c4");katex.render("^3", element, {displayMode:false,throwOnError:false});</script></span>.   The analytic first and second natural frequencies for this system bending in directions tangential to the beam axis are:<br><span class="moose-katex-inline-equation" id="moose-equation-8ca71e0a-e4a9-45c9-9548-275e97fb7f1e"><script>var element = document.getElementById("moose-equation-8ca71e0a-e4a9-45c9-9548-275e97fb7f1e");katex.render("\\omega_{1a}=", element, {displayMode:false,throwOnError:false});</script></span>509Hz<br><span class="moose-katex-inline-equation" id="moose-equation-c9fd853c-952b-44ab-807c-9f70cb25b9cd"><script>var element = document.getElementById("moose-equation-c9fd853c-952b-44ab-807c-9f70cb25b9cd");katex.render("\\omega_{1b}=", element, {displayMode:false,throwOnError:false});</script></span>763Hz<br>Both of these frequencies use the same value of <span class="moose-katex-inline-equation" id="moose-equation-d1b6010f-0d94-4100-b1f9-fbf544a2a718"><script>var element = document.getElementById("moose-equation-d1b6010f-0d94-4100-b1f9-fbf544a2a718");katex.render("k_1", element, {displayMode:false,throwOnError:false});</script></span>, but with the moment of inertia recomputed for bending about the different widths, where the lower frequency is the first bending mode about the thin direction (<span class="moose-katex-inline-equation" id="moose-equation-1d27e113-4953-4c4e-8887-9dbe77c85394"><script>var element = document.getElementById("moose-equation-1d27e113-4953-4c4e-8887-9dbe77c85394");katex.render("h=a=", element, {displayMode:false,throwOnError:false});</script></span>0.1m) and the next higher frequency is the first bending mode about the thicker direction (<span class="moose-katex-inline-equation" id="moose-equation-256ad9d9-7b1c-45e9-9415-1d714f20acad"><script>var element = document.getElementById("moose-equation-256ad9d9-7b1c-45e9-9415-1d714f20acad");katex.render("h=b=", element, {displayMode:false,throwOnError:false});</script></span>0.15m). The simulated natural frequencies given by peaks in the FRF for a coarse mesh are:<br><span class="moose-katex-inline-equation" id="moose-equation-2efa3fca-9139-4cb1-937b-99475927e480"><script>var element = document.getElementById("moose-equation-2efa3fca-9139-4cb1-937b-99475927e480");katex.render("\\omega_{1a}=", element, {displayMode:false,throwOnError:false});</script></span>600Hz<br><span class="moose-katex-inline-equation" id="moose-equation-e01fd094-38f1-4a68-80e2-661bbad0c397"><script>var element = document.getElementById("moose-equation-e01fd094-38f1-4a68-80e2-661bbad0c397");katex.render("\\omega_{1b}=", element, {displayMode:false,throwOnError:false});</script></span>800Hz<br>where 50Hz frequency increments are used in the FRF frequency sweep. The FRF where each displacement is plotted separately is shown in <a href="#cantileverfrf">Figure 3</a> where each mode is excited separately.  A scaled displacement magnitude is shown in <a href="#cantileverfrfmag">Figure 2</a> for a coarse and fine mesh.  A coarse mesh shows a stiffer response and and the natural frequencies are over-estimated.  The natural frequencies converge on the analytic result from above as the mesh is refined. The simulations will fail if they are run at the natural frequencies because the solution will become singular, i.e the displacements blow-up as shown by the asymptopes in <a href="#cantileverfrf">Figure 3</a>.</p><div class="card moose-float" style="width:60%;" id="cantileverfrfmag"><div class="card-content"><picture class="materialboxed moose-image"><img src="../../media/tensor_mechanics/Cantilever_frfmag.png"></img></picture><p class="moose-caption"><span class="moose-caption-heading">Figure 2: </span><span class="moose-caption-text" id="cantileverfrfmag">Cantilever beam displacement magnitude for coarse mesh (0.1m elements) and fine mesh (0.033m elements).  Analytic results are shown in grey.</span></p></div></div><div class="card moose-float" style="width:60%;" id="cantileverfrf"><div class="card-content"><picture class="materialboxed moose-image"><img src="../../media/tensor_mechanics/Cantilever_frf.png"></img></picture><p class="moose-caption"><span class="moose-caption-heading">Figure 3: </span><span class="moose-caption-text" id="cantileverfrf">Cantilever beam y- and z-displacements for the fine mesh (0.033m elements).  Analytic results are shown in grey.</span></p></div></div><p>The input file for the coarse simulation shown in <a href="#cantileverfrfmag">Figure 2</a> and <a href="#cantileverfrf">Figure 3</a> is given in <a href="#listing0">Listing 1</a>.</p><div class="card moose-float"><div class="card-content"><p class="moose-caption"><span class="moose-caption-heading">Listing 1: </span><span class="moose-caption-text" id="listing0"></span></p><pre class="moose-pre" style="max-height:350px;"><code class="language-text"># Frequency Response function for cantilever beam:
+# Analytic results: 509Hz and 763Hz
+# Simulation results with coarse mesh: 600Hz and 800Hz
+
+[Mesh]
+   type = GeneratedMesh
+   elem_type = HEX8
+   dim = 3
+   xmin=0
+   xmax=1
+   nx=10
+   ymin=0
+   ymax=0.1
+   ny = 1
+   zmin=0
+   zmax=0.15
+   nz = 2
+[]
+
+[GlobalParams]
+  order = FIRST
+  family = LAGRANGE
+  displacements = &#x27;disp_x disp_y disp_z&#x27;
+[]
+
+[Problem]
+ type = ReferenceResidualProblem
+ reference_vector = &#x27;ref&#x27;
+ extra_tag_vectors = &#x27;ref&#x27;
+ group_variables = &#x27;disp_x disp_y disp_z&#x27;
+[]
+
+[Modules]
+  [TensorMechanics]
+    [Master]
+      [all]
+        strain = SMALL
+        add_variables = true
+        new_system = true
+        formulation = TOTAL
+      []
+    []
+  []
+[]
+
+[Kernels]
+    #reaction terms
+    [reaction_realx]
+        type = Reaction
+        variable = disp_x
+        rate = 0# filled by controller
+        extra_vector_tags = &#x27;ref&#x27;
+    []
+    [reaction_realy]
+        type = Reaction
+        variable = disp_y
+        rate = 0# filled by controller
+        extra_vector_tags = &#x27;ref&#x27;
+    []
+    [reaction_realz]
+        type = Reaction
+        variable = disp_z
+        rate = 0# filled by controller
+        extra_vector_tags = &#x27;ref&#x27;
+    []
+[]
+
+[AuxVariables]
+  [disp_mag]
+  []
+[]
+
+[AuxKernels]
+  [disp_mag]
+    type = ParsedAux
+    variable = disp_mag
+    coupled_variables = &#x27;disp_x disp_y disp_z&#x27;
+    expression = &#x27;sqrt(disp_x^2+disp_y^2+disp_z^2)&#x27;
+  []
+[]
+
+[BCs]
+#Left
+[disp_x_left]
+  type = DirichletBC
+  variable = disp_x
+  boundary = &#x27;left&#x27;
+  value = 0.0
+[]
+[disp_y_left]
+  type = DirichletBC
+  variable = disp_y
+  boundary = &#x27;left&#x27;
+  value = 0.0
+[]
+[disp_z_left]
+  type = DirichletBC
+  variable = disp_z
+  boundary = &#x27;left&#x27;
+  value = 0.0
+[]
+#Right
+[BC_right_yreal]
+    type = NeumannBC
+    variable = disp_y
+    boundary = &#x27;right&#x27;
+    value = 1000
+[]
+[BC_right_zreal]
+    type = NeumannBC
+    variable = disp_z
+    boundary = &#x27;right&#x27;
+    value = 1000
+[]
+[]
+
+[Materials]
+  [elastic_tensor_Al]
+    type = ComputeIsotropicElasticityTensor
+    youngs_modulus = 68e9
+    poissons_ratio = 0.36
+  []
+  [compute_stress]
+    type = ComputeLagrangianLinearElasticStress
+  []
+[]
+
+[Postprocessors]
+  [dispMag]
+    type = NodalExtremeValue
+    value_type = max
+    variable = disp_mag
+  []
+[]
+
+[Functions]
+  [./freq2]
+    type = ParsedFunction
+    symbol_names = density
+    symbol_values = 2.7e3 #Al kg/m3
+    expression = &#x27;-t*t*density&#x27;
+  [../]
+[]
+
+[Controls]
+  [./func_control]
+    type = RealFunctionControl
+    parameter = &#x27;Kernels/*/rate&#x27;
+    function = &#x27;freq2&#x27;
+    execute_on = &#x27;initial timestep_begin&#x27;
+  [../]
+[]
+
+[Executioner]
+  type = Transient
+  solve_type=LINEAR
+  petsc_options_iname = &#x27; -pc_type&#x27;
+  petsc_options_value = &#x27;lu&#x27;
+  start_time = 300  #starting frequency
+  end_time =  1200  #ending frequency
+  nl_abs_tol = 1e-6
+  [TimeStepper]
+    type = ConstantDT
+    dt = 50  #frequency stepsize
+  []
+[]
+
+[Outputs]
+  csv=true
+  exodus=false
+  console = false
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#61089a09-aad4-4606-b1b6-826b7eb57820">(moose/modules/tensor_mechanics/examples/wave_propagation/cantilever_sweep.i)</a></div></div><p>This uses the <a href="../../syntax/Modules/TensorMechanics/Master/index.html">TensorMechanics MasterAction</a> to setup the StressDivergence Kernels because this simulation only includes real displacements.  A <code>Transient</code> executioner with a <code>ConstantDT</code> timestepper is used to sweep over frequencies where the time is substituted for the frequency.  The time is converted to the frequency dependent <code>Reaction</code> <code>rate</code> using a <code>ParsedFunction</code> and is applied to the <code>rate</code> using the <code>RealFunctionControl</code>.</p><p>In the next example, imaginary displacements will be introduced by including an absorbing boundary condition.  Imaginary displacement represent a phase shift in the problem and often result from damping.  </p></section><section id="6cf03c91-c858-4cc3-adff-ed07d603386e" data-section-level="1" data-section-text="Uniaxial Beam Example"><h1 id="uniaxial-beam-example">Uniaxial Beam Example</h1><p>In the Fourier domain, The displacement field <span class="moose-katex-inline-equation" id="moose-equation-871d436c-a328-4ef6-a00a-b7ad8d920224"><script>var element = document.getElementById("moose-equation-871d436c-a328-4ef6-a00a-b7ad8d920224");katex.render("U", element, {displayMode:false,throwOnError:false});</script></span> is in general a complex number.  In the previous example, only the real part of the displacement field was accounted for.  In this example, an absorbing boundary condition will introduce a coupling between the real and imaginary displacement fields.  This example uses the uniaxial beam shown in <a href="#cantilever">Figure 1</a> which is subjected to time-harmonic displacement on right and has an absorbing boundary condition on left.</p><p>For the boundary condition, we apply the Sommerfeld radiation condition on the left, and a harmonic source (cosine) on the right as follows: <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-59f5c12e-d957-4cb9-90c1-a3b40a4514a5"></span><span class="moose-katex-equation-number">(6)</span><script>var element = document.getElementById("moose-equation-59f5c12e-d957-4cb9-90c1-a3b40a4514a5");katex.render("    \\sqrt E \\, \\nabla u= i\\sqrt \\rho \\, \\frac{\\partial u}{\\partial t} \\, \\qquad \\text{at} \\, x=0 ", element, {displayMode:true,throwOnError:false});</script></span> The frequency domain version of <a href="#moose-equation-59f5c12e-d957-4cb9-90c1-a3b40a4514a5">Eq. (6)</a> is <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-4f9724e5-178f-453c-8d68-1f8498f9ca73"></span><span class="moose-katex-equation-number">(7)</span><script>var element = document.getElementById("moose-equation-4f9724e5-178f-453c-8d68-1f8498f9ca73");katex.render("    \\frac{\\partial U}{\\partial x} U= ik\\sqrt\\frac{\\rho}{E} U \\qquad \\text{at} \\, x=0,     ", element, {displayMode:true,throwOnError:false});</script></span></p><p>As mentioned before, <span class="moose-katex-inline-equation" id="moose-equation-f8afec08-18e9-4014-b808-45d07796dd5e"><script>var element = document.getElementById("moose-equation-f8afec08-18e9-4014-b808-45d07796dd5e");katex.render("U", element, {displayMode:false,throwOnError:false});</script></span> is complex-valued function/variable in the form of <span class="moose-katex-inline-equation" id="moose-equation-e12f00e4-5b2b-4c9e-8cbe-59eac1f7d95a"><script>var element = document.getElementById("moose-equation-e12f00e4-5b2b-4c9e-8cbe-59eac1f7d95a");katex.render("U_r+iU_i", element, {displayMode:false,throwOnError:false});</script></span> where <span class="moose-katex-inline-equation" id="moose-equation-deba7c2b-50fa-455f-9a26-1b4e80fec561"><script>var element = document.getElementById("moose-equation-deba7c2b-50fa-455f-9a26-1b4e80fec561");katex.render("U_r", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-c86c0103-7c60-4a1a-8030-4e2ce4feeef9"><script>var element = document.getElementById("moose-equation-c86c0103-7c60-4a1a-8030-4e2ce4feeef9");katex.render("U_i", element, {displayMode:false,throwOnError:false});</script></span> are the real and the imaginary part of <span class="moose-katex-inline-equation" id="moose-equation-a4895261-851a-43e0-8967-9100a10db1ef"><script>var element = document.getElementById("moose-equation-a4895261-851a-43e0-8967-9100a10db1ef");katex.render("U", element, {displayMode:false,throwOnError:false});</script></span>.  At this stage, we split the complex system of equations into two real valued systems that live on the same mesh. <a href="#moose-equation-8796b7b0-3100-4616-a237-a108e1fc3d98">Eq. (3)</a> for a complex valued system becomes <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-faaf0fd4-d390-4726-b032-05bc80275117"></span><span class="moose-katex-equation-number">(8)</span><script>var element = document.getElementById("moose-equation-faaf0fd4-d390-4726-b032-05bc80275117");katex.render("    E\\frac{\\partial^2 U_r}{\\partial x^2}- \\rho\\omega^2  U_r = 0     \\\\     E\\frac{\\partial^2 U_i}{\\partial x^2}- \\rho\\omega^2  U_i = 0     ", element, {displayMode:true,throwOnError:false});</script></span> The Sommerfeld boundary conditions are given by <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-c77a4146-d3d1-48c7-a99d-e57b07635ff7"></span><span class="moose-katex-equation-number">(9)</span><script>var element = document.getElementById("moose-equation-c77a4146-d3d1-48c7-a99d-e57b07635ff7");katex.render("   \\frac{\\partial U_r}{\\partial x}= -k U_i\\, \\qquad \\text{at} \\, x=0\\\\    \\frac{\\partial U_i}{\\partial x}= k U_r\\, \\qquad \\text{at} \\, x=0,\\\\    U_r=A \\, \\qquad \\text{at} \\, x=L,\\\\    U_i=0 \\, \\qquad \\text{at} \\, x=L,    ", element, {displayMode:true,throwOnError:false});</script></span> Note that this decomposition is exact and no information is lost from the decomposition into real and imaginary parts. The real and imaginary <a href="StressDivergence.html">Stress Divergence</a> kernels are shown in <a href="#listing1">Listing 2</a>.  Care must be taken in defining these kernels and the respective displacements for the problem.  Setting the displacements in the <code>[GlobalParams]</code> block could have unintended consequences and should be set in the individual kernels that use them.  Also note that, as a result of the radiation BCs on left, <span class="moose-katex-inline-equation" id="moose-equation-bc350422-5840-465d-91ec-ad27ba38d453"><script>var element = document.getElementById("moose-equation-bc350422-5840-465d-91ec-ad27ba38d453");katex.render("U_r", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-5e75d4e3-ccf3-4fac-8223-541ceb9519e6"><script>var element = document.getElementById("moose-equation-5e75d4e3-ccf3-4fac-8223-541ceb9519e6");katex.render("U_i", element, {displayMode:false,throwOnError:false});</script></span> are coupled, hence the two systems in <a href="#moose-equation-faaf0fd4-d390-4726-b032-05bc80275117">Eq. (8)</a> are needed.  The Sommerfeld radiation BCs are applied using a <a href="../../source/bcs/CoupledVarNeumannBC.html">CoupledVarNeumannBC</a> in <a href="#listing2">Listing 3</a>.</p><div class="card moose-float"><div class="card-content"><p class="moose-caption"><span class="moose-caption-heading">Listing 2: </span><span class="moose-caption-text" id="listing1">Real and imaginary <code>StressDivergence</code> and <code>Reaction</code> Kernels.</span></p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[Kernels]
+  #stressdivergence terms
+  [urealx]
+    type = StressDivergenceTensors
+    variable = uxr
+    displacements = &#x27;uxr&#x27;
+    component = 0
+    base_name = real
+  []
+  [uimagx]
+    type = StressDivergenceTensors
+    variable = uxi
+    displacements = &#x27;uxi&#x27;
+    component = 0
+    base_name = imag
+  []
+  #reaction terms
+  [reaction_realx]
+    type = Reaction
+    variable = uxr
+    rate = &#x27;${fparse -w*w}&#x27;
+  []
+  [reaction_imagx]
+    type = Reaction
+    variable = uxi
+    rate = &#x27;${fparse -w*w}&#x27;
+  []
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#9be88607-7fe8-4b8b-a2e7-09ec478bcd72">(moose/modules/tensor_mechanics/examples/wave_propagation/1D_elastic_wave_propagation.i)</a></div></div><div class="card moose-float"><div class="card-content"><p class="moose-caption"><span class="moose-caption-heading">Listing 3: </span><span class="moose-caption-text" id="listing2">Real and imaginary BCs.</span></p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[BCs]
+  #Left
+  [uxr_left]
+    type = CoupledVarNeumannBC
+    variable = uxr
+    boundary = &#x27;left&#x27;
+    v = uxi
+    coef = &#x27;${fparse -w}&#x27;
+  []
+  [uxi_left]
+    type = CoupledVarNeumannBC
+    variable = uxi
+    boundary = &#x27;left&#x27;
+    v = uxr
+    coef = &#x27;${fparse w}&#x27;
+  []
+  #Right
+  [BC_right_xreal]
+    type = DirichletBC
+    variable = uxr
+    boundary = &#x27;right&#x27;
+    value = 0.5
+  []
+  [BC_right_ximag]
+    type = DirichletBC
+    variable = uxi
+    boundary = &#x27;right&#x27;
+    value = 0
+  []
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#94625173-512e-49ed-b131-f4628ad942d0">(moose/modules/tensor_mechanics/examples/wave_propagation/1D_elastic_wave_propagation.i)</a></div></div><p>For this example given in <a href="#listing1">Listing 2</a> and <a href="#listing2">Listing 3</a>, the Young&#x27;s modulus and the density are constants equal to unity.  The amplitude and frequency of the harmonic displacement BC in <a href="#moose-equation-c77a4146-d3d1-48c7-a99d-e57b07635ff7">Eq. (9)</a> are <span class="moose-katex-inline-equation" id="moose-equation-4b2a03a0-eba9-48cd-b24b-09313c29759a"><script>var element = document.getElementById("moose-equation-4b2a03a0-eba9-48cd-b24b-09313c29759a");katex.render("A=5", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-7a944e35-93d4-48a5-a5f4-b7e80ad2663e"><script>var element = document.getElementById("moose-equation-7a944e35-93d4-48a5-a5f4-b7e80ad2663e");katex.render("\\omega=10", element, {displayMode:false,throwOnError:false});</script></span>.</p><p>The analytical solution of <a href="#moose-equation-faaf0fd4-d390-4726-b032-05bc80275117">Eq. (8)</a> and the associated boundary conditions in <a href="#moose-equation-c77a4146-d3d1-48c7-a99d-e57b07635ff7">Eq. (9)</a> are obtained by expressing the solution of <span class="moose-katex-inline-equation" id="moose-equation-8aa275d7-f587-40a5-a60b-a71cc3656e45"><script>var element = document.getElementById("moose-equation-8aa275d7-f587-40a5-a60b-a71cc3656e45");katex.render("U", element, {displayMode:false,throwOnError:false});</script></span> as a combination of sines and cosines representing the traveling and reflecting waves, i.e <span class="moose-katex-inline-equation" id="moose-equation-a04b2ba4-6a8b-465b-a168-6583ec221c67"><script>var element = document.getElementById("moose-equation-a04b2ba4-6a8b-465b-a168-6583ec221c67");katex.render("U=C_1 e^{ikx} + C_2e^{-ikx}", element, {displayMode:false,throwOnError:false});</script></span>.</p><p>Applying the boundary conditions, and considering the wave to travel in the negative <span class="moose-katex-inline-equation" id="moose-equation-c1f0d6d6-0b74-4b49-adcc-c9ec0e3d8f75"><script>var element = document.getElementById("moose-equation-c1f0d6d6-0b74-4b49-adcc-c9ec0e3d8f75");katex.render("x", element, {displayMode:false,throwOnError:false});</script></span> direction, we obtain, <span class="moose-katex-inline-equation" id="moose-equation-506e3198-2c4f-4c56-98e3-59fff87dedd5"><script>var element = document.getElementById("moose-equation-506e3198-2c4f-4c56-98e3-59fff87dedd5");katex.render("C_1=0", element, {displayMode:false,throwOnError:false});</script></span> with <span class="moose-katex-inline-equation" id="moose-equation-f9051071-dab7-4a3e-9b29-34d49da6ec3d"><script>var element = document.getElementById("moose-equation-f9051071-dab7-4a3e-9b29-34d49da6ec3d");katex.render("C_2=0.5/(e^{-ikL})", element, {displayMode:false,throwOnError:false});</script></span>. Plugging these values into the analytical solution gives: <span class="moose-katex-inline-equation" id="moose-equation-26acd150-9a91-4c9e-968f-a138191048c4"><script>var element = document.getElementById("moose-equation-26acd150-9a91-4c9e-968f-a138191048c4");katex.render("U=0.5 e^{ik(L-x)}.", element, {displayMode:false,throwOnError:false});</script></span> The moose solution for this problem is shown in <a href="#solution">Figure 4</a>.</p><div class="card moose-float" style="width:40%;" id="solution"><div class="card-content"><picture class="materialboxed moose-image"><img src="../../media/tensor_mechanics/wavefieldandprofile.png"></img></picture><p class="moose-caption"><span class="moose-caption-heading">Figure 4: </span><span class="moose-caption-text" id="solution">Real and imaginary displacements at <span class="moose-katex-inline-equation" id="moose-equation-5a7048f2-6f9f-403c-9d75-7746548fb462"><script>var element = document.getElementById("moose-equation-5a7048f2-6f9f-403c-9d75-7746548fb462");katex.render("\\omega =10", element, {displayMode:false,throwOnError:false});</script></span>.</span></p></div></div></section><div class="moose-modal modal" id="61089a09-aad4-4606-b1b6-826b7eb57820"><div class="modal-content"><h4>(moose/modules/tensor_mechanics/examples/wave_propagation/cantilever_sweep.i)</h4><pre class="moose-pre"><code class="language-text"># Frequency Response function for cantilever beam:
+# Analytic results: 509Hz and 763Hz
+# Simulation results with coarse mesh: 600Hz and 800Hz
+
+[Mesh]
+   type = GeneratedMesh
+   elem_type = HEX8
+   dim = 3
+   xmin=0
+   xmax=1
+   nx=10
+   ymin=0
+   ymax=0.1
+   ny = 1
+   zmin=0
+   zmax=0.15
+   nz = 2
+[]
+
+[GlobalParams]
+  order = FIRST
+  family = LAGRANGE
+  displacements = &#x27;disp_x disp_y disp_z&#x27;
+[]
+
+[Problem]
+ type = ReferenceResidualProblem
+ reference_vector = &#x27;ref&#x27;
+ extra_tag_vectors = &#x27;ref&#x27;
+ group_variables = &#x27;disp_x disp_y disp_z&#x27;
+[]
+
+[Modules]
+  [TensorMechanics]
+    [Master]
+      [all]
+        strain = SMALL
+        add_variables = true
+        new_system = true
+        formulation = TOTAL
+      []
+    []
+  []
+[]
+
+[Kernels]
+    #reaction terms
+    [reaction_realx]
+        type = Reaction
+        variable = disp_x
+        rate = 0# filled by controller
+        extra_vector_tags = &#x27;ref&#x27;
+    []
+    [reaction_realy]
+        type = Reaction
+        variable = disp_y
+        rate = 0# filled by controller
+        extra_vector_tags = &#x27;ref&#x27;
+    []
+    [reaction_realz]
+        type = Reaction
+        variable = disp_z
+        rate = 0# filled by controller
+        extra_vector_tags = &#x27;ref&#x27;
+    []
+[]
+
+[AuxVariables]
+  [disp_mag]
+  []
+[]
+
+[AuxKernels]
+  [disp_mag]
+    type = ParsedAux
+    variable = disp_mag
+    coupled_variables = &#x27;disp_x disp_y disp_z&#x27;
+    expression = &#x27;sqrt(disp_x^2+disp_y^2+disp_z^2)&#x27;
+  []
+[]
+
+[BCs]
+#Left
+[disp_x_left]
+  type = DirichletBC
+  variable = disp_x
+  boundary = &#x27;left&#x27;
+  value = 0.0
+[]
+[disp_y_left]
+  type = DirichletBC
+  variable = disp_y
+  boundary = &#x27;left&#x27;
+  value = 0.0
+[]
+[disp_z_left]
+  type = DirichletBC
+  variable = disp_z
+  boundary = &#x27;left&#x27;
+  value = 0.0
+[]
+#Right
+[BC_right_yreal]
+    type = NeumannBC
+    variable = disp_y
+    boundary = &#x27;right&#x27;
+    value = 1000
+[]
+[BC_right_zreal]
+    type = NeumannBC
+    variable = disp_z
+    boundary = &#x27;right&#x27;
+    value = 1000
+[]
+[]
+
+[Materials]
+  [elastic_tensor_Al]
+    type = ComputeIsotropicElasticityTensor
+    youngs_modulus = 68e9
+    poissons_ratio = 0.36
+  []
+  [compute_stress]
+    type = ComputeLagrangianLinearElasticStress
+  []
+[]
+
+[Postprocessors]
+  [dispMag]
+    type = NodalExtremeValue
+    value_type = max
+    variable = disp_mag
+  []
+[]
+
+[Functions]
+  [./freq2]
+    type = ParsedFunction
+    symbol_names = density
+    symbol_values = 2.7e3 #Al kg/m3
+    expression = &#x27;-t*t*density&#x27;
+  [../]
+[]
+
+[Controls]
+  [./func_control]
+    type = RealFunctionControl
+    parameter = &#x27;Kernels/*/rate&#x27;
+    function = &#x27;freq2&#x27;
+    execute_on = &#x27;initial timestep_begin&#x27;
+  [../]
+[]
+
+[Executioner]
+  type = Transient
+  solve_type=LINEAR
+  petsc_options_iname = &#x27; -pc_type&#x27;
+  petsc_options_value = &#x27;lu&#x27;
+  start_time = 300  #starting frequency
+  end_time =  1200  #ending frequency
+  nl_abs_tol = 1e-6
+  [TimeStepper]
+    type = ConstantDT
+    dt = 50  #frequency stepsize
+  []
+[]
+
+[Outputs]
+  csv=true
+  exodus=false
+  console = false
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="9be88607-7fe8-4b8b-a2e7-09ec478bcd72"><div class="modal-content"><h4>(moose/modules/tensor_mechanics/examples/wave_propagation/1D_elastic_wave_propagation.i)</h4><pre class="moose-pre"><code class="language-text">w=10 #frequency
+[Mesh]
+   type = GeneratedMesh
+   dim = 1
+   xmin=0
+   xmax=1
+   nx = 1000
+[]
+
+[Variables]
+    [uxr]
+       order = FIRST
+       family = LAGRANGE
+    []
+    [uxi]
+       order = FIRST
+       family = LAGRANGE
+    []
+[]
+
+[Kernels]
+  #stressdivergence terms
+    [urealx]
+        type = StressDivergenceTensors
+        variable = uxr
+        displacements=&#x27;uxr&#x27;
+        component = 0
+        base_name = real
+    []
+    [uimagx]
+        type = StressDivergenceTensors
+        variable = uxi
+        displacements=&#x27;uxi&#x27;
+        component = 0
+        base_name = imag
+    []
+    #reaction terms
+    [reaction_realx]
+        type = Reaction
+        variable = uxr
+        rate = ${fparse -w*w}
+    []
+    [reaction_imagx]
+        type = Reaction
+        variable = uxi
+        rate = ${fparse -w*w}
+    []
+[]
+
+[BCs]
+#Left
+[uxr_left]
+      type = CoupledVarNeumannBC
+      variable = uxr
+      boundary = &#x27;left&#x27;
+      v = uxi
+      coef=${fparse -w}
+[]
+[uxi_left]
+      type = CoupledVarNeumannBC
+      variable = uxi
+      boundary = &#x27;left&#x27;
+      v = uxr
+      coef=${fparse w}
+[]
+  #Right
+  [BC_right_xreal]
+        type = DirichletBC
+        variable = uxr
+        boundary = &#x27;right&#x27;
+        value = 0.5
+  []
+  [BC_right_ximag]
+        type = DirichletBC
+        variable = uxi
+        boundary = &#x27;right&#x27;
+        value = 0
+  []
+[]
+
+[Materials]
+
+  [elasticity_tensor_real]
+    type = ComputeIsotropicElasticityTensor
+    base_name = real
+    youngs_modulus = 1
+    poissons_ratio = 0.0
+  []
+  [strain_real]
+    type = ComputeSmallStrain
+    base_name = real
+    displacements=&#x27;uxr&#x27;
+  []
+  [stress_real]
+    type = ComputeLinearElasticStress
+    base_name = real
+  []
+
+   [elasticity_tensor_imag]
+    type = ComputeIsotropicElasticityTensor
+    base_name = imag
+    youngs_modulus = 1
+    poissons_ratio = 0.0
+  []
+  [strain_imag]
+    type = ComputeSmallStrain
+    base_name = imag
+    displacements=&#x27;uxi&#x27;
+  []
+  [stress_imag]
+    type = ComputeLinearElasticStress
+    base_name = imag
+  []
+
+[]
+[VectorPostprocessors]
+  [midpt_real]
+    type = PointValueSampler
+    variable = uxr
+    points = &#x27;0.5 0.0 0&#x27;
+    sort_by = id
+  []
+  [midpt_imag]
+    type = PointValueSampler
+    variable = uxi
+    points = &#x27;0.5 0.0 0&#x27;
+    sort_by = id
+    []
+[]
+[Outputs]
+    csv=true
+    exodus=true
+[]
+
+[Executioner]
+  type = Steady
+  solve_type=LINEAR
+  petsc_options_iname = &#x27; -pc_type&#x27;
+  petsc_options_value = &#x27;lu&#x27;
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="94625173-512e-49ed-b131-f4628ad942d0"><div class="modal-content"><h4>(moose/modules/tensor_mechanics/examples/wave_propagation/1D_elastic_wave_propagation.i)</h4><pre class="moose-pre"><code class="language-text">w=10 #frequency
+[Mesh]
+   type = GeneratedMesh
+   dim = 1
+   xmin=0
+   xmax=1
+   nx = 1000
+[]
+
+[Variables]
+    [uxr]
+       order = FIRST
+       family = LAGRANGE
+    []
+    [uxi]
+       order = FIRST
+       family = LAGRANGE
+    []
+[]
+
+[Kernels]
+  #stressdivergence terms
+    [urealx]
+        type = StressDivergenceTensors
+        variable = uxr
+        displacements=&#x27;uxr&#x27;
+        component = 0
+        base_name = real
+    []
+    [uimagx]
+        type = StressDivergenceTensors
+        variable = uxi
+        displacements=&#x27;uxi&#x27;
+        component = 0
+        base_name = imag
+    []
+    #reaction terms
+    [reaction_realx]
+        type = Reaction
+        variable = uxr
+        rate = ${fparse -w*w}
+    []
+    [reaction_imagx]
+        type = Reaction
+        variable = uxi
+        rate = ${fparse -w*w}
+    []
+[]
+
+[BCs]
+#Left
+[uxr_left]
+      type = CoupledVarNeumannBC
+      variable = uxr
+      boundary = &#x27;left&#x27;
+      v = uxi
+      coef=${fparse -w}
+[]
+[uxi_left]
+      type = CoupledVarNeumannBC
+      variable = uxi
+      boundary = &#x27;left&#x27;
+      v = uxr
+      coef=${fparse w}
+[]
+  #Right
+  [BC_right_xreal]
+        type = DirichletBC
+        variable = uxr
+        boundary = &#x27;right&#x27;
+        value = 0.5
+  []
+  [BC_right_ximag]
+        type = DirichletBC
+        variable = uxi
+        boundary = &#x27;right&#x27;
+        value = 0
+  []
+[]
+
+[Materials]
+
+  [elasticity_tensor_real]
+    type = ComputeIsotropicElasticityTensor
+    base_name = real
+    youngs_modulus = 1
+    poissons_ratio = 0.0
+  []
+  [strain_real]
+    type = ComputeSmallStrain
+    base_name = real
+    displacements=&#x27;uxr&#x27;
+  []
+  [stress_real]
+    type = ComputeLinearElasticStress
+    base_name = real
+  []
+
+   [elasticity_tensor_imag]
+    type = ComputeIsotropicElasticityTensor
+    base_name = imag
+    youngs_modulus = 1
+    poissons_ratio = 0.0
+  []
+  [strain_imag]
+    type = ComputeSmallStrain
+    base_name = imag
+    displacements=&#x27;uxi&#x27;
+  []
+  [stress_imag]
+    type = ComputeLinearElasticStress
+    base_name = imag
+  []
+
+[]
+[VectorPostprocessors]
+  [midpt_real]
+    type = PointValueSampler
+    variable = uxr
+    points = &#x27;0.5 0.0 0&#x27;
+    sort_by = id
+  []
+  [midpt_imag]
+    type = PointValueSampler
+    variable = uxi
+    points = &#x27;0.5 0.0 0&#x27;
+    sort_by = id
+    []
+[]
+[Outputs]
+    csv=true
+    exodus=true
+[]
+
+[Executioner]
+  type = Steady
+  solve_type=LINEAR
+  petsc_options_iname = &#x27; -pc_type&#x27;
+  petsc_options_value = &#x27;lu&#x27;
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>

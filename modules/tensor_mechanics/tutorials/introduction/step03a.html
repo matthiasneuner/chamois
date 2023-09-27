@@ -1,0 +1,250 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>Step 3 a Thermal expansion | Chamois</title><link rel="icon" type="image/x-icon" href="../../../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../../../contrib/jquery/jquery.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../../../media/framework/github-logo.png" class="github-mark"></img><img src="../../../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../../../getting_started.html">Getting Started</a></li><li><a href="../../../../singularity.html">Singularity container</a></li><li><a href="../../../../publications.html">Publications</a></li><li><a href="../../../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="761e972d-af1b-4ef9-be40-9f215b27c4a7" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="01dfa125-6422-44ad-ac2f-860bdf532b2a"><i class="material-icons">menu</i></a><ul class="sidenav" id="01dfa125-6422-44ad-ac2f-860bdf532b2a"><li><a href="../../../../getting_started.html">Getting Started</a></li><li><a href="../../../../singularity.html">Singularity container</a></li><li><a href="../../../../publications.html">Publications</a></li><li><a href="../../../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="867a8f73-7055-4cbb-b5c6-22c785a07bb1" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="761e972d-af1b-4ef9-be40-9f215b27c4a7"><li><a href="../../../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="867a8f73-7055-4cbb-b5c6-22c785a07bb1"><li><a href="../../../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="75f79e12-1ac4-4fd3-9305-be06f3bc8fd6" data-section-level="1" data-section-text="Step 3 a - Thermal expansion"><h1 id="step-3-a-thermal-expansion">Step 3a - Thermal expansion</h1><p>In this sidebar we&#x27;ll introduce a thermal expansion eigenstrain. To demonstrate the effect we reshape the domain from step 3 and make it narrow like a cantilever.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">#
+# Added subdomains and subdomain-specific properties
+# https://mooseframework.inl.gov/modules/tensor_mechanics/tutorials/introduction/step03.html
+#
+
+[GlobalParams]
+  displacements = &#x27;disp_x disp_y&#x27;
+[]
+
+[Mesh]
+  [generated]
+    type = GeneratedMeshGenerator
+    dim = 2
+    nx = 10
+    ny = 20
+    xmin = -0.25
+    xmax = 0.25
+    ymax = 5
+  []
+  [block1]
+    type = SubdomainBoundingBoxGenerator
+    input = generated
+    block_id = 1
+    bottom_left = &#x27;-0.25 0 0&#x27;
+    top_right = &#x27;0 5 0&#x27;
+  []
+  [block2]
+    type = SubdomainBoundingBoxGenerator
+    input = block1
+    block_id = 2
+    bottom_left = &#x27;0 0 0&#x27;
+    top_right = &#x27;0.25 5 0&#x27;
+  []
+
+  # select a single node in the center of the bottom boundary
+  [pin]
+    type = ExtraNodesetGenerator
+    input = block2
+    new_boundary = pin
+    coord = &#x27;0 0 0&#x27;
+  []
+[]
+
+[AuxVariables]
+  [T]
+  []
+[]
+
+[AuxKernels]
+  [temperature_ramp]
+    type = FunctionAux
+    execute_on = TIMESTEP_BEGIN
+    variable = T
+    function = 300+5*t
+  []
+[]
+
+[Modules/TensorMechanics/Master]
+  [all]
+    add_variables = true
+    automatic_eigenstrain_names = true
+    generate_output = &#x27;vonmises_stress&#x27;
+  []
+[]
+
+[BCs]
+  [pin_x]
+    type = DirichletBC
+    variable = disp_x
+    boundary = pin
+    value = 0
+  []
+  [bottom_y]
+    type = DirichletBC
+    variable = disp_y
+    boundary = bottom
+    value = 0
+  []
+[]
+
+[Materials]
+  [elasticity]
+    type = ComputeIsotropicElasticityTensor
+    youngs_modulus = 1e9
+    poissons_ratio = 0.3
+  []
+  [expansion1]
+    type = ComputeThermalExpansionEigenstrain
+    temperature = T
+    thermal_expansion_coeff = 0.001
+    stress_free_temperature = 300
+    eigenstrain_name = thermal_expansion
+    block = 1
+  []
+  [expansion2]
+    type = ComputeThermalExpansionEigenstrain
+    temperature = T
+    thermal_expansion_coeff = 0.002
+    stress_free_temperature = 300
+    eigenstrain_name = thermal_expansion
+    block = 2
+  []
+  [stress]
+    type = ComputeLinearElasticStress
+  []
+[]
+
+[Executioner]
+  type = Transient
+  solve_type = NEWTON
+  petsc_options_iname = &#x27;-pc_type&#x27;
+  petsc_options_value = &#x27;lu&#x27;
+  end_time = 5
+  dt = 1
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#86c36710-7670-4674-b43a-0872a41a9a04">(moose/modules/tensor_mechanics/tutorials/introduction/mech_step03a.i)</a><section id="9a27676a-be09-46d1-a941-a30d1d64b934" data-section-level="2" data-section-text="Input file"><h2 id="input-file">Input file</h2><section id="6e4628d7-d7e5-40c8-b7d0-cefd5af563f3" data-section-level="3" data-section-text="Mesh"><h3><code>Mesh</code></h3><p>Note the xmin and xmax upper <em>and</em> lower x-dimension extents are supplied here. The origin will lie in the center of the bottom boundary of this generated mesh.</p><p>New is the <a href="../../../../source/meshgenerators/ExtraNodesetGenerator.html"><code>ExtraNodesetGenerator</code></a> which we append to the existing chain of mesh generators. This generator allows us to create a new nodeset containing all nodes located at the coordinates the user specified in <a href="#0d314699-610c-4f81-b03a-04710dc2b2f5" class="moose-modal-link modal-trigger">&quot;coord&quot;</a>. Here we create a nodeset containing the single node at the origin. You need to make sure that a node actually exists at each specified coordinate! We call this nodeset <code>pin</code> for obvious reasons and will use it below in the BCs.</p></section><section id="5a7a213d-3590-46b4-ac7e-22548b194cac" data-section-level="3" data-section-text="AuxVariables"><h3><code>AuxVariables</code></h3><p>We introduce a new auxiliary variable <code>T</code> (for temperature). Auxiliary variables are variables we&#x27;re not solving for, but are computing directly. To simplify this step we are not solving a heat conduction problem, but instead just prescribing a global temperature that is rising with time (see next section). Auxiliary variables can be coupled in everywhere regular (so called <em>nonlinear</em>) variables are coupled. They are a great tool for simplifying a model during development.</p></section><section id="46c15a96-b5ce-445b-b9b3-4f0ca9dfa62e" data-section-level="3" data-section-text="AuxKernels"><h3><code>AuxKernels</code></h3><p>The <a href="../../../../source/auxkernels/FunctionAux.html"><code>FunctionAux</code></a> AuxKernel can set an AuxVariable to a function of space and time. Note the <a href="#a73c91be-799a-4568-b8eb-2e6784b512df" class="moose-modal-link modal-trigger">&quot;execute_on&quot;</a> parameter that is available in many MOOSE systems. Here we skip execution during LINEAR and NON_LINEAR iterations and only update the variable value at the beginning of the timestep.</p></section><section id="ba65175c-717f-414f-bb3e-b6f98d44b103" data-section-level="3" data-section-text="TensorMechanics Action Master"><h3 id="tensormechanics-action">TensorMechanics <code>Master</code> Action</h3><p>We&#x27;ve added the <a href="#643de4f5-a8b5-44ec-89e8-f5a1e659d4af" class="moose-modal-link modal-trigger">&quot;automatic_eigenstrain_names&quot;</a> parameter to the master action. With this option enabled the master action will try to automatically detect all material objects that provide eigenstrain properties. This works well for most scenarios. Note that MOOSE will print a list of detected eigenstrain names very early in its console output. Look for</p><pre class="moose-pre"><code class="language-text">
+*** Automatic Eigenstrain Names ***
+all: thermal_expansion
+</code></pre><p>when you run this example. Here <code>all</code> is the master action block name and <code>thermal_expansion</code> is the <a href="#cf56c014-ec9d-425b-9b7a-17c02516e232" class="moose-modal-link modal-trigger">&quot;eigenstrain_name&quot;</a> parameter value for the two eigenstrain materials below. The action correctly detected it and verified that eigenstrains are provided on all subdomains covered by the master action block. To manually supply the eigenstrain material properties use the <a href="#7aa23752-fd5d-4d57-a911-36829be3348e" class="moose-modal-link modal-trigger">&quot;eigenstrain_names&quot;</a> parameter. Like so</p><pre class="moose-pre"><code class="language-text">
+[Modules/TensorMechanics/Master]
+  [all]
+    add_variables = true
+    eigenstrain_names = &#x27;thermal_expansion&#x27;
+    generate_output = &#x27;vonmises_stress&#x27;
+  []
+[]
+</code></pre></section><section id="6d5cb36b-2274-4810-82bf-7b76e23df5be" data-section-level="3" data-section-text="BCs"><h3><code>BCs</code></h3><p>We have changed the way we apply the boundary condition on the x displacement variable <code>disp_x</code> to only constrain this variable at the <code>pin</code> &quot;boundary&quot;. Above we defined this boundary as the nodeset containing the single node at (0,0,0).</p><p>Pinning at a single point is less restrictive and allows the model to expand in x-direction along the bottom boundary (which will happen due to isotropic thermal expansion). Yet we still remove all rigid body modes</p><ul class="browser-default"><li><p>Translation, because we fix both x and y displacement on <em>at least</em> one node </p></li><li><p>Rotation, because we fix y displacement on another node (actually on all nodes along the bottom boundary)</p></li></ul><p>Pinning nodes to remove rigid body modes is an important tool to create mechanics simulations that converge. The presence of rigid body modes will lead to <em></em>non-convergence**. BCs on single nodes rather than whole boundaries can help avoid overconstraining your problems. Keep in mind that to remove all 6 rigid body modes in a 3D simulation you need to apply BCs on at least 3 nodes (which cannot be co-linear). One node will have to be constrained in 3 direction, one in 2 and one in just one direction. The first node will remove three translation modes. The second node will remove two rotational modes (and will establish an axis of rotation). The third node will remove that final rotational mode.</p></section><section id="d5844264-745f-4d03-9fcc-6d185dd04982" data-section-level="3" data-section-text="Materials"><h3><code>Materials</code></h3><p>An &quot;Eigenstrain&quot; in MOOSE is a stress free strain. It is an intrinsic shape change of a volume element due to effects like thermal expansion, swelling, diffusion of over/undersized solutes, etc.</p><p>We use two <a href="../../../../source/materials/ComputeThermalExpansionEigenstrain.html"><code>ComputeThermalExpansionEigenstrain</code></a> objects to compute an eigenstrain tensor in each of the two subdomains. The <a href="#ec031cbb-ccb6-45d6-92d8-ec42ba3aed5d" class="moose-modal-link modal-trigger">&quot;stress_free_temperature&quot;</a> is set to 300K, which is the initial temperature set for the <code>T</code> AuxVariable. At this temperature we assume the eigenstrain to be zero (with contraction at temperatures lower than 300K and expansion above).  The <a href="#cccf9c3d-b08c-42cf-8c56-f9b2149ed7eb" class="moose-modal-link modal-trigger">&quot;thermal_expansion_coeff&quot;</a> is chosen differently on the two subdomains. This effectively models a bimetallic strip.</p></section></section><section id="6894c4e9-a50e-4beb-a0dc-60aa2881cf92" data-section-level="2" data-section-text="Questions"><h2 id="questions">Questions</h2><section id="be9479fd-c1fc-4f5a-b271-005cbb39ada4" data-section-level="3" data-section-text="Expected outcome"><h3 id="expected-outcome">Expected outcome</h3><blockquote><p>Think about what you expect to happen when you run the input.</p></blockquote><p><a href="answer03b.html">Click here for the answer.</a></p></section><section id="1f98bb94-afc3-4759-a778-b09afd58c6ef" data-section-level="3" data-section-text="Overconstraining"><h3 id="overconstraining">Overconstraining</h3><blockquote><p>Apply the <code>disp_x</code> boundary condition to the entire bottom surface again and observe what happens. Undo that change before you move on to the next question.</p></blockquote><p><a href="answer03c.html">Click here for the answer.</a></p></section><section id="5665f596-64fe-4a69-b606-ccf2070b7cf8" data-section-level="3" data-section-text="Constraining even less"><h3 id="constraining-even-less">Constraining even less</h3><blockquote><p>In the original input we&#x27;re fixing the y displacement to 0 in the entire bottom boundary. Try to relax this constraint a bit try to add a second single node boundary using the <code>ExtraNodesetGenerator</code> (chained in after the <code>pin</code> generator). Use one of the two bottom corner nodes. Now think about where you have to apply the <code>disp_y != 0</code> boundary condition.</p></blockquote><p><a href="answer03d.html">Click here for the answer.</a></p><p>Once you&#x27;ve answered the questions and run this example we will move on to <a href="step04.html">Step 4</a>  and setup a cantilever problem that prepares us for contact. </p></section></section></section><div class="moose-modal modal" id="86c36710-7670-4674-b43a-0872a41a9a04"><div class="modal-content"><h4>(moose/modules/tensor_mechanics/tutorials/introduction/mech_step03a.i)</h4><pre class="moose-pre"><code class="language-text">#
+# Added subdomains and subdomain-specific properties
+# https://mooseframework.inl.gov/modules/tensor_mechanics/tutorials/introduction/step03.html
+#
+
+[GlobalParams]
+  displacements = &#x27;disp_x disp_y&#x27;
+[]
+
+[Mesh]
+  [generated]
+    type = GeneratedMeshGenerator
+    dim = 2
+    nx = 10
+    ny = 20
+    xmin = -0.25
+    xmax = 0.25
+    ymax = 5
+  []
+  [block1]
+    type = SubdomainBoundingBoxGenerator
+    input = generated
+    block_id = 1
+    bottom_left = &#x27;-0.25 0 0&#x27;
+    top_right = &#x27;0 5 0&#x27;
+  []
+  [block2]
+    type = SubdomainBoundingBoxGenerator
+    input = block1
+    block_id = 2
+    bottom_left = &#x27;0 0 0&#x27;
+    top_right = &#x27;0.25 5 0&#x27;
+  []
+
+  # select a single node in the center of the bottom boundary
+  [pin]
+    type = ExtraNodesetGenerator
+    input = block2
+    new_boundary = pin
+    coord = &#x27;0 0 0&#x27;
+  []
+[]
+
+[AuxVariables]
+  [T]
+  []
+[]
+
+[AuxKernels]
+  [temperature_ramp]
+    type = FunctionAux
+    execute_on = TIMESTEP_BEGIN
+    variable = T
+    function = 300+5*t
+  []
+[]
+
+[Modules/TensorMechanics/Master]
+  [all]
+    add_variables = true
+    automatic_eigenstrain_names = true
+    generate_output = &#x27;vonmises_stress&#x27;
+  []
+[]
+
+[BCs]
+  [pin_x]
+    type = DirichletBC
+    variable = disp_x
+    boundary = pin
+    value = 0
+  []
+  [bottom_y]
+    type = DirichletBC
+    variable = disp_y
+    boundary = bottom
+    value = 0
+  []
+[]
+
+[Materials]
+  [elasticity]
+    type = ComputeIsotropicElasticityTensor
+    youngs_modulus = 1e9
+    poissons_ratio = 0.3
+  []
+  [expansion1]
+    type = ComputeThermalExpansionEigenstrain
+    temperature = T
+    thermal_expansion_coeff = 0.001
+    stress_free_temperature = 300
+    eigenstrain_name = thermal_expansion
+    block = 1
+  []
+  [expansion2]
+    type = ComputeThermalExpansionEigenstrain
+    temperature = T
+    thermal_expansion_coeff = 0.002
+    stress_free_temperature = 300
+    eigenstrain_name = thermal_expansion
+    block = 2
+  []
+  [stress]
+    type = ComputeLinearElasticStress
+  []
+[]
+
+[Executioner]
+  type = Transient
+  solve_type = NEWTON
+  petsc_options_iname = &#x27;-pc_type&#x27;
+  petsc_options_value = &#x27;lu&#x27;
+  end_time = 5
+  dt = 1
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="0d314699-610c-4f81-b03a-04710dc2b2f5"><div class="modal-content"><h4>coord</h4><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::vector&lt;double&gt;&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The nodes with coordinates you want to be in the nodeset. Separate multple coords with ';' (Either this parameter or "nodes" must be supplied).</p></div></div><div class="moose-modal modal" id="a73c91be-799a-4568-b8eb-2e6784b512df"><div class="modal-content"><h4>execute_on</h4><p class="moose-parameter-description-default"><span>Default:</span>LINEAR TIMESTEP_END</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>ExecFlagEnum</p><p class="moose-parameter-description-options"><span>Options:</span>NONE, INITIAL, LINEAR, NONLINEAR, TIMESTEP_END, TIMESTEP_BEGIN, MULTIAPP_FIXED_POINT_END, MULTIAPP_FIXED_POINT_BEGIN, FINAL, CUSTOM, ALWAYS, PRE_DISPLACE</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of flag(s) indicating when this object should be executed, the available options include NONE, INITIAL, LINEAR, NONLINEAR, TIMESTEP_END, TIMESTEP_BEGIN, MULTIAPP_FIXED_POINT_END, MULTIAPP_FIXED_POINT_BEGIN, FINAL, CUSTOM, ALWAYS, PRE_DISPLACE.</p></div></div><div class="moose-modal modal" id="643de4f5-a8b5-44ec-89e8-f5a1e659d4af"><div class="modal-content"><h4>automatic_eigenstrain_names</h4><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Collects all material eigenstrains and passes to required strain calculator within TMA internally.</p></div></div><div class="moose-modal modal" id="cf56c014-ec9d-425b-9b7a-17c02516e232"><div class="modal-content"><h4>eigenstrain_name</h4><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::string</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Material property name for the eigenstrain tensor computed by this model. IMPORTANT: The name of this property must also be provided to the strain calculator.</p></div></div><div class="moose-modal modal" id="7aa23752-fd5d-4d57-a911-36829be3348e"><div class="modal-content"><h4>eigenstrain_names</h4><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;MaterialPropertyName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>List of eigenstrains to be applied in this strain calculation</p></div></div><div class="moose-modal modal" id="ec031cbb-ccb6-45d6-92d8-ec42ba3aed5d"><div class="modal-content"><h4>stress_free_temperature</h4><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;VariableName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Reference temperature at which there is no thermal expansion for thermal eigenstrain calculation</p></div></div><div class="moose-modal modal" id="cccf9c3d-b08c-42cf-8c56-f9b2149ed7eb"><div class="modal-content"><h4>thermal_expansion_coeff</h4><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>Yes</p><p class="moose-parameter-description"><span>Description:</span>Thermal expansion coefficient</p></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../../../js/init.js"></script><script type="text/javascript" src="../../../../js/navigation.js"></script><script type="text/javascript" src="../../../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../../../js/search_index.js"></script><script type="text/javascript" src="../../../../js/sqa_moose.js"></script>

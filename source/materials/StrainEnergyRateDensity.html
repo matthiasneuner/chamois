@@ -1,0 +1,141 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>Strain Energy Rate Density | Chamois</title><link rel="icon" type="image/x-icon" href="../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="9e36e668-97e4-43a9-9c7f-e0792c9ad141" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="c74a0697-2986-43a6-9af9-b0f0fec3de79"><i class="material-icons">menu</i></a><ul class="sidenav" id="c74a0697-2986-43a6-9af9-b0f0fec3de79"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="7dc39482-4faa-47d5-9888-fa682a81ce33" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="9e36e668-97e4-43a9-9c7f-e0792c9ad141"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="7dc39482-4faa-47d5-9888-fa682a81ce33"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="dce86d2b-8414-418b-9003-14ebb8b000fa" data-section-level="1" data-section-text="Strain Energy Rate Density"><h1 id="strain-energy-rate-density">Strain Energy Rate Density</h1><p>Computes the strain energy density rate using a combination of the elastic and inelastic components of the strain increment, which is a valid assumption for monotonic behavior.</p><section id="739e6a48-bc10-4823-96c5-9b5334b8840e" data-section-level="2" data-section-text="Description"><h2 id="description">Description</h2><p>This material computes the strain energy rate density, <span class="moose-katex-inline-equation" id="moose-equation-7aa8d110-f890-470d-84c5-b6217d9cbe2d"><script>var element = document.getElementById("moose-equation-7aa8d110-f890-470d-84c5-b6217d9cbe2d");katex.render("\\dot{u}", element, {displayMode:false,throwOnError:false});</script></span>, which is defined as the time rate of the strain energy density (see <a href="StrainEnergyDensity.html"><code>StrainEnergyDensity</code></a>): <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-ec6684da-a1ad-4db1-acdb-60a9700c5d29"></span><span class="moose-katex-equation-number">(1)</span><script>var element = document.getElementById("moose-equation-ec6684da-a1ad-4db1-acdb-60a9700c5d29");katex.render("     \\dot{u} = \\int \\boldsymbol{\\sigma} : \\textrm{d}\\dot{\\boldsymbol{\\epsilon}}", element, {displayMode:true,throwOnError:false});</script></span> where <span class="moose-katex-inline-equation" id="moose-equation-229b8341-5530-47fd-977d-ab69819867b6"><script>var element = document.getElementById("moose-equation-229b8341-5530-47fd-977d-ab69819867b6");katex.render("\\boldsymbol{\\sigma}", element, {displayMode:false,throwOnError:false});</script></span> is the stress tensor and <span class="moose-katex-inline-equation" id="moose-equation-c08288f9-7270-4e7d-aec5-f73673e1e2b9"><script>var element = document.getElementById("moose-equation-c08288f9-7270-4e7d-aec5-f73673e1e2b9");katex.render("\\dot{\\boldsymbol{\\epsilon}}", element, {displayMode:false,throwOnError:false});</script></span> is the strain rate. This expression is multiplied by <span class="moose-katex-inline-equation" id="moose-equation-2a1f5749-145f-4a9f-99ca-64d965b30394"><script>var element = document.getElementById("moose-equation-2a1f5749-145f-4a9f-99ca-64d965b30394");katex.render("\\frac{n}{n+1}", element, {displayMode:false,throwOnError:false});</script></span>, where <span class="moose-katex-inline-equation" id="moose-equation-410e062a-a124-4be8-8fde-b4ef6209c67d"><script>var element = document.getElementById("moose-equation-410e062a-a124-4be8-8fde-b4ef6209c67d");katex.render("n", element, {displayMode:false,throwOnError:false});</script></span> is the power law exponent of the material provided though the <code>inelastic_models</code> input parameter. This factor decreases the strain energy rate density to better capture the strain rate field around a crack under steady-state creep growth. This factor is primarily used to compute the C(t) integral, see <a href="../../modules/tensor_mechanics/FractureIntegrals.html"><code>FractureIntegrals</code></a>.</p><p>The strain rate here is the sum of the elastic and inelastic (e.g. plastic, creep) strain rates.</p><p>This class is available both for manually coded Jacobian and automatic differentiation strategies.</p></section><section id="d0029a54-22a1-4b1d-8171-943397312c8d" data-section-level="2" data-section-text="Example Input File"><h2 id="example-input-file">Example Input File</h2><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[strain_energy_rate_density]
+  type = ADStrainEnergyRateDensity
+  inelastic_models = &#x27;powerlawcrp&#x27;
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#662cf88a-5c1a-45a7-bd04-9a6d23ac9337">(moose/modules/tensor_mechanics/test/tests/strain_energy_density/ad_rate_model_weak_plane.i)</a></section><section id="97f033ab-ad18-4359-928f-981125d1c69b" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="4f22bc69-8a17-40f9-9674-39b41b5188e0" data-section-level="3" data-section-text="Required Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">inelastic_models</span><span class="moose-parameter-header-description">The material objects to use to calculate the strain energy rate density.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;MaterialName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The material objects to use to calculate the strain energy rate density.</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Required Parameters</h3></summary></details></section><section id="ffd125ea-e1d0-4dcf-ac08-dd2fabf72fce" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">base_name</span><span class="moose-parameter-header-description">Optional parameter that allows the user to define multiple mechanics material systems on the same block, i.e. for multiple phases</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::string</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Optional parameter that allows the user to define multiple mechanics material systems on the same block, i.e. for multiple phases</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">block</span><span class="moose-parameter-header-description">The list of blocks (ids or names) that this object will be applied</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;SubdomainName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of blocks (ids or names) that this object will be applied</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">boundary</span><span class="moose-parameter-header-description">The list of boundaries (ids or names) from the mesh where this object applies</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;BoundaryName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of boundaries (ids or names) from the mesh where this object applies</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">compute</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">When false, MOOSE will not call compute methods on this material. The user must call computeProperties() after retrieving the MaterialBase via MaterialBasePropertyInterface::getMaterialBase(). Non-computed MaterialBases are not sorted for dependencies.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>When false, MOOSE will not call compute methods on this material. The user must call computeProperties() after retrieving the MaterialBase via MaterialBasePropertyInterface::getMaterialBase(). Non-computed MaterialBases are not sorted for dependencies.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">constant_on</span><span class="moose-parameter-header-default">NONE</span><span class="moose-parameter-header-description">When ELEMENT, MOOSE will only call computeQpProperties() for the 0th quadrature point, and then copy that value to the other qps.When SUBDOMAIN, MOOSE will only call computeQpProperties() for the 0th quadrature point, and then copy that value to the other qps. Evaluations on element qps will be skipped</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>NONE</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>NONE, ELEMENT, SUBDOMAIN</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>When ELEMENT, MOOSE will only call computeQpProperties() for the 0th quadrature point, and then copy that value to the other qps.When SUBDOMAIN, MOOSE will only call computeQpProperties() for the 0th quadrature point, and then copy that value to the other qps. Evaluations on element qps will be skipped</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">declare_suffix</span><span class="moose-parameter-header-description">An optional suffix parameter that can be appended to any declared properties. The suffix will be prepended with a '_' character.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>An optional suffix parameter that can be appended to any declared properties. The suffix will be prepended with a '_' character.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">prop_getter_suffix</span><span class="moose-parameter-header-description">An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="88bf6a88-1ed3-447b-babb-62270206740d" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>Yes</p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">implicit</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Determines whether this object is calculated using an implicit or explicit form</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Determines whether this object is calculated using an implicit or explicit form</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">seed</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">The seed for the master random number generator</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>unsigned int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The seed for the master random number generator</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_displaced_mesh</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section><section id="a15495ea-4e6c-4b3c-b8af-72399eea21c3" data-section-level="3" data-section-text="Outputs Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">output_properties</span><span class="moose-parameter-header-description">List of material properties, from this material, to output (outputs must also be defined to an output type)</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>List of material properties, from this material, to output (outputs must also be defined to an output type)</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">outputs</span><span class="moose-parameter-header-default">none </span><span class="moose-parameter-header-description">Vector of output names where you would like to restrict the output of variables(s) associated with this object</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>none </p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;OutputName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Vector of output names where you would like to restrict the output of variables(s) associated with this object</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Outputs Parameters</h3></summary></details></section></section><section id="defde4c4-cb01-407b-9374-aec9738f4505" data-section-level="2" data-section-text="References"><h2 id="references">References</h2>No citations exist within this document.</section></section><div class="moose-modal modal" id="662cf88a-5c1a-45a7-bd04-9a6d23ac9337"><div class="modal-content"><h4>(moose/modules/tensor_mechanics/test/tests/strain_energy_density/ad_rate_model_weak_plane.i)</h4><pre class="moose-pre"><code class="language-text"># Single element test to check the strain energy density calculation
+
+[GlobalParams]
+  displacements = &#x27;disp_x disp_y&#x27;
+  volumetric_locking_correction = true
+  out_of_plane_strain = strain_zz
+[]
+
+[Mesh]
+  type = GeneratedMesh
+  dim = 2
+  nx = 1
+  ny = 1
+  xmin = 0
+  xmax = 1
+  ymin = 0
+  ymax = 2
+[]
+
+[AuxVariables]
+  [SERD]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+[]
+
+[Variables]
+  [strain_zz]
+  []
+[]
+
+[Functions]
+  [rampConstantUp]
+    type = PiecewiseLinear
+    x = &#x27;0. 1.&#x27;
+    y = &#x27;0. 1.&#x27;
+    scale_factor = -100
+  []
+[]
+
+[Modules/TensorMechanics/Master]
+  [master]
+    strain = FINITE
+    add_variables = true
+    incremental = true
+    generate_output = &#x27;stress_xx stress_yy stress_zz vonmises_stress strain_xx strain_yy&#x27;
+    planar_formulation = WEAK_PLANE_STRESS
+    use_automatic_differentiation = true
+  []
+[]
+
+[AuxKernels]
+  [SERD]
+    type = MaterialRealAux
+    variable = SERD
+    property = strain_energy_rate_density
+    execute_on = timestep_end
+  []
+[]
+
+[BCs]
+  [no_x]
+    type = ADDirichletBC
+    variable = disp_x
+    boundary = &#x27;left&#x27;
+    value = 0.0
+  []
+  [no_y]
+    type = ADDirichletBC
+    variable = disp_y
+    boundary = &#x27;bottom&#x27;
+    value = 0.0
+  []
+  [Pressure]
+    [top]
+      boundary = &#x27;top&#x27;
+      function = rampConstantUp
+    []
+  []
+[]
+
+[Materials]
+  [elasticity_tensor]
+    type = ADComputeIsotropicElasticityTensor
+    youngs_modulus = 206800
+    poissons_ratio = 0.0
+  []
+  [radial_return_stress]
+    type = ADComputeMultipleInelasticStress
+    inelastic_models = &#x27;powerlawcrp&#x27;
+  []
+  [powerlawcrp]
+    type = ADPowerLawCreepStressUpdate
+    coefficient = 3.125e-21 # 7.04e-17 #
+    n_exponent = 4.0
+    m_exponent = 0.0
+    activation_energy = 0.0
+    # max_inelastic_increment = 0.01
+  []
+  [strain_energy_rate_density]
+    type = ADStrainEnergyRateDensity
+    inelastic_models = &#x27;powerlawcrp&#x27;
+  []
+[]
+
+[Executioner]
+  type = Transient
+
+  petsc_options_iname = &#x27;-ksp_gmres_restart -pc_type -pc_hypre_type -pc_hypre_boomeramg_max_iter&#x27;
+  petsc_options_value = &#x27;201                hypre    boomeramg      4&#x27;
+
+  line_search = &#x27;none&#x27;
+
+  l_max_its = 50
+  nl_max_its = 20
+  nl_abs_tol = 3e-7
+  nl_rel_tol = 1e-12
+  l_tol = 1e-2
+
+  start_time = 0.0
+  dt = 1
+
+  end_time = 1
+  num_steps = 1
+[]
+
+[Postprocessors]
+  [SERD]
+    type = ElementAverageValue
+    variable = SERD
+  []
+[]
+
+[Outputs]
+  csv = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>

@@ -1,0 +1,178 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>LibtorchArtificialNeuralNet | Chamois</title><link rel="icon" type="image/x-icon" href="../../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../../media/framework/github-logo.png" class="github-mark"></img><img src="../../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../../getting_started.html">Getting Started</a></li><li><a href="../../../singularity.html">Singularity container</a></li><li><a href="../../../publications.html">Publications</a></li><li><a href="../../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="7ed5a533-ad30-4578-b6c3-b4d077a1e48b" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="5ecca20d-36b3-42e9-9c3c-8e16ec3c5a20"><i class="material-icons">menu</i></a><ul class="sidenav" id="5ecca20d-36b3-42e9-9c3c-8e16ec3c5a20"><li><a href="../../../getting_started.html">Getting Started</a></li><li><a href="../../../singularity.html">Singularity container</a></li><li><a href="../../../publications.html">Publications</a></li><li><a href="../../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="0fed9580-4210-4601-b541-f3e33dbffbbc" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="7ed5a533-ad30-4578-b6c3-b4d077a1e48b"><li><a href="../../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="0fed9580-4210-4601-b541-f3e33dbffbbc"><li><a href="../../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="ce0c25af-23f1-4f50-a5d7-cc48a1acf691" data-section-level="1" data-section-text="LibtorchArtificialNeuralNet"><h1 id="libtorchartificialneuralnet">LibtorchArtificialNeuralNet</h1><section id="bf275f10-01a8-43b2-b63d-4ab8d563d76a" data-section-level="2" data-section-text="Overview"><h2 id="overview">Overview</h2><p>This class can be used to generate a simple, feedforward artificial neural network (ANN) using the underlying objects imported from <code>libtorch</code> (C++ API of <code>pytorch</code>). <strong>Note: to be able to use these capabilities, MOOSE needs to be installed with libtorch support.</strong> For more information, visit the installation instuctions on the MOOSE website. For a more detailed introduction to neural networks, we refer the reader to <a href="#muller1995neural">Müller et al. (1995)</a>. The architecture of a simple feedforward neural network is presented below. The first layer from the left to the right are referred to as input and output layers, while the layers between them are the hidden layers.</p><div class="card moose-float" style="width:65%;" id="structure"><div class="card-content"><picture class="materialboxed moose-image"><img src="../../../large_media/stochastic_tools/surrogates/libtorch_nn/neural_net.png"></img></picture><p class="moose-caption"><span class="moose-caption-heading">Figure 1: </span><span class="moose-caption-text" id="structure">The architecture of the simple feedforward neural network in MOOSE-STM.</span></p></div></div><p>We see that the outputs (<span class="moose-katex-inline-equation" id="moose-equation-6f5c6c85-1667-4fbc-9e61-a805bd7f8783"><script>var element = document.getElementById("moose-equation-6f5c6c85-1667-4fbc-9e61-a805bd7f8783");katex.render("\\textbf{y}", element, {displayMode:false,throwOnError:false});</script></span>) of the neural net can be expressed as function of the inputs (<span class="moose-katex-inline-equation" id="moose-equation-5a1e6817-6ddb-47a3-83e7-7d759afacc37"><script>var element = document.getElementById("moose-equation-5a1e6817-6ddb-47a3-83e7-7d759afacc37");katex.render("\\textbf{x}", element, {displayMode:false,throwOnError:false});</script></span>) and the corresponding model parameters (weights <span class="moose-katex-inline-equation" id="moose-equation-19df9c22-62cc-480e-92a4-62965395ed2b"><script>var element = document.getElementById("moose-equation-19df9c22-62cc-480e-92a4-62965395ed2b");katex.render("w_{i,j}", element, {displayMode:false,throwOnError:false});</script></span>, organized in weight matrics <span class="moose-katex-inline-equation" id="moose-equation-821fca66-3225-475d-985b-f750700017f2"><script>var element = document.getElementById("moose-equation-821fca66-3225-475d-985b-f750700017f2");katex.render("\\textbf{W}", element, {displayMode:false,throwOnError:false});</script></span> and biases <span class="moose-katex-inline-equation" id="moose-equation-28996df7-3105-4858-a0c7-73609282fa8c"><script>var element = document.getElementById("moose-equation-28996df7-3105-4858-a0c7-73609282fa8c");katex.render("b_i", element, {displayMode:false,throwOnError:false});</script></span> organized in the bias vector <span class="moose-katex-inline-equation" id="moose-equation-c3103f28-194a-4623-a1d6-87ae37a8b217"><script>var element = document.getElementById("moose-equation-c3103f28-194a-4623-a1d6-87ae37a8b217");katex.render("\\textbf{b}", element, {displayMode:false,throwOnError:false});</script></span>) in the following nested form:</p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-b3e686b1-87a9-4c34-9ff3-19560aadb9c5"></span><span class="moose-katex-equation-number">(1)</span><script>var element = document.getElementById("moose-equation-b3e686b1-87a9-4c34-9ff3-19560aadb9c5");katex.render("\\textbf{y} = \\sigma(\\textbf{W}^{(3)}\\sigma(\\textbf{W}^{(2)}\\sigma(\\textbf{W}^{(1)}\\textbf{x}+\\textbf{b}^{(1)})+\\textbf{b}^{(2)})+\\textbf{b}^{(3)}),", element, {displayMode:true,throwOnError:false});</script></span><p>where <span class="moose-katex-inline-equation" id="moose-equation-3ae7a857-d8f9-4b5a-b5d3-956682d3d745"><script>var element = document.getElementById("moose-equation-3ae7a857-d8f9-4b5a-b5d3-956682d3d745");katex.render("\\sigma", element, {displayMode:false,throwOnError:false});</script></span> denotes the activation function. At the moment, the Moose implementation supports <code>relu</code>, <code>elu</code>, <code>gelu</code>, <code>sigmoid</code> and <code>linear</code> activation functions. In this class, no activation function is applied on the output layer. It is apparent that the real functional dependence (target function) between the inputs and outputs is approximated by the function in <a href="#moose-equation-b3e686b1-87a9-4c34-9ff3-19560aadb9c5">Eq. (1)</a>. As in most cases, the error in this approximation depends on the smoothness of the target function and the values of the model parameters. The weights and biases in the function are determined by minimizing the error between the approximate outputs of the neural net corresponding reference (training) values over a training set.</p></section><section id="f23ebe43-8438-43b4-8c6e-8c12db8169f1" data-section-level="2" data-section-text="Example usage"><h2 id="example-usage">Example usage</h2><p>To be able to use this neural network, we have to construct one using a name, the number of expected input and output neurons, an expected hideen-layer-structure and the activation functions for the layers. If no activation function is given, <code>relu</code> is used for every hidden neuron:</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">  // Define neurons per hidden layer: we will have two hidden layers with 4 neurons each
+  std::vector&lt;unsigned int&gt; num_neurons_per_layer({4, 4});
+  // Create the neural network with name &quot;test&quot;, number of input neurons = 3,
+  // number of output neurons = 1, and activation functions from the input file.
+  std::shared_ptr&lt;Moose::LibtorchArtificialNeuralNet&gt; nn =
+      std::make_shared&lt;Moose::LibtorchArtificialNeuralNet&gt;(
+          &quot;test&quot;,
+          3,
+          1,
+          num_neurons_per_layer,
+          getParam&lt;std::vector&lt;std::string&gt;&gt;(&quot;activation_functions&quot;));
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#2ee2a9e5-611f-4f21-a181-517a0bbec220">(moose/test/src/libtorch/vectorpostprocessors/LibtorchArtificialNeuralNetTest.C)</a><p>For training a neural network, we need to initialize an optimizer (ADAM in this case), then supply known input-output combinations for the function-to-be-approximated and let the optimizer set the parameters of the neural network to ensure that the answer supplied by the neural network is as close to the supplied values as possible. Once step in this optimization process is shown below:</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">  // Create an Adam optimizer
+  torch::optim::Adam optimizer(nn-&gt;parameters(), torch::optim::AdamOptions(0.02));
+  // reset the gradients
+  optimizer.zero_grad();
+  // This is our test input
+  torch::Tensor input = at::ones({1, 3}, at::kDouble);
+  // This is our test output (we know the result)
+  torch::Tensor output = at::ones({1}, at::kDouble);
+  // This is our prediction for the test input
+  torch::Tensor prediction = nn-&gt;forward(input);
+  // We save our first prediction
+  _nn_values.push_back(prediction.item&lt;double&gt;());
+  // We compute the loss
+  torch::Tensor loss = torch::mse_loss(prediction, output);
+  // We propagate the error back to compute gradient
+  loss.backward();
+  // We update the weights using the computed gradients
+  optimizer.step();
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#f6c38c6c-1cbe-4479-be5d-4662bff37325">(moose/test/src/libtorch/vectorpostprocessors/LibtorchArtificialNeuralNetTest.C)</a><p>For more detailed instructions on training a neural network, visit the Stochastic Tools module! </p></section><section id="859768a1-cfa8-406c-bb6e-463a8ed8dca5" data-section-level="2" data-section-text="References"><h2 id="references">References</h2><div class="moose-bibliography"><ol><li id="muller1995neural">Berndt M<span class="bibtex-protected">ü</span>ller, Joachim Reinhardt, and Michael&nbsp;T Strickland.
+<em>Neural networks: an introduction</em>.
+Springer Science &amp; Business Media, 1995.<a href="#623f3c1b-141e-4c4e-b330-ef23f4c3898a" class="modal-trigger moose-bibtex-modal" style="padding-left:10px;">[BibTeX]</a><div class="modal" id="623f3c1b-141e-4c4e-b330-ef23f4c3898a"><div class="modal-content"><pre style="line-height:1.25;"><code class="language-latex">@book{muller1995neural,
+    author = {M{\"u}ller, Berndt and Reinhardt, Joachim and Strickland, Michael T},
+    title = "Neural networks: an introduction",
+    year = "1995",
+    publisher = "Springer Science \\& Business Media"
+}
+</code></pre></div></div></li></ol></div></section></section><div class="moose-modal modal" id="2ee2a9e5-611f-4f21-a181-517a0bbec220"><div class="modal-content"><h4>(moose/test/src/libtorch/vectorpostprocessors/LibtorchArtificialNeuralNetTest.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#ifdef LIBTORCH_ENABLED
+
+#include &lt;torch/torch.h&gt;
+#include &quot;LibtorchArtificialNeuralNet.h&quot;
+#include &quot;LibtorchArtificialNeuralNetTest.h&quot;
+
+registerMooseObject(&quot;MooseTestApp&quot;, LibtorchArtificialNeuralNetTest);
+
+InputParameters
+LibtorchArtificialNeuralNetTest::validParams()
+{
+  InputParameters params = GeneralVectorPostprocessor::validParams();
+
+  params.addParam&lt;std::vector&lt;std::string&gt;&gt;(
+      &quot;activation_functions&quot;, std::vector&lt;std::string&gt;({&quot;relu&quot;}), &quot;Test activation functions&quot;);
+
+  return params;
+}
+
+LibtorchArtificialNeuralNetTest::LibtorchArtificialNeuralNetTest(const InputParameters &amp; params)
+  : GeneralVectorPostprocessor(params), _nn_values(declareVector(&quot;nn_values&quot;))
+{
+  torch::manual_seed(11);
+
+  // Define neurons per hidden layer: we will have two hidden layers with 4 neurons each
+  std::vector&lt;unsigned int&gt; num_neurons_per_layer({4, 4});
+  // Create the neural network with name &quot;test&quot;, number of input neurons = 3,
+  // number of output neurons = 1, and activation functions from the input file.
+  std::shared_ptr&lt;Moose::LibtorchArtificialNeuralNet&gt; nn =
+      std::make_shared&lt;Moose::LibtorchArtificialNeuralNet&gt;(
+          &quot;test&quot;,
+          3,
+          1,
+          num_neurons_per_layer,
+          getParam&lt;std::vector&lt;std::string&gt;&gt;(&quot;activation_functions&quot;));
+
+  // Create an Adam optimizer
+  torch::optim::Adam optimizer(nn-&gt;parameters(), torch::optim::AdamOptions(0.02));
+  // reset the gradients
+  optimizer.zero_grad();
+  // This is our test input
+  torch::Tensor input = at::ones({1, 3}, at::kDouble);
+  // This is our test output (we know the result)
+  torch::Tensor output = at::ones({1}, at::kDouble);
+  // This is our prediction for the test input
+  torch::Tensor prediction = nn-&gt;forward(input);
+  // We save our first prediction
+  _nn_values.push_back(prediction.item&lt;double&gt;());
+  // We compute the loss
+  torch::Tensor loss = torch::mse_loss(prediction, output);
+  // We propagate the error back to compute gradient
+  loss.backward();
+  // We update the weights using the computed gradients
+  optimizer.step();
+  // Obtain another prediction
+  prediction = nn-&gt;forward(input);
+  // We save our second prediction
+  _nn_values.push_back(prediction.item&lt;double&gt;());
+}
+
+#endif
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="f6c38c6c-1cbe-4479-be5d-4662bff37325"><div class="modal-content"><h4>(moose/test/src/libtorch/vectorpostprocessors/LibtorchArtificialNeuralNetTest.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#ifdef LIBTORCH_ENABLED
+
+#include &lt;torch/torch.h&gt;
+#include &quot;LibtorchArtificialNeuralNet.h&quot;
+#include &quot;LibtorchArtificialNeuralNetTest.h&quot;
+
+registerMooseObject(&quot;MooseTestApp&quot;, LibtorchArtificialNeuralNetTest);
+
+InputParameters
+LibtorchArtificialNeuralNetTest::validParams()
+{
+  InputParameters params = GeneralVectorPostprocessor::validParams();
+
+  params.addParam&lt;std::vector&lt;std::string&gt;&gt;(
+      &quot;activation_functions&quot;, std::vector&lt;std::string&gt;({&quot;relu&quot;}), &quot;Test activation functions&quot;);
+
+  return params;
+}
+
+LibtorchArtificialNeuralNetTest::LibtorchArtificialNeuralNetTest(const InputParameters &amp; params)
+  : GeneralVectorPostprocessor(params), _nn_values(declareVector(&quot;nn_values&quot;))
+{
+  torch::manual_seed(11);
+
+  // Define neurons per hidden layer: we will have two hidden layers with 4 neurons each
+  std::vector&lt;unsigned int&gt; num_neurons_per_layer({4, 4});
+  // Create the neural network with name &quot;test&quot;, number of input neurons = 3,
+  // number of output neurons = 1, and activation functions from the input file.
+  std::shared_ptr&lt;Moose::LibtorchArtificialNeuralNet&gt; nn =
+      std::make_shared&lt;Moose::LibtorchArtificialNeuralNet&gt;(
+          &quot;test&quot;,
+          3,
+          1,
+          num_neurons_per_layer,
+          getParam&lt;std::vector&lt;std::string&gt;&gt;(&quot;activation_functions&quot;));
+
+  // Create an Adam optimizer
+  torch::optim::Adam optimizer(nn-&gt;parameters(), torch::optim::AdamOptions(0.02));
+  // reset the gradients
+  optimizer.zero_grad();
+  // This is our test input
+  torch::Tensor input = at::ones({1, 3}, at::kDouble);
+  // This is our test output (we know the result)
+  torch::Tensor output = at::ones({1}, at::kDouble);
+  // This is our prediction for the test input
+  torch::Tensor prediction = nn-&gt;forward(input);
+  // We save our first prediction
+  _nn_values.push_back(prediction.item&lt;double&gt;());
+  // We compute the loss
+  torch::Tensor loss = torch::mse_loss(prediction, output);
+  // We propagate the error back to compute gradient
+  loss.backward();
+  // We update the weights using the computed gradients
+  optimizer.step();
+  // Obtain another prediction
+  prediction = nn-&gt;forward(input);
+  // We save our second prediction
+  _nn_values.push_back(prediction.item&lt;double&gt;());
+}
+
+#endif
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../../js/init.js"></script><script type="text/javascript" src="../../../js/navigation.js"></script><script type="text/javascript" src="../../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../../js/search_index.js"></script><script type="text/javascript" src="../../../js/sqa_moose.js"></script>

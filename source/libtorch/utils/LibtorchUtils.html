@@ -1,0 +1,62 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>LibtorchUtils Namespace | Chamois</title><link rel="icon" type="image/x-icon" href="../../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../../contrib/jquery/jquery.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../../media/framework/github-logo.png" class="github-mark"></img><img src="../../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../../getting_started.html">Getting Started</a></li><li><a href="../../../singularity.html">Singularity container</a></li><li><a href="../../../publications.html">Publications</a></li><li><a href="../../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="e2ed6b03-e1e6-4ebc-ba08-9eee4b0dff5a" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="0120ffb6-2256-4446-8ea5-88c9e2d2b483"><i class="material-icons">menu</i></a><ul class="sidenav" id="0120ffb6-2256-4446-8ea5-88c9e2d2b483"><li><a href="../../../getting_started.html">Getting Started</a></li><li><a href="../../../singularity.html">Singularity container</a></li><li><a href="../../../publications.html">Publications</a></li><li><a href="../../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="d6daa0f6-907c-4c0c-a041-5743cee7e7e1" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="e2ed6b03-e1e6-4ebc-ba08-9eee4b0dff5a"><li><a href="../../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="d6daa0f6-907c-4c0c-a041-5743cee7e7e1"><li><a href="../../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="a93440fc-b380-4adb-a924-c3df28753f36" data-section-level="1" data-section-text="LibtorchUtils Namespace"><h1 id="libtorchutils-namespace">LibtorchUtils Namespace</h1><p>MOOSE includes a number of C++ utility classes and functions that may be useful for Manipulating Libtorch tensors and interfacing them with MOOSE-based objects.</p><section id="8d0a8417-7dfd-4cd1-8fca-421d5f6352d8" data-section-level="2" data-section-text="Standard Vector To Tensor and Tensor to Standard Vector conversion"><h2 id="standard-vector-to-tensor-and-tensor-to-standard-vector-conversion">Standard Vector To Tensor and Tensor to Standard Vector conversion</h2><p>The utility classes streamline the two-way conversion between standard vectors and Libtorch tensors.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-cpp">/**
+ * Utility function that converts a standard vector to a `torch::Tensor`.
+ * @tparam DataType The type of data (float,double, etc.) which the vector is filled with
+ * @param vector The vector that needs to be converted
+ * @param tensor The output tensor
+ * @param detach If the gradient information needs to be detached during the conversion
+ */
+template &lt;typename DataType&gt;
+void
+vectorToTensor(std::vector&lt;DataType&gt; &amp; vector, torch::Tensor &amp; tensor, const bool detach = false);
+
+/**
+ * Utility function that converts a `torch::Tensor` to a standard vector.
+ * @tparam DataType The type of data (float,double, etc.) which the vector is filled with
+ * @param tensor The tensor which needs to be converted
+ * @param vector The output vector
+ */
+template &lt;typename DataType&gt;
+void tensorToVector(torch::Tensor &amp; tensor, std::vector&lt;DataType&gt; &amp; vector);
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#d53493ee-5d24-411a-a1e5-f6089a21af09">(moose/framework/include/libtorch/utils/LibtorchUtils.h)</a></section></section><div class="moose-modal modal" id="d53493ee-5d24-411a-a1e5-f6089a21af09"><div class="modal-content"><h4>(moose/framework/include/libtorch/utils/LibtorchUtils.h)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#ifdef LIBTORCH_ENABLED
+
+#pragma once
+
+#include &lt;torch/torch.h&gt;
+#include &quot;MooseUtils.h&quot;
+
+namespace LibtorchUtils
+{
+
+/**
+ * Utility function that converts a standard vector to a `torch::Tensor`.
+ * @tparam DataType The type of data (float,double, etc.) which the vector is filled with
+ * @param vector The vector that needs to be converted
+ * @param tensor The output tensor
+ * @param detach If the gradient information needs to be detached during the conversion
+ */
+template &lt;typename DataType&gt;
+void
+vectorToTensor(std::vector&lt;DataType&gt; &amp; vector, torch::Tensor &amp; tensor, const bool detach = false);
+
+/**
+ * Utility function that converts a `torch::Tensor` to a standard vector.
+ * @tparam DataType The type of data (float,double, etc.) which the vector is filled with
+ * @param tensor The tensor which needs to be converted
+ * @param vector The output vector
+ */
+template &lt;typename DataType&gt;
+void tensorToVector(torch::Tensor &amp; tensor, std::vector&lt;DataType&gt; &amp; vector);
+
+} // LibtorchUtils namespace
+
+#endif
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../../js/init.js"></script><script type="text/javascript" src="../../../js/navigation.js"></script><script type="text/javascript" src="../../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../../js/search_index.js"></script><script type="text/javascript" src="../../../js/sqa_moose.js"></script>

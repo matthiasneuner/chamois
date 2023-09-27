@@ -1,0 +1,919 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>Dynamics | Chamois</title><link rel="icon" type="image/x-icon" href="../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="450420cd-7814-4cac-815c-592e94aa3973" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="14ab6829-d68a-48b7-bf7a-f3be1021fe40"><i class="material-icons">menu</i></a><ul class="sidenav" id="14ab6829-d68a-48b7-bf7a-f3be1021fe40"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="e6f6f3ea-c5f8-4c50-b66e-efd74c2615de" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="450420cd-7814-4cac-815c-592e94aa3973"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="e6f6f3ea-c5f8-4c50-b66e-efd74c2615de"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="4fbd71a0-83b0-4c3e-8004-c72b5d8f6de7" data-section-level="1" data-section-text="Dynamics"><h1 id="dynamics">Dynamics</h1><p>Dynamic problems like the response of a multi degree of freedom structure to external forcing and wave propagation in a medium can also be solved using the Tensor Mechanics module.</p><p>The equation of motion for a typical dynamics problem has the following format: <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-c5cc47ab-4aa6-44e5-9643-118049529162"></span><script>var element = document.getElementById("moose-equation-c5cc47ab-4aa6-44e5-9643-118049529162");katex.render("\\mathbf{M \\ddot{u}}+\\mathbf{C \\dot{u}}+\\mathbf{Ku}=\\mathbf{F}_{ext}", element, {displayMode:true,throwOnError:false});</script></span></p><p>Here, <span class="moose-katex-inline-equation" id="moose-equation-accae87a-4605-4496-8bcf-ec1e810bcd19"><script>var element = document.getElementById("moose-equation-accae87a-4605-4496-8bcf-ec1e810bcd19");katex.render("\\mathbf{M}", element, {displayMode:false,throwOnError:false});</script></span> is the mass matrix, <span class="moose-katex-inline-equation" id="moose-equation-2e7c4e20-1bfe-43b1-8bef-087e5afc5fa3"><script>var element = document.getElementById("moose-equation-2e7c4e20-1bfe-43b1-8bef-087e5afc5fa3");katex.render("\\mathbf{C}", element, {displayMode:false,throwOnError:false});</script></span> is the damping matrix, <span class="moose-katex-inline-equation" id="moose-equation-ee61ba4a-973a-43c6-9cda-94cbf6bd6d45"><script>var element = document.getElementById("moose-equation-ee61ba4a-973a-43c6-9cda-94cbf6bd6d45");katex.render("\\mathbf{K}", element, {displayMode:false,throwOnError:false});</script></span> is the stiffness matrix and <span class="moose-katex-inline-equation" id="moose-equation-028fca28-f5c3-41f4-a59c-751dea463f94"><script>var element = document.getElementById("moose-equation-028fca28-f5c3-41f4-a59c-751dea463f94");katex.render("\\mathbf{F}_{ext}", element, {displayMode:false,throwOnError:false});</script></span> is the vector of external forces acting at the nodes. <span class="moose-katex-inline-equation" id="moose-equation-e3abace9-e526-44f7-97af-8b88b4fa7703"><script>var element = document.getElementById("moose-equation-e3abace9-e526-44f7-97af-8b88b4fa7703");katex.render("\\mathbf{u}", element, {displayMode:false,throwOnError:false});</script></span>, <span class="moose-katex-inline-equation" id="moose-equation-576a70a9-533e-4e48-9702-b7069619c703"><script>var element = document.getElementById("moose-equation-576a70a9-533e-4e48-9702-b7069619c703");katex.render("\\mathbf{\\dot{u}}", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-19ed8dcc-4809-46a7-bdc5-22885579621b"><script>var element = document.getElementById("moose-equation-19ed8dcc-4809-46a7-bdc5-22885579621b");katex.render("\\mathbf{\\ddot{u}}", element, {displayMode:false,throwOnError:false});</script></span> are the vector of displacement, velocity and acceleration at the nodes, respectively.</p><section id="8dd7323d-04e7-40be-9261-c634bda4a9d5" data-section-level="2" data-section-text="Time integration"><h2 id="time-integration">Time integration</h2><p>To solve the above equation for <span class="moose-katex-inline-equation" id="moose-equation-0f266ef2-9eaf-4db1-b133-3b74a60578fb"><script>var element = document.getElementById("moose-equation-0f266ef2-9eaf-4db1-b133-3b74a60578fb");katex.render("\\mathbf{u}", element, {displayMode:false,throwOnError:false});</script></span>, an appropriate time integration scheme needs to be chosen. Newmark (<a href="#newmark1959amethod">Newmark, 1959</a>) and Hilber-Hughes-Taylor (HHT) (<a href="#hughes2000fem">Hughes, 2000</a>) time integration schemes are two of the commonly used methods in dynamics.</p><section id="c2aedd6b-5a7f-4284-a80d-70fa04164597" data-section-level="3" data-section-text="Newmark time integration"><h3 id="newmark-time-integration">Newmark time integration</h3><p>In Newmark time integration, the acceleration and velocity at <span class="moose-katex-inline-equation" id="moose-equation-ea17eeea-6973-4800-98d6-bab4b76b26fb"><script>var element = document.getElementById("moose-equation-ea17eeea-6973-4800-98d6-bab4b76b26fb");katex.render("t+\\Delta t", element, {displayMode:false,throwOnError:false});</script></span> are written in terms of the displacement, velocity and acceleration at time <span class="moose-katex-inline-equation" id="moose-equation-07ae98cf-3770-4f7b-a85d-25b666ed17e6"><script>var element = document.getElementById("moose-equation-07ae98cf-3770-4f7b-a85d-25b666ed17e6");katex.render("t", element, {displayMode:false,throwOnError:false});</script></span> and the displacement at <span class="moose-katex-inline-equation" id="moose-equation-dbe44d8c-0419-4411-ab23-89f20d548d3e"><script>var element = document.getElementById("moose-equation-dbe44d8c-0419-4411-ab23-89f20d548d3e");katex.render("t+\\Delta t", element, {displayMode:false,throwOnError:false});</script></span> using the <a href="../../source/auxkernels/NewmarkAccelAux.html">NewmarkAccelAux</a> and <a href="../../source/auxkernels/NewmarkVelAux.html">NewmarkVelAux</a> Aux Kernels, respectively.</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-b903dc7f-bc3c-4bad-ad16-3694e7896491"></span><script>var element = document.getElementById("moose-equation-b903dc7f-bc3c-4bad-ad16-3694e7896491");katex.render("\\begin{aligned} \\mathbf{\\ddot{u}}(t+\\Delta t) &=& \\frac{\\mathbf{u}(t+\\Delta t)-\\mathbf{u}(t)}{\\beta \\Delta t^2}- \\frac{\\mathbf{\\dot{u}}(t)}{\\beta \\Delta t}+\\frac{\\beta -0.5}{\\beta}\\mathbf{\\ddot{u}}(t) \\\\ \\mathbf{\\dot{u}}(t+ \\Delta t) &=& \\mathbf{\\dot{u}}(t)+ (1-\\gamma)\\Delta t \\mathbf{\\ddot{u}}(t) + \\gamma \\Delta t \\mathbf{\\ddot{u}}(t+\\Delta t) \\end{aligned}", element, {displayMode:true,throwOnError:false});</script></span></p><p>In the above equations, <span class="moose-katex-inline-equation" id="moose-equation-035d6cbb-ea12-4ac0-95f0-becb3ad4e39e"><script>var element = document.getElementById("moose-equation-035d6cbb-ea12-4ac0-95f0-becb3ad4e39e");katex.render("\\beta", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-94d0037a-e66f-45c1-83d3-70a9d5042bc8"><script>var element = document.getElementById("moose-equation-94d0037a-e66f-45c1-83d3-70a9d5042bc8");katex.render("\\gamma", element, {displayMode:false,throwOnError:false});</script></span> are Newmark time integration parameters. Substituting the above two equations into the equation of motion will result in a linear system of equations (<span class="moose-katex-inline-equation" id="moose-equation-1edb2561-308c-4d66-beae-4f296a19af3e"><script>var element = document.getElementById("moose-equation-1edb2561-308c-4d66-beae-4f296a19af3e");katex.render("\\mathbf{Au}(t+\\Delta t) = \\mathbf{b}", element, {displayMode:false,throwOnError:false});</script></span>) from which <span class="moose-katex-inline-equation" id="moose-equation-3ce7a511-bf63-4896-b9cd-3aad8d961259"><script>var element = document.getElementById("moose-equation-3ce7a511-bf63-4896-b9cd-3aad8d961259");katex.render("\\mathbf{u}(t+\\Delta t)", element, {displayMode:false,throwOnError:false});</script></span> can be estimated.</p><ul class="browser-default"><li><p>For <span class="moose-katex-inline-equation" id="moose-equation-d48d871f-ad44-484b-bf79-3709a1978bde"><script>var element = document.getElementById("moose-equation-d48d871f-ad44-484b-bf79-3709a1978bde");katex.render("\\beta = \\frac{1}{4}", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-1bfc4d6c-1c5f-4a60-849d-331e13aab398"><script>var element = document.getElementById("moose-equation-1bfc4d6c-1c5f-4a60-849d-331e13aab398");katex.render("\\gamma = \\frac{1}{2}", element, {displayMode:false,throwOnError:false});</script></span>, the Newmark time integration method is implicit and unconditionally stable. This is the constant average acceleration method with no numerical damping. This is recommended only when a constant timestep is used throughout the simulation. If for some reason, the simulation does not converge and the timestep is halved, this time integration method with no numerical damping can result in high frequency noise. </p></li><li><p><span class="moose-katex-inline-equation" id="moose-equation-edc61db2-2d4b-401b-90de-ecdff4096227"><script>var element = document.getElementById("moose-equation-edc61db2-2d4b-401b-90de-ecdff4096227");katex.render("\\beta = \\frac{1}{6}", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-09cb73b2-94ee-4b68-8ca2-dc66fac94d84"><script>var element = document.getElementById("moose-equation-09cb73b2-94ee-4b68-8ca2-dc66fac94d84");katex.render("\\gamma = \\frac{1}{2}", element, {displayMode:false,throwOnError:false});</script></span> results in the linear acceleration method where the acceleration is linearly varying between <span class="moose-katex-inline-equation" id="moose-equation-73061e42-9b57-47f1-a647-1dfaf57ef57f"><script>var element = document.getElementById("moose-equation-73061e42-9b57-47f1-a647-1dfaf57ef57f");katex.render("t", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-e1f4f52b-5b33-418b-9af3-82e60b50f798"><script>var element = document.getElementById("moose-equation-e1f4f52b-5b33-418b-9af3-82e60b50f798");katex.render("t+\\Delta t", element, {displayMode:false,throwOnError:false});</script></span>. </p></li><li><p><span class="moose-katex-inline-equation" id="moose-equation-57c62546-4291-4166-8479-464da7033dd7"><script>var element = document.getElementById("moose-equation-57c62546-4291-4166-8479-464da7033dd7");katex.render("\\beta = 0", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-23cf617b-2126-4088-9473-a77ad62ffde3"><script>var element = document.getElementById("moose-equation-23cf617b-2126-4088-9473-a77ad62ffde3");katex.render("\\gamma = \\frac{1}{2}", element, {displayMode:false,throwOnError:false});</script></span> is identical to the central difference method.</p></li></ul><div class="card moose-alert moose-alert-note"><div class="card-title moose-alert-title"><i class="material-icons moose-inline-icon">comment</i><span class="moose-alert-title-brand">note</span></div><div class="card-content"><div class="moose-alert-content"><p>For <span class="moose-katex-inline-equation" id="moose-equation-5dffa92d-850f-47a7-9a32-290a28ad0202"><script>var element = document.getElementById("moose-equation-5dffa92d-850f-47a7-9a32-290a28ad0202");katex.render("\\frac{1}{2} \\le \\gamma \\le 2 \\beta", element, {displayMode:false,throwOnError:false});</script></span> in structural dynamics problems, the Newmark method is unconditionally stable irrespective of the time-step <span class="moose-katex-inline-equation" id="moose-equation-45de5dd1-6297-4dbd-acd8-416cae26b12f"><script>var element = document.getElementById("moose-equation-45de5dd1-6297-4dbd-acd8-416cae26b12f");katex.render("\\Delta t", element, {displayMode:false,throwOnError:false});</script></span>. For <span class="moose-katex-inline-equation" id="moose-equation-4a6ed380-9fb5-41b6-9185-aef367e56096"><script>var element = document.getElementById("moose-equation-4a6ed380-9fb5-41b6-9185-aef367e56096");katex.render("\\gamma = \\frac{1}{2}", element, {displayMode:false,throwOnError:false});</script></span>, the Newmark method is at least second order accurate; it is first order accurate for all other values of <span class="moose-katex-inline-equation" id="moose-equation-1710953c-77c4-40a3-8e5d-30550c6fc037"><script>var element = document.getElementById("moose-equation-1710953c-77c4-40a3-8e5d-30550c6fc037");katex.render("\\gamma", element, {displayMode:false,throwOnError:false});</script></span>.</p></div></div></div></section><section id="60fcf9ca-b76f-48f1-9242-1ab787bb8da1" data-section-level="3" data-section-text="Hilber - Hughes - Taylor time integration"><h3 id="hilber-hughes-taylor-time-integration">Hilber-Hughes-Taylor time integration</h3><p>The HHT time integration scheme is built upon Newmark time integration method. Here, in addition to the Newmark equations, the equation of motion is also altered resulting in:</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-0e3a4b10-2fc6-4945-9349-a62e43f882e2"></span><script>var element = document.getElementById("moose-equation-0e3a4b10-2fc6-4945-9349-a62e43f882e2");katex.render("\\mathbf{M}\\mathbf{\\ddot{u}}(t+\\Delta t)+ \\mathbf{C}[(1+\\alpha)\\mathbf{\\dot{u}}(t+\\Delta t)-\\alpha\\mathbf{\\dot{u}}(t)] +(1+\\alpha)\\mathbf{K}\\mathbf{u}(t+\\Delta t) - \\alpha K \\mathbf{u}(t) = \\mathbf{F}_{ext}(t+ (1 + \\alpha) \\Delta t)", element, {displayMode:true,throwOnError:false});</script></span></p><p>Here, <span class="moose-katex-inline-equation" id="moose-equation-bdeffb10-0f05-4377-8bfc-95a3046fd322"><script>var element = document.getElementById("moose-equation-bdeffb10-0f05-4377-8bfc-95a3046fd322");katex.render("\\alpha", element, {displayMode:false,throwOnError:false});</script></span> is the HHT parameter. For <span class="moose-katex-inline-equation" id="moose-equation-ff92ae41-f219-4a58-9cd3-caa4c3d89321"><script>var element = document.getElementById("moose-equation-ff92ae41-f219-4a58-9cd3-caa4c3d89321");katex.render("-\\frac{1}{3} \\le \\alpha \\le 0", element, {displayMode:false,throwOnError:false});</script></span>, <span class="moose-katex-inline-equation" id="moose-equation-ce6153a6-3d36-48d1-85e3-fb501ced492a"><script>var element = document.getElementById("moose-equation-ce6153a6-3d36-48d1-85e3-fb501ced492a");katex.render("\\beta = \\frac{(1-\\alpha)^2}{4}", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-1278015a-2c65-42df-8ae6-b542e2eefa86"><script>var element = document.getElementById("moose-equation-1278015a-2c65-42df-8ae6-b542e2eefa86");katex.render("\\gamma = \\frac{1}{2} - \\alpha", element, {displayMode:false,throwOnError:false});</script></span>, the HHT method is at least second-order accurate and unconditionally stable. For non-zero values of <span class="moose-katex-inline-equation" id="moose-equation-1ae0c8ec-0b3f-4acf-a476-ed9f1bc30672"><script>var element = document.getElementById("moose-equation-1ae0c8ec-0b3f-4acf-a476-ed9f1bc30672");katex.render("\\alpha", element, {displayMode:false,throwOnError:false});</script></span>, the response at high frequencies (above <span class="moose-katex-inline-equation" id="moose-equation-e05be73e-ff66-4ba9-b8b3-aa71e46e5969"><script>var element = document.getElementById("moose-equation-e05be73e-ff66-4ba9-b8b3-aa71e46e5969");katex.render("\\frac{1}{2 dt}", element, {displayMode:false,throwOnError:false});</script></span>) are numerically damped, provided <span class="moose-katex-inline-equation" id="moose-equation-8ee3759f-f8f3-479f-a99c-5b91cf1fe18e"><script>var element = document.getElementById("moose-equation-8ee3759f-f8f3-479f-a99c-5b91cf1fe18e");katex.render("\\beta", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-ef79628d-e004-4a75-9707-2eb9a4fffd30"><script>var element = document.getElementById("moose-equation-ef79628d-e004-4a75-9707-2eb9a4fffd30");katex.render("\\gamma", element, {displayMode:false,throwOnError:false});</script></span> are defined as above.</p><p>More details about the Newmark method and HHT method can be found in these <a href="http://people.duke.edu/~hpgavin/cee541/NumericalIntegration.pdf">lecture notes</a>.</p></section></section><section id="9a992212-b7b3-4a47-8dd0-25aaba023dc3" data-section-level="2" data-section-text="Rayleigh damping"><h2 id="rayleigh-damping">Rayleigh damping</h2><p>This is the most common form of structural damping used in dynamic problems. Here, the damping matrix (<span class="moose-katex-inline-equation" id="moose-equation-00e443f1-52e9-4af5-983c-2be57cc7cad5"><script>var element = document.getElementById("moose-equation-00e443f1-52e9-4af5-983c-2be57cc7cad5");katex.render("\\mathbf{C}", element, {displayMode:false,throwOnError:false});</script></span>) is assumed to be a linear combination of the mass and stiffness matrices, i.e., <span class="moose-katex-inline-equation" id="moose-equation-dde84413-1c55-4072-a5b0-d86970e1722d"><script>var element = document.getElementById("moose-equation-dde84413-1c55-4072-a5b0-d86970e1722d");katex.render("\\mathbf{C} = \\eta \\mathbf{M} +\\zeta\\mathbf{K}", element, {displayMode:false,throwOnError:false});</script></span>. Here, <span class="moose-katex-inline-equation" id="moose-equation-64978b28-7023-4b0f-bb3e-41bd6283aa93"><script>var element = document.getElementById("moose-equation-64978b28-7023-4b0f-bb3e-41bd6283aa93");katex.render("\\eta", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-481845b8-95f7-48ad-9cd9-64c7e0f41aab"><script>var element = document.getElementById("moose-equation-481845b8-95f7-48ad-9cd9-64c7e0f41aab");katex.render("\\zeta", element, {displayMode:false,throwOnError:false});</script></span> are the mass and stiffness dependent Rayleigh damping parameters, respectively.</p><p>The equation of motion in the presence of Rayleigh damping is: <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-6b4095a5-f481-459b-a17f-cef218db7c0e"></span><script>var element = document.getElementById("moose-equation-6b4095a5-f481-459b-a17f-cef218db7c0e");katex.render("\\mathbf{M}\\mathbf{\\ddot{u}}+ (\\eta M + \\zeta K)\\mathbf{\\dot{u}} +\\mathbf{K}\\mathbf{u} = \\mathbf{F_{ext}}", element, {displayMode:true,throwOnError:false});</script></span></p><p>The degree of damping in the system depends on the coefficients <span class="moose-katex-inline-equation" id="moose-equation-57d935ef-051c-4b7e-a362-3305e7d5836e"><script>var element = document.getElementById("moose-equation-57d935ef-051c-4b7e-a362-3305e7d5836e");katex.render("\\zeta", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-345d8962-06f3-46ad-98a6-3031ae2a7503"><script>var element = document.getElementById("moose-equation-345d8962-06f3-46ad-98a6-3031ae2a7503");katex.render("\\eta", element, {displayMode:false,throwOnError:false});</script></span> as follows: <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-739e949f-ef6f-49a3-917f-c5a6818cd5c2"></span><span class="moose-katex-equation-number">(1)</span><script>var element = document.getElementById("moose-equation-739e949f-ef6f-49a3-917f-c5a6818cd5c2");katex.render(" \\xi (\\omega) = \\frac{\\eta}{2} \\frac{1}{\\omega} + \\frac{\\zeta}{2} \\omega", element, {displayMode:true,throwOnError:false});</script></span></p><p>where, <span class="moose-katex-inline-equation" id="moose-equation-84a1e9e6-084b-4164-9aa8-c2858afd656a"><script>var element = document.getElementById("moose-equation-84a1e9e6-084b-4164-9aa8-c2858afd656a");katex.render("\\xi(\\omega)", element, {displayMode:false,throwOnError:false});</script></span> is the damping ratio of the system as a function of frequency <span class="moose-katex-inline-equation" id="moose-equation-d2b3919a-0725-4c7f-8d4b-ec204dbd72e8"><script>var element = document.getElementById("moose-equation-d2b3919a-0725-4c7f-8d4b-ec204dbd72e8");katex.render("\\omega", element, {displayMode:false,throwOnError:false});</script></span>. For example, the damping ratio as a function of frequency for <span class="moose-katex-inline-equation" id="moose-equation-1612c1ed-7e47-4f37-a609-b63dd40e43ee"><script>var element = document.getElementById("moose-equation-1612c1ed-7e47-4f37-a609-b63dd40e43ee");katex.render("\\zeta = 0.0035", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-a5f6e6a6-4293-4ee5-8d01-27c6f7e8bd6a"><script>var element = document.getElementById("moose-equation-a5f6e6a6-4293-4ee5-8d01-27c6f7e8bd6a");katex.render("\\eta = 0.09", element, {displayMode:false,throwOnError:false});</script></span> is presented in <a href="#fig:rayleigh">Figure 1</a>. Note that <span class="moose-katex-inline-equation" id="moose-equation-9c11df29-9fc6-402f-977b-ec4d0d122343"><script>var element = document.getElementById("moose-equation-9c11df29-9fc6-402f-977b-ec4d0d122343");katex.render("\\omega", element, {displayMode:false,throwOnError:false});</script></span> has units of rad/s and <span class="moose-katex-inline-equation" id="moose-equation-dcade48a-c3a5-4707-a3ec-78823c20c93b"><script>var element = document.getElementById("moose-equation-dcade48a-c3a5-4707-a3ec-78823c20c93b");katex.render("f", element, {displayMode:false,throwOnError:false});</script></span> used in the figure has units of Hz.</p><div class="card moose-float" style="width:60%;margin-left:150px;float:center;" id="fig:rayleigh"><div class="card-content"><picture class="materialboxed moose-image"><img src="../../media/tensor_mechanics/rayleigh.png"></img></picture><p class="moose-caption"><span class="moose-caption-heading">Figure 1: </span><span class="moose-caption-text" id="fig:rayleigh">Damping ratio as a function of frequency.</span></p></div></div><p>To model a constant damping ratio using Rayleigh damping, the aim is to find <span class="moose-katex-inline-equation" id="moose-equation-e392e437-52bd-484d-b199-8f3900002e4f"><script>var element = document.getElementById("moose-equation-e392e437-52bd-484d-b199-8f3900002e4f");katex.render("\\zeta", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-24488d65-fa99-49b3-83f4-f7bfb1850f47"><script>var element = document.getElementById("moose-equation-24488d65-fa99-49b3-83f4-f7bfb1850f47");katex.render("\\eta", element, {displayMode:false,throwOnError:false});</script></span> such that the <span class="moose-katex-inline-equation" id="moose-equation-f1afc1af-f9a1-4409-945e-6dbc3a4334c0"><script>var element = document.getElementById("moose-equation-f1afc1af-f9a1-4409-945e-6dbc3a4334c0");katex.render("\\xi(f)", element, {displayMode:false,throwOnError:false});</script></span> is close to the target damping ratio <span class="moose-katex-inline-equation" id="moose-equation-c765d588-811e-49bf-84cf-25c882ff4677"><script>var element = document.getElementById("moose-equation-c765d588-811e-49bf-84cf-25c882ff4677");katex.render("\\xi_t", element, {displayMode:false,throwOnError:false});</script></span>, which is a constant value, between the frequency range <span class="moose-katex-inline-equation" id="moose-equation-047ffbb8-86a7-4b99-9a63-fb834b14cf64"><script>var element = document.getElementById("moose-equation-047ffbb8-86a7-4b99-9a63-fb834b14cf64");katex.render("[f_1, f_2]", element, {displayMode:false,throwOnError:false});</script></span>. This can be achieved by minimizing the difference between <span class="moose-katex-inline-equation" id="moose-equation-e3deea5b-bee7-4205-8e87-b23296ec6c65"><script>var element = document.getElementById("moose-equation-e3deea5b-bee7-4205-8e87-b23296ec6c65");katex.render("\\xi_t", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-49e88574-8f83-4b23-a2ab-b5890274beef"><script>var element = document.getElementById("moose-equation-49e88574-8f83-4b23-a2ab-b5890274beef");katex.render("\\xi(f)", element, {displayMode:false,throwOnError:false});</script></span> for all the frequencies between <span class="moose-katex-inline-equation" id="moose-equation-35876b03-f842-4801-854c-74eb05467b8d"><script>var element = document.getElementById("moose-equation-35876b03-f842-4801-854c-74eb05467b8d");katex.render("f_1", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-21cd69c4-cef8-48e3-9b83-5fef6b36f282"><script>var element = document.getElementById("moose-equation-21cd69c4-cef8-48e3-9b83-5fef6b36f282");katex.render("f_2", element, {displayMode:false,throwOnError:false});</script></span>, i.e., if</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-f2fb2f03-f801-46bd-ae0a-f43def9bbe35"></span><script>var element = document.getElementById("moose-equation-f2fb2f03-f801-46bd-ae0a-f43def9bbe35");katex.render("I = \\int_{f_1}^{f_2} \\xi_t - \\left(\\frac{\\eta}{2}\\frac{1}{\\omega} + \\frac{\\zeta}{2} \\omega\\right) df", element, {displayMode:true,throwOnError:false});</script></span></p><p>Then, <span class="moose-katex-inline-equation" id="moose-equation-88097b41-aa2a-4a33-9c07-372b68bd602f"><script>var element = document.getElementById("moose-equation-88097b41-aa2a-4a33-9c07-372b68bd602f");katex.render("\\frac{dI}{d \\eta} = 0", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-75ee7b62-e493-4bac-96ae-660aa82c06d3"><script>var element = document.getElementById("moose-equation-75ee7b62-e493-4bac-96ae-660aa82c06d3");katex.render("\\frac{dI}{d \\zeta}=0", element, {displayMode:false,throwOnError:false});</script></span> results in two equations that are linear in <span class="moose-katex-inline-equation" id="moose-equation-0ffec23f-9ae9-4908-94e8-edb0fc6f48a4"><script>var element = document.getElementById("moose-equation-0ffec23f-9ae9-4908-94e8-edb0fc6f48a4");katex.render("\\eta", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-278f6fbc-23bd-46de-9a41-3cdd16a7bf0f"><script>var element = document.getElementById("moose-equation-278f6fbc-23bd-46de-9a41-3cdd16a7bf0f");katex.render("\\zeta", element, {displayMode:false,throwOnError:false});</script></span>. Solving these two linear equations simultaneously gives:</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-1b82dc13-6f0e-4248-b075-90636ad27c2e"></span><script>var element = document.getElementById("moose-equation-1b82dc13-6f0e-4248-b075-90636ad27c2e");katex.render("\\begin{aligned} \\zeta &= \\frac{\\xi_t}{2 \\pi} \\; \\frac{3}{(\\Delta f)^2} \\; \\left(f_1 + f_2 - 2 \\frac{f_1 f_1}{\\Delta f} \\; ln \\frac{f_2}{f_1}\\right) \\\\ \\eta &= 2 \\pi \\xi_t \\; \\frac{f_1 f_2}{\\Delta_f} \\; \\left[ln \\frac{f_2}{f_1}\\; \\left(2 + 6 \\frac{f_1 f_2}{(\\Delta_f)^2}\\right) - \\frac{3(f_1 + f_2)}{\\Delta_f}\\right] \\end{aligned}", element, {displayMode:true,throwOnError:false});</script></span></p><p>A similar method can be used to estimate <span class="moose-katex-inline-equation" id="moose-equation-30b8258a-eacd-4bec-a1fe-03525325b9a6"><script>var element = document.getElementById("moose-equation-30b8258a-eacd-4bec-a1fe-03525325b9a6");katex.render("\\eta", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-2706b418-282b-448b-9d72-dbc089897841"><script>var element = document.getElementById("moose-equation-2706b418-282b-448b-9d72-dbc089897841");katex.render("\\zeta", element, {displayMode:false,throwOnError:false});</script></span> for non-constant damping ratios.</p></section><section id="88a328f6-4155-48ef-b6f0-7b2686e4db97" data-section-level="2" data-section-text="Implementation and Usage"><h2 id="implementation-and-usage">Implementation and Usage</h2><p>In the MOOSE framework, the mass and stiffness matrices are not explicitly calculated. Only the residuals are calculated. To get the residual, the equation of motion (with Rayleigh damping and HHT time integration) can be written as:</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-bba85a76-6ab0-4818-b9ae-1e26feb0189d"></span><script>var element = document.getElementById("moose-equation-bba85a76-6ab0-4818-b9ae-1e26feb0189d");katex.render("\\rho \\ddot{u}(t+\\Delta t) + \\eta \\rho [(1+\\alpha)\\dot{u}(t + \\Delta t)-\\alpha \\dot{u}(t)] + \\zeta  \\nabla \\cdot [(1+\\alpha)\\frac{d}{dt}\\sigma(t+\\Delta t)- \\alpha \\frac{d}{dt}\\sigma(t)] + \\nabla \\cdot [(1+\\alpha) \\sigma(t+\\Delta t) - \\alpha \\sigma(t)] = F_{ext}(t+ (1 + \\alpha) \\Delta t)", element, {displayMode:true,throwOnError:false});</script></span></p><p>Here, <span class="moose-katex-inline-equation" id="moose-equation-dd35c305-3810-4324-9a05-9b6f6cfb5dd5"><script>var element = document.getElementById("moose-equation-dd35c305-3810-4324-9a05-9b6f6cfb5dd5");katex.render("\\rho", element, {displayMode:false,throwOnError:false});</script></span> is the density of the material and <span class="moose-katex-inline-equation" id="moose-equation-2f010c77-7433-4675-9795-df2b47c870af"><script>var element = document.getElementById("moose-equation-2f010c77-7433-4675-9795-df2b47c870af");katex.render("\\sigma", element, {displayMode:false,throwOnError:false});</script></span> is the stress tensor. The weak form of the above equation is used to get the residuals.</p><p>The first two terms to the left that contain <span class="moose-katex-inline-equation" id="moose-equation-4d8204e9-b359-45d4-ba85-bde82a0cd853"><script>var element = document.getElementById("moose-equation-4d8204e9-b359-45d4-ba85-bde82a0cd853");katex.render("\\rho", element, {displayMode:false,throwOnError:false});</script></span> are calculated in the <a href="../../source/kernels/InertialForce.html">InertialForce</a> kernel. <span class="moose-katex-inline-equation" id="moose-equation-b834449e-db07-4d3c-9e25-3e139352f38a"><script>var element = document.getElementById("moose-equation-b834449e-db07-4d3c-9e25-3e139352f38a");katex.render("\\alpha", element, {displayMode:false,throwOnError:false});</script></span>, <span class="moose-katex-inline-equation" id="moose-equation-8d1744e5-8d47-43f7-a2c0-6434883224d0"><script>var element = document.getElementById("moose-equation-8d1744e5-8d47-43f7-a2c0-6434883224d0");katex.render("\\beta", element, {displayMode:false,throwOnError:false});</script></span>, <span class="moose-katex-inline-equation" id="moose-equation-af00bd82-e180-4dcb-9b4b-b259fe7b8682"><script>var element = document.getElementById("moose-equation-af00bd82-e180-4dcb-9b4b-b259fe7b8682");katex.render("\\gamma", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-939df351-c6f2-4092-b36d-55e6a4c140e4"><script>var element = document.getElementById("moose-equation-939df351-c6f2-4092-b36d-55e6a4c140e4");katex.render("\\eta", element, {displayMode:false,throwOnError:false});</script></span> need to be passed as input to the InertialForce kernel.</p><p>The next two terms to the left involving <span class="moose-katex-inline-equation" id="moose-equation-9dd89b16-aaad-46b7-be4a-b061b8fc1f9b"><script>var element = document.getElementById("moose-equation-9dd89b16-aaad-46b7-be4a-b061b8fc1f9b");katex.render("\\sigma", element, {displayMode:false,throwOnError:false});</script></span> are calculated in <a href="../../source/kernels/DynamicStressDivergenceTensors.html">DynamicStressDivergenceTensors</a>.</p><p>Note that the time derivative of <span class="moose-katex-inline-equation" id="moose-equation-030157b1-7c03-40e1-b4c4-323f31cca2a5"><script>var element = document.getElementById("moose-equation-030157b1-7c03-40e1-b4c4-323f31cca2a5");katex.render("\\sigma(t+\\Delta t)", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-efd5eac0-9a20-44df-a25f-3bcec38f3368"><script>var element = document.getElementById("moose-equation-efd5eac0-9a20-44df-a25f-3bcec38f3368");katex.render("\\sigma(t)", element, {displayMode:false,throwOnError:false});</script></span> are approximated as follows:</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-2c1f6fcb-f29f-437f-a180-99cfcc730d35"></span><script>var element = document.getElementById("moose-equation-2c1f6fcb-f29f-437f-a180-99cfcc730d35");katex.render("\\begin{aligned} \\frac{d}{dt}\\sigma(t+\\Delta t) &= \\frac{\\sigma(t+\\Delta t)-\\sigma(t)}{\\Delta t} \\\\ \\frac{d}{dt}\\sigma(t) &= \\frac{\\sigma(t)-\\sigma(t-\\Delta t)}{\\Delta t} \\end{aligned}", element, {displayMode:true,throwOnError:false});</script></span></p><p>The input file syntax for calculating the residual due to both the Inertial force and the DynamicStressDivergenceTensors is:</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#6317d65b-0af1-47b6-a388-2b123f8095fb">(moose/modules/tensor_mechanics/test/tests/dynamics/rayleigh_damping/rayleigh_hht.i)</a><p>Here, <code>./DynamicTensorMechanics</code> is the action that calls the <a href="../../source/kernels/DynamicStressDivergenceTensors.html">DynamicStressDivergenceTensors</a> kernel.</p><p>Finally, when using HHT time integration method, external forces like gravity and pressure also require <span class="moose-katex-inline-equation" id="moose-equation-9cc7806e-89cc-42cf-9169-3c7a034bdf77"><script>var element = document.getElementById("moose-equation-9cc7806e-89cc-42cf-9169-3c7a034bdf77");katex.render("\\alpha", element, {displayMode:false,throwOnError:false});</script></span> as input.</p><div class="card moose-alert moose-alert-note"><div class="card-title moose-alert-title"><i class="material-icons moose-inline-icon">comment</i><span class="moose-alert-title-brand">note</span></div><div class="card-content"><div class="moose-alert-content"><p>For dynamic problems, it is recommended to use <a href="../../source/bcs/PresetDisplacement.html">PresetDisplacement</a> and <a href="../../source/bcs/PresetAcceleration.html">PresetAcceleration</a> for prescribing the displacement and acceleration at a boundary, respectively.</p></div></div></div><div class="card moose-alert moose-alert-warning"><div class="card-title moose-alert-title"><i class="material-icons moose-inline-icon">warning</i><span class="moose-alert-title-brand">warning</span></div><div class="card-content"><div class="moose-alert-content"><p><a href="../../source/kernels/DynamicStressDivergenceTensors.html">DynamicStressDivergenceTensors</a> uses the undisplaced mesh by default but kernels such as <a href="../../source/kernels/InertialForce.html">InertialForce</a> and <a href="../../source/kernels/Gravity.html">Gravity</a>, and boundary conditions such as <a href="../../source/bcs/Pressure.html">Pressure</a> use the displaced mesh by default. All calculations should be performed either using the undisplaced mesh (recommended for small strain problems) or the displaced mesh (recommended for finite strain problems). Therefore, <code>use_displaced_mesh</code> parameter should be appropriately set for all the kernels and boundary conditions.</p></div></div></div></section><section id="9dc23254-4727-4286-887d-c0b98bb321d6" data-section-level="2" data-section-text="Static Initialization"><h2 id="static-initialization">Static Initialization</h2><p>To initialize the system under a constant initial loading such as gravity, an initial static analysis can be conducted by turning off all the dynamics related Kernels and AuxKernels such as <a href="../../source/kernels/InertialForce.html">InertialForce</a>, <a href="../../source/auxkernels/NewmarkVelAux.html">NewmarkVelAux</a> and <a href="../../source/auxkernels/NewmarkAccelAux.html">NewmarkAccelAux</a> for the first time step. To turn off stiffness proportional Rayleigh damping for the first time step <code>static_initialization</code> flag can be set to true in <a href="../../source/actions/DynamicTensorMechanicsAction.html">DynamicTensorMechanics</a> or <a href="../../source/kernels/DynamicStressDivergenceTensors.html">DynamicStressDivergenceTensors</a>. An example of static initialization can be found in this following test:</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text"># One 3D element under ramped displacement loading.
+#
+# loading in z direction:
+# time : 0.0 0.1  0.2  0.3
+# disp : 0.0 0.0 -0.01 -0.01
+
+# Gravity is applied in y direction. To equilibrate the system
+# under gravity, a static analysis is run in the first time step
+# by turning off the inertial terms. (see controls block and
+# DynamicTensorMechanics block).
+
+# Result: The displacement at the top node in the z direction should match
+# the prescribed displacement. Also, the z acceleration should
+# be two triangular pulses, one peaking at 0.1 and another peaking at
+# 0.2.
+
+# The y displacement would be offset by the gravity displacement.
+# Also the y acceleration and velocity should be zero until the loading in
+# the z direction starts (i.e, until 0.1s)
+
+# Note: The time step used in the displacement data file should match
+# the simulation time step (dt and dtmin in the Executioner block).
+
+[Mesh]
+  type = GeneratedMesh
+  dim = 3 # Dimension of the mesh
+  nx = 1 # Number of elements in the x direction
+  ny = 1 # Number of elements in the y direction
+  nz = 1 # Number of elements in the z direction
+  xmin = 0.0
+  xmax = 1
+  ymin = 0.0
+  ymax = 1
+  zmin = 0.0
+  zmax = 1
+  allow_renumbering = false # So NodalVariableValue can index by id
+[]
+
+[Variables] # variables that are solved
+  [./disp_x]
+  [../]
+  [./disp_y]
+  [../]
+  [./disp_z]
+  [../]
+[]
+
+[AuxVariables] # variables that are calculated for output
+  [./accel_x]
+  [../]
+  [./vel_x]
+  [../]
+  [./accel_y]
+  [../]
+  [./vel_y]
+  [../]
+  [./accel_z]
+  [../]
+  [./vel_z]
+  [../]
+  [./stress_xx]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./strain_xx]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./stress_yy]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./strain_yy]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./stress_zz]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./strain_zz]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+[]
+
+[Kernels]
+  [./DynamicTensorMechanics] # zeta*K*vel + K * disp
+    displacements = &#x27;disp_x disp_y disp_z&#x27;
+    stiffness_damping_coefficient = 0.000025
+    static_initialization = true #turns off rayliegh damping for the first time step to stabilize system under gravity
+  [../]
+  [./inertia_x] # M*accel + eta*M*vel
+    type = InertialForce
+    variable = disp_x
+    velocity = vel_x
+    acceleration = accel_x
+    beta = 0.25 # Newmark time integration
+    gamma = 0.5 # Newmark time integration
+    eta = 19.63
+  [../]
+  [./inertia_y]
+    type = InertialForce
+    variable = disp_y
+    velocity = vel_y
+    acceleration = accel_y
+    beta = 0.25
+    gamma = 0.5
+    eta = 19.63
+  [../]
+  [./inertia_z]
+    type = InertialForce
+    variable = disp_z
+    velocity = vel_z
+    acceleration = accel_z
+    beta = 0.25
+    gamma = 0.5
+    eta = 19.63
+  [../]
+  [./gravity]
+    type = Gravity
+    variable = disp_y
+    value = -9.81
+  [../]
+[]
+
+[AuxKernels]
+  [./accel_x] # Calculates and stores acceleration at the end of time step
+    type = NewmarkAccelAux
+    variable = accel_x
+    displacement = disp_x
+    velocity = vel_x
+    beta = 0.25
+    execute_on = timestep_end
+  [../]
+  [./vel_x] # Calculates and stores velocity at the end of the time step
+    type = NewmarkVelAux
+    variable = vel_x
+    acceleration = accel_x
+    gamma = 0.5
+    execute_on = timestep_end
+  [../]
+  [./accel_y]
+    type = NewmarkAccelAux
+    variable = accel_y
+    displacement = disp_y
+    velocity = vel_y
+    beta = 0.25
+    execute_on = timestep_end
+  [../]
+  [./vel_y]
+    type = NewmarkVelAux
+    variable = vel_y
+    acceleration = accel_y
+    gamma = 0.5
+    execute_on = timestep_end
+  [../]
+  [./accel_z]
+    type = NewmarkAccelAux
+    variable = accel_z
+    displacement = disp_z
+    velocity = vel_z
+    beta = 0.25
+    execute_on = timestep_end
+  [../]
+  [./vel_z]
+    type = NewmarkVelAux
+    variable = vel_z
+    acceleration = accel_z
+    gamma = 0.5
+    execute_on = timestep_end
+  [../]
+  [./stress_xx]
+    type = RankTwoAux
+    rank_two_tensor = stress
+    variable = stress_xx
+    index_i = 0
+    index_j = 0
+  [../]
+  [./strain_xx]
+    type = RankTwoAux
+    rank_two_tensor = total_strain
+    variable = strain_xx
+    index_i = 0
+    index_j = 0
+  [../]
+  [./stress_yy]
+    type = RankTwoAux
+    rank_two_tensor = stress
+    variable = stress_yy
+    index_i = 1
+    index_j = 1
+  [../]
+  [./strain_yy]
+    type = RankTwoAux
+    rank_two_tensor = total_strain
+    variable = strain_yy
+    index_i = 1
+    index_j = 1
+  [../]
+  [./stress_zz]
+    type = RankTwoAux
+    rank_two_tensor = stress
+    variable = stress_zz
+    index_i = 2
+    index_j = 2
+  [../]
+  [./strain_zz]
+    type = RankTwoAux
+    rank_two_tensor = total_strain
+    variable = strain_zz
+    index_i = 2
+    index_j = 2
+  [../]
+[]
+
+[Functions]
+  [./displacement_front]
+    type = PiecewiseLinear
+    data_file = &#x27;displacement.csv&#x27;
+    format = columns
+  [../]
+[]
+
+[BCs]
+  [./prescribed_displacement]
+    type = PresetDisplacement
+    variable = disp_z
+    velocity = vel_z
+    acceleration = accel_z
+    beta = 0.25
+    boundary = front
+    function = displacement_front
+  [../]
+  [./anchor_x]
+    type = DirichletBC
+    variable = disp_x
+    boundary = left
+    value = 0.0
+  [../]
+  [./anchor_y]
+    type = DirichletBC
+    variable = disp_y
+    boundary = bottom
+    value = 0.0
+  [../]
+  [./anchor_z]
+    type = DirichletBC
+    variable = disp_z
+    boundary = back
+    value = 0.0
+  [../]
+[]
+
+[Materials]
+  [./elasticity_tensor]
+    youngs_modulus = 325e6 #Pa
+    poissons_ratio = 0.3
+    type = ComputeIsotropicElasticityTensor
+    block = 0
+  [../]
+  [./strain]
+    #Computes the strain, assuming small strains
+    type = ComputeSmallStrain
+    block = 0
+    displacements = &#x27;disp_x disp_y disp_z&#x27;
+  [../]
+  [./stress]
+    #Computes the stress, using linear elasticity
+    type = ComputeLinearElasticStress
+    block = 0
+  [../]
+  [./density]
+    type = GenericConstantMaterial
+    block = 0
+    prop_names = density
+    prop_values = 2000 #kg/m3
+  [../]
+[]
+
+[Controls] # turns off inertial terms for the first time step
+  [./period0]
+    type = TimePeriod
+    disable_objects = &#x27;*/vel_x */vel_y */vel_z */accel_x */accel_y */accel_z */inertia_x */inertia_y */inertia_z&#x27;
+    start_time = 0.0
+    end_time = 0.1 # dt used in the simulation
+  [../]
+[../]
+
+[Executioner]
+  type = Transient
+  start_time = 0
+  end_time = 3.0
+  l_tol = 1e-6
+  nl_rel_tol = 1e-6
+  nl_abs_tol = 1e-6
+  dt = 0.1
+  timestep_tolerance = 1e-6
+[]
+
+[Postprocessors] # These quantites are printed to a csv file at every time step
+  [./_dt]
+    type = TimestepSize
+  [../]
+  [./accel_6x]
+    type = NodalVariableValue
+    nodeid = 6
+    variable = accel_x
+  [../]
+  [./accel_6y]
+    type = NodalVariableValue
+    nodeid = 6
+    variable = accel_y
+  [../]
+  [./accel_6z]
+    type = NodalVariableValue
+    nodeid = 6
+    variable = accel_z
+  [../]
+  [./vel_6x]
+    type = NodalVariableValue
+    nodeid = 6
+    variable = vel_x
+  [../]
+  [./vel_6y]
+    type = NodalVariableValue
+    nodeid = 6
+    variable = vel_y
+  [../]
+  [./vel_6z]
+    type = NodalVariableValue
+    nodeid = 6
+    variable = vel_z
+  [../]
+  [./disp_6x]
+    type = NodalVariableValue
+    nodeid = 6
+    variable = disp_x
+  [../]
+  [./disp_6y]
+    type = NodalVariableValue
+    nodeid = 6
+    variable = disp_y
+  [../]
+  [./disp_6z]
+    type = NodalVariableValue
+    nodeid = 6
+    variable = disp_z
+  [../]
+[]
+
+[Outputs]
+  exodus = true
+  perf_graph = true
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#e45974a8-e442-4812-8302-6cab6f362546">(moose/modules/tensor_mechanics/test/tests/dynamics/prescribed_displacement/3D_QStatic_1_Ramped_Displacement_with_gravity.i)</a></section><section id="18b2b3cc-8750-45ad-9a77-8e0fca13b31c" data-section-level="2" data-section-text="References"><h2 id="references">References</h2><div class="moose-bibliography"><ol><li id="hughes2000fem">T.&nbsp;J.&nbsp;R Hughes.
+<em>The finite element method:<span class="bibtex-protected">L</span>inear static and dynamic finite element analysis</em>.
+Dover Publications, Mineola, NY, 2000.<a href="#98891680-b914-4c62-964d-465ab6de57c6" class="modal-trigger moose-bibtex-modal" style="padding-left:10px;">[BibTeX]</a><div class="modal" id="98891680-b914-4c62-964d-465ab6de57c6"><div class="modal-content"><pre style="line-height:1.25;"><code class="language-latex">@book{hughes2000fem,
+    author = "Hughes, T. J. R",
+    title = "The finite element method:{L}inear static and dynamic finite element analysis",
+    year = "2000",
+    publisher = "Dover Publications, Mineola, NY"
+}
+</code></pre></div></div></li><li id="newmark1959amethod">N.&nbsp;M. Newmark.
+A method of computation for structural dynamics.
+<em>Journal of Engineering Mechanics</em>, 85(EM3):67–94, 1959.<a href="#e71d5e91-c6e0-4b2a-807d-d9993e0be442" class="modal-trigger moose-bibtex-modal" style="padding-left:10px;">[BibTeX]</a><div class="modal" id="e71d5e91-c6e0-4b2a-807d-d9993e0be442"><div class="modal-content"><pre style="line-height:1.25;"><code class="language-latex">@article{newmark1959amethod,
+    author = "Newmark, N. M.",
+    title = "A method of computation for structural dynamics",
+    journal = "Journal of Engineering Mechanics",
+    publisher = "ASCE",
+    volume = "85",
+    number = "EM3",
+    pages = "67--94",
+    year = "1959"
+}
+</code></pre></div></div></li></ol></div></section></section><div class="moose-modal modal" id="6317d65b-0af1-47b6-a388-2b123f8095fb"><div class="modal-content"><h4>(moose/modules/tensor_mechanics/test/tests/dynamics/rayleigh_damping/rayleigh_hht.i)</h4><pre class="moose-pre"><code class="language-text"># Test for rayleigh damping implemented using HHT time integration
+#
+# The test is for an 1D bar element of  unit length fixed on one end
+# with a ramped pressure boundary condition applied to the other end.
+# zeta and eta correspond to the stiffness and mass proportional rayleigh damping
+# alpha, beta and gamma are HHT time integration parameters
+# The equation of motion in terms of matrices is:
+#
+# M*accel + (eta*M+zeta*K)*[(1+alpha)vel-alpha vel_old]
+# + alpha*(K*disp - K*disp_old) + K*disp = P(t+alpha dt)*Area
+#
+# Here M is the mass matrix, K is the stiffness matrix, P is the applied pressure
+#
+# This equation is equivalent to:
+#
+# density*accel + eta*density*[(1+alpha)vel-alpha vel_old]
+# + zeta*[(1+alpha)*d/dt(Div stress)- alpha*d/dt(Div stress_old)]
+# + alpha *(Div stress - Div stress_old) +Div Stress= P(t+alpha dt)
+#
+# The first two terms on the left are evaluated using the Inertial force kernel
+# The next three terms on the left involving zeta and alpha are evaluated using
+# the DynamicStressDivergenceTensors Kernel
+# The residual due to Pressure is evaluated using Pressure boundary condition
+#
+# The system will come to steady state slowly after the pressure becomes constant.
+# Alpha equal to zero will result in Newmark integration.
+
+[Mesh]
+  type = GeneratedMesh
+  dim = 3
+  nx = 1
+  ny = 1
+  nz = 1
+  xmin = 0.0
+  xmax = 0.1
+  ymin = 0.0
+  ymax = 1.0
+  zmin = 0.0
+  zmax = 0.1
+  use_displaced_mesh = false
+[]
+
+[GlobalParams]
+  displacements = &#x27;disp_x disp_y disp_z&#x27;
+[]
+
+[AuxVariables]
+  [stress_yy]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+  [strain_yy]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+[]
+
+[AuxKernels]
+  [stress_yy]
+    type = RankTwoAux
+    rank_two_tensor = stress
+    variable = stress_yy
+    index_i = 1
+    index_j = 1
+  []
+  [strain_yy]
+    type = RankTwoAux
+    rank_two_tensor = total_strain
+    variable = strain_yy
+    index_i = 1
+    index_j = 1
+  []
+[]
+
+[Modules/TensorMechanics/DynamicMaster]
+  [all]
+    add_variables = true
+    hht_alpha = 0.11
+    newmark_beta = 0.25
+    newmark_gamma = 0.5
+    mass_damping_coefficient = 0.1
+    stiffness_damping_coefficient = 0.1
+    density = 7750
+  []
+[]
+
+[BCs]
+  [top_y]
+    type = DirichletBC
+    variable = disp_y
+    boundary = top
+    value = 0.0
+  []
+  [top_x]
+    type = DirichletBC
+    variable = disp_x
+    boundary = top
+    value = 0.0
+  []
+  [top_z]
+    type = DirichletBC
+    variable = disp_z
+    boundary = top
+    value = 0.0
+  []
+  [bottom_x]
+    type = DirichletBC
+    variable = disp_x
+    boundary = bottom
+    value = 0.0
+  []
+  [bottom_z]
+    type = DirichletBC
+    variable = disp_z
+    boundary = bottom
+    value = 0.0
+  []
+  [Pressure]
+    [Side1]
+      boundary = bottom
+      function = pressure
+      factor = 1
+      hht_alpha = 0.11
+    []
+  []
+[]
+
+[Materials]
+  [Elasticity_tensor]
+    type = ComputeElasticityTensor
+    fill_method = symmetric_isotropic
+    C_ijkl = &#x27;210e9 0&#x27;
+  []
+  [stress]
+    type = ComputeLinearElasticStress
+  []
+[]
+
+[Executioner]
+  type = Transient
+  start_time = 0
+  end_time = 2
+  dt = 0.1
+[]
+
+[Functions]
+  [pressure]
+    type = PiecewiseLinear
+    x = &#x27;0.0 0.1 0.2 1.0 2.0 5.0&#x27;
+    y = &#x27;0.0 0.1 0.2 1.0 1.0 1.0&#x27;
+    scale_factor = 1e9
+  []
+[]
+
+[Postprocessors]
+  [_dt]
+    type = TimestepSize
+  []
+  [disp]
+    type = NodalExtremeValue
+    variable = disp_y
+    boundary = bottom
+  []
+  [vel]
+    type = NodalExtremeValue
+    variable = vel_y
+    boundary = bottom
+  []
+  [accel]
+    type = NodalExtremeValue
+    variable = accel_y
+    boundary = bottom
+  []
+  [stress_yy]
+    type = ElementAverageValue
+    variable = stress_yy
+  []
+  [strain_yy]
+    type = ElementAverageValue
+    variable = strain_yy
+  []
+[]
+
+[Outputs]
+  exodus = true
+  perf_graph = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="e45974a8-e442-4812-8302-6cab6f362546"><div class="modal-content"><h4>(moose/modules/tensor_mechanics/test/tests/dynamics/prescribed_displacement/3D_QStatic_1_Ramped_Displacement_with_gravity.i)</h4><pre class="moose-pre"><code class="language-text"># One 3D element under ramped displacement loading.
+#
+# loading in z direction:
+# time : 0.0 0.1  0.2  0.3
+# disp : 0.0 0.0 -0.01 -0.01
+
+# Gravity is applied in y direction. To equilibrate the system
+# under gravity, a static analysis is run in the first time step
+# by turning off the inertial terms. (see controls block and
+# DynamicTensorMechanics block).
+
+# Result: The displacement at the top node in the z direction should match
+# the prescribed displacement. Also, the z acceleration should
+# be two triangular pulses, one peaking at 0.1 and another peaking at
+# 0.2.
+
+# The y displacement would be offset by the gravity displacement.
+# Also the y acceleration and velocity should be zero until the loading in
+# the z direction starts (i.e, until 0.1s)
+
+# Note: The time step used in the displacement data file should match
+# the simulation time step (dt and dtmin in the Executioner block).
+
+[Mesh]
+  type = GeneratedMesh
+  dim = 3 # Dimension of the mesh
+  nx = 1 # Number of elements in the x direction
+  ny = 1 # Number of elements in the y direction
+  nz = 1 # Number of elements in the z direction
+  xmin = 0.0
+  xmax = 1
+  ymin = 0.0
+  ymax = 1
+  zmin = 0.0
+  zmax = 1
+  allow_renumbering = false # So NodalVariableValue can index by id
+[]
+
+[Variables] # variables that are solved
+  [./disp_x]
+  [../]
+  [./disp_y]
+  [../]
+  [./disp_z]
+  [../]
+[]
+
+[AuxVariables] # variables that are calculated for output
+  [./accel_x]
+  [../]
+  [./vel_x]
+  [../]
+  [./accel_y]
+  [../]
+  [./vel_y]
+  [../]
+  [./accel_z]
+  [../]
+  [./vel_z]
+  [../]
+  [./stress_xx]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./strain_xx]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./stress_yy]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./strain_yy]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./stress_zz]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./strain_zz]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+[]
+
+[Kernels]
+  [./DynamicTensorMechanics] # zeta*K*vel + K * disp
+    displacements = &#x27;disp_x disp_y disp_z&#x27;
+    stiffness_damping_coefficient = 0.000025
+    static_initialization = true #turns off rayliegh damping for the first time step to stabilize system under gravity
+  [../]
+  [./inertia_x] # M*accel + eta*M*vel
+    type = InertialForce
+    variable = disp_x
+    velocity = vel_x
+    acceleration = accel_x
+    beta = 0.25 # Newmark time integration
+    gamma = 0.5 # Newmark time integration
+    eta = 19.63
+  [../]
+  [./inertia_y]
+    type = InertialForce
+    variable = disp_y
+    velocity = vel_y
+    acceleration = accel_y
+    beta = 0.25
+    gamma = 0.5
+    eta = 19.63
+  [../]
+  [./inertia_z]
+    type = InertialForce
+    variable = disp_z
+    velocity = vel_z
+    acceleration = accel_z
+    beta = 0.25
+    gamma = 0.5
+    eta = 19.63
+  [../]
+  [./gravity]
+    type = Gravity
+    variable = disp_y
+    value = -9.81
+  [../]
+[]
+
+[AuxKernels]
+  [./accel_x] # Calculates and stores acceleration at the end of time step
+    type = NewmarkAccelAux
+    variable = accel_x
+    displacement = disp_x
+    velocity = vel_x
+    beta = 0.25
+    execute_on = timestep_end
+  [../]
+  [./vel_x] # Calculates and stores velocity at the end of the time step
+    type = NewmarkVelAux
+    variable = vel_x
+    acceleration = accel_x
+    gamma = 0.5
+    execute_on = timestep_end
+  [../]
+  [./accel_y]
+    type = NewmarkAccelAux
+    variable = accel_y
+    displacement = disp_y
+    velocity = vel_y
+    beta = 0.25
+    execute_on = timestep_end
+  [../]
+  [./vel_y]
+    type = NewmarkVelAux
+    variable = vel_y
+    acceleration = accel_y
+    gamma = 0.5
+    execute_on = timestep_end
+  [../]
+  [./accel_z]
+    type = NewmarkAccelAux
+    variable = accel_z
+    displacement = disp_z
+    velocity = vel_z
+    beta = 0.25
+    execute_on = timestep_end
+  [../]
+  [./vel_z]
+    type = NewmarkVelAux
+    variable = vel_z
+    acceleration = accel_z
+    gamma = 0.5
+    execute_on = timestep_end
+  [../]
+  [./stress_xx]
+    type = RankTwoAux
+    rank_two_tensor = stress
+    variable = stress_xx
+    index_i = 0
+    index_j = 0
+  [../]
+  [./strain_xx]
+    type = RankTwoAux
+    rank_two_tensor = total_strain
+    variable = strain_xx
+    index_i = 0
+    index_j = 0
+  [../]
+  [./stress_yy]
+    type = RankTwoAux
+    rank_two_tensor = stress
+    variable = stress_yy
+    index_i = 1
+    index_j = 1
+  [../]
+  [./strain_yy]
+    type = RankTwoAux
+    rank_two_tensor = total_strain
+    variable = strain_yy
+    index_i = 1
+    index_j = 1
+  [../]
+  [./stress_zz]
+    type = RankTwoAux
+    rank_two_tensor = stress
+    variable = stress_zz
+    index_i = 2
+    index_j = 2
+  [../]
+  [./strain_zz]
+    type = RankTwoAux
+    rank_two_tensor = total_strain
+    variable = strain_zz
+    index_i = 2
+    index_j = 2
+  [../]
+[]
+
+[Functions]
+  [./displacement_front]
+    type = PiecewiseLinear
+    data_file = &#x27;displacement.csv&#x27;
+    format = columns
+  [../]
+[]
+
+[BCs]
+  [./prescribed_displacement]
+    type = PresetDisplacement
+    variable = disp_z
+    velocity = vel_z
+    acceleration = accel_z
+    beta = 0.25
+    boundary = front
+    function = displacement_front
+  [../]
+  [./anchor_x]
+    type = DirichletBC
+    variable = disp_x
+    boundary = left
+    value = 0.0
+  [../]
+  [./anchor_y]
+    type = DirichletBC
+    variable = disp_y
+    boundary = bottom
+    value = 0.0
+  [../]
+  [./anchor_z]
+    type = DirichletBC
+    variable = disp_z
+    boundary = back
+    value = 0.0
+  [../]
+[]
+
+[Materials]
+  [./elasticity_tensor]
+    youngs_modulus = 325e6 #Pa
+    poissons_ratio = 0.3
+    type = ComputeIsotropicElasticityTensor
+    block = 0
+  [../]
+  [./strain]
+    #Computes the strain, assuming small strains
+    type = ComputeSmallStrain
+    block = 0
+    displacements = &#x27;disp_x disp_y disp_z&#x27;
+  [../]
+  [./stress]
+    #Computes the stress, using linear elasticity
+    type = ComputeLinearElasticStress
+    block = 0
+  [../]
+  [./density]
+    type = GenericConstantMaterial
+    block = 0
+    prop_names = density
+    prop_values = 2000 #kg/m3
+  [../]
+[]
+
+[Controls] # turns off inertial terms for the first time step
+  [./period0]
+    type = TimePeriod
+    disable_objects = &#x27;*/vel_x */vel_y */vel_z */accel_x */accel_y */accel_z */inertia_x */inertia_y */inertia_z&#x27;
+    start_time = 0.0
+    end_time = 0.1 # dt used in the simulation
+  [../]
+[../]
+
+[Executioner]
+  type = Transient
+  start_time = 0
+  end_time = 3.0
+  l_tol = 1e-6
+  nl_rel_tol = 1e-6
+  nl_abs_tol = 1e-6
+  dt = 0.1
+  timestep_tolerance = 1e-6
+[]
+
+[Postprocessors] # These quantites are printed to a csv file at every time step
+  [./_dt]
+    type = TimestepSize
+  [../]
+  [./accel_6x]
+    type = NodalVariableValue
+    nodeid = 6
+    variable = accel_x
+  [../]
+  [./accel_6y]
+    type = NodalVariableValue
+    nodeid = 6
+    variable = accel_y
+  [../]
+  [./accel_6z]
+    type = NodalVariableValue
+    nodeid = 6
+    variable = accel_z
+  [../]
+  [./vel_6x]
+    type = NodalVariableValue
+    nodeid = 6
+    variable = vel_x
+  [../]
+  [./vel_6y]
+    type = NodalVariableValue
+    nodeid = 6
+    variable = vel_y
+  [../]
+  [./vel_6z]
+    type = NodalVariableValue
+    nodeid = 6
+    variable = vel_z
+  [../]
+  [./disp_6x]
+    type = NodalVariableValue
+    nodeid = 6
+    variable = disp_x
+  [../]
+  [./disp_6y]
+    type = NodalVariableValue
+    nodeid = 6
+    variable = disp_y
+  [../]
+  [./disp_6z]
+    type = NodalVariableValue
+    nodeid = 6
+    variable = disp_z
+  [../]
+[]
+
+[Outputs]
+  exodus = true
+  perf_graph = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>

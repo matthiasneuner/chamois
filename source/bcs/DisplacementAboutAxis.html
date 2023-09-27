@@ -1,0 +1,172 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>Displacement About Axis | Chamois</title><link rel="icon" type="image/x-icon" href="../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="688b24d9-62fc-4ff8-a313-64215c31bbea" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="ee1a58b5-2f4d-46ee-9a63-0bb2ffb42802"><i class="material-icons">menu</i></a><ul class="sidenav" id="ee1a58b5-2f4d-46ee-9a63-0bb2ffb42802"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="55f7663f-ea32-4c15-868b-37d8d90678fc" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="688b24d9-62fc-4ff8-a313-64215c31bbea"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="55f7663f-ea32-4c15-868b-37d8d90678fc"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="9808fab9-4a43-421e-a60c-f0d6d14834c0" data-section-level="1" data-section-text="Displacement About Axis"><h1 id="displacement-about-axis">Displacement About Axis</h1><p>Implements a boundary condition that enforces rotationaldisplacement around an axis on a boundary</p><section id="c76da696-6d4b-41cb-84c0-ce41d3baa6fd" data-section-level="2" data-section-text="Description"><h2 id="description">Description</h2><p>The boundary condition class <code>DisplacementAboutAxis</code> applies a rotating displacement to the specified mesh surface according to the user defined rotation function.  The boundary condition is always applied to the displaced mesh.  The rotation function can be given in either radians or in angles, and an axis of rotation can be specified with the <code>axis_origin</code> and <code>axis_direction</code> parameters. By default, the function defines the rotation, but if the <code>angular_velocity</code> parameter is set, it allows for the function to define an angular velocity instead of a total rotationa angle.</p><p>The rotating displacement value at the current node is calculated according to <a href="#moose-equation-9c4dc7e8-f2f3-4ced-bda8-ecc291285d6e">Eq. (1)</a>: <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-9c4dc7e8-f2f3-4ced-bda8-ecc291285d6e"></span><span class="moose-katex-equation-number">(1)</span><script>var element = document.getElementById("moose-equation-9c4dc7e8-f2f3-4ced-bda8-ecc291285d6e");katex.render(" u_{rotation} = \\boldsymbol{T}^{-1} \\cdot \\boldsymbol{R}_x^{-1} \\cdot \\boldsymbol{R}_y^{-1} \\cdot \\boldsymbol{R}_z \\cdot \\boldsymbol{R}_y \\cdot \\boldsymbol{R}_x \\cdot \\boldsymbol{T}", element, {displayMode:true,throwOnError:false});</script></span> where <span class="moose-katex-inline-equation" id="moose-equation-3e3ba89c-f702-4648-a94c-2018b53e223a"><script>var element = document.getElementById("moose-equation-3e3ba89c-f702-4648-a94c-2018b53e223a");katex.render("\\boldsymbol{T}", element, {displayMode:false,throwOnError:false});</script></span> is the translation matrix for axes of rotation not centered at the coordinate system origin, and <span class="moose-katex-inline-equation" id="moose-equation-7223e2b8-4389-498f-b3d5-25fdef7acc8f"><script>var element = document.getElementById("moose-equation-7223e2b8-4389-498f-b3d5-25fdef7acc8f");katex.render("\\boldsymbol{R}_x", element, {displayMode:false,throwOnError:false});</script></span>, <span class="moose-katex-inline-equation" id="moose-equation-45d9955c-5e1b-40a5-8dde-b29d56dd3563"><script>var element = document.getElementById("moose-equation-45d9955c-5e1b-40a5-8dde-b29d56dd3563");katex.render("\\boldsymbol{R}_y", element, {displayMode:false,throwOnError:false});</script></span>, and <span class="moose-katex-inline-equation" id="moose-equation-44070492-4888-4e33-a70e-eaa5a5ab7557"><script>var element = document.getElementById("moose-equation-44070492-4888-4e33-a70e-eaa5a5ab7557");katex.render("\\boldsymbol{R}_z", element, {displayMode:false,throwOnError:false});</script></span> are rotation matrices about the <span class="moose-katex-inline-equation" id="moose-equation-558b04bd-6d58-497e-88e5-54d9234ebf91"><script>var element = document.getElementById("moose-equation-558b04bd-6d58-497e-88e5-54d9234ebf91");katex.render("\\hat{x}", element, {displayMode:false,throwOnError:false});</script></span>, <span class="moose-katex-inline-equation" id="moose-equation-0d0cced7-08d6-4933-96d2-6b02729986d7"><script>var element = document.getElementById("moose-equation-0d0cced7-08d6-4933-96d2-6b02729986d7");katex.render("\\hat{y}", element, {displayMode:false,throwOnError:false});</script></span>, and <span class="moose-katex-inline-equation" id="moose-equation-f931e43c-0ff2-4bce-9a45-b1795a7f36b8"><script>var element = document.getElementById("moose-equation-f931e43c-0ff2-4bce-9a45-b1795a7f36b8");katex.render("\\hat{z}", element, {displayMode:false,throwOnError:false});</script></span> coordinate system axes, respectively.</p></section><section id="65d203ad-40fb-4909-b09b-03e8125573f3" data-section-level="2" data-section-text="Example Input File Syntax"><h2 id="example-input-file-syntax">Example Input File Syntax</h2><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[./top_x]
+  type = DisplacementAboutAxis
+  boundary = 2
+  function = &#x27;0.1*t&#x27;
+  angle_units = degrees
+  axis_origin = &#x27;10. 10. 10.&#x27;
+  axis_direction = &#x27;0 -1.0 1.0&#x27;
+  component = 0
+  variable = disp_x
+[../]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#71a38ae8-10ec-434c-9264-57c3c30bf439">(moose/modules/tensor_mechanics/test/tests/torque_reaction/torque_reaction_cylinder.i)</a><p>A Function is required to prescribe either the total rotation or angular velocity of the <code>DisplacementAboutAxis</code> boundary condition applied to the mesh. Either the name of another function defined elsewhere or a parsed function is used as the argument for the <code>function</code> input parameter in the <code>DisplacementAboutAxis</code> block. In this example, a parsed function is used.</p></section><section id="9c690731-5558-4a4b-9f95-3b42f47a7609" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="52acaa50-650f-479c-85f9-ffab2957e6ed" data-section-level="3" data-section-text="Required Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">angle_units</span><span class="moose-parameter-header-description">The units of the angle of rotation. Choices are:degrees radians</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>degrees, radians</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The units of the angle of rotation. Choices are:degrees radians</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">axis_direction</span><span class="moose-parameter-header-description">Direction of the axis of rotation</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>libMesh::VectorValue&lt;double&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Direction of the axis of rotation</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">axis_origin</span><span class="moose-parameter-header-description">Origin of the axis of rotation</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>libMesh::VectorValue&lt;double&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Origin of the axis of rotation</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">boundary</span><span class="moose-parameter-header-description">The list of boundary IDs from the mesh where this object applies</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;BoundaryName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of boundary IDs from the mesh where this object applies</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">component</span><span class="moose-parameter-header-description">The component for the rotational displacement</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The component for the rotational displacement</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">displacements</span><span class="moose-parameter-header-description">The string of displacements suitable for the problem statement</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;VariableName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The string of displacements suitable for the problem statement</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">function</span><span class="moose-parameter-header-description">The function providing the total angle of rotation or the angular velocity.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>FunctionName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The function providing the total angle of rotation or the angular velocity.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">variable</span><span class="moose-parameter-header-description">The name of the variable that this residual object operates on</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>NonlinearVariableName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of the variable that this residual object operates on</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Required Parameters</h3></summary></details></section><section id="ddf72d0b-6afa-40ab-acc7-c225a8fff313" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">angular_velocity</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">If true interprets the function value as an angular velocity</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>If true interprets the function value as an angular velocity</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">diag_save_in</span><span class="moose-parameter-header-description">The name of auxiliary variables to save this BC's diagonal jacobian contributions to.  Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;AuxVariableName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of auxiliary variables to save this BC's diagonal jacobian contributions to.  Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">preset</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Whether or not to preset the BC (apply the value before the solve begins).</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether or not to preset the BC (apply the value before the solve begins).</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">save_in</span><span class="moose-parameter-header-description">The name of auxiliary variables to save this BC's residual contributions to.  Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;AuxVariableName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of auxiliary variables to save this BC's residual contributions to.  Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="c9d7b89e-84e5-4ffc-aa51-f7ad61645990" data-section-level="3" data-section-text="Tagging Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">absolute_value_vector_tags</span><span class="moose-parameter-header-description">The tags for the vectors this residual object should fill with the absolute value of the residual contribution</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;TagName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The tags for the vectors this residual object should fill with the absolute value of the residual contribution</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">extra_matrix_tags</span><span class="moose-parameter-header-description">The extra tags for the matrices this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;TagName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The extra tags for the matrices this Kernel should fill</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">extra_vector_tags</span><span class="moose-parameter-header-description">The extra tags for the vectors this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;TagName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The extra tags for the vectors this Kernel should fill</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">matrix_tags</span><span class="moose-parameter-header-default">system time</span><span class="moose-parameter-header-description">The tag for the matrices this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>system time</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MultiMooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>nontime, system, time</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The tag for the matrices this Kernel should fill</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">vector_tags</span><span class="moose-parameter-header-default">residual</span><span class="moose-parameter-header-description">The tag for the vectors this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>residual</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MultiMooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>nontime, time, residual</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The tag for the vectors this Kernel should fill</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Tagging Parameters</h3></summary></details></section><section id="a5b9816b-4417-42f6-91bd-114060187265" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>Yes</p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">implicit</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Determines whether this object is calculated using an implicit or explicit form</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Determines whether this object is calculated using an implicit or explicit form</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">seed</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">The seed for the master random number generator</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>unsigned int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The seed for the master random number generator</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_displaced_mesh</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section></section></section><div class="moose-modal modal" id="71a38ae8-10ec-434c-9264-57c3c30bf439"><div class="modal-content"><h4>(moose/modules/tensor_mechanics/test/tests/torque_reaction/torque_reaction_cylinder.i)</h4><pre class="moose-pre"><code class="language-text"># This test uses the DisplacementAboutAxis boundary condition to twist the top
+# of a cylinder while the bottom face of the cylinder remains fixed.  The
+# TorqueReaction postprocessor is used to calculate the applied torque acting
+# on the cylinder at the top face.  This test can be extended, with a new mesh,
+# to model a crack in the center of the cylinder face under type III loading.
+
+[GlobalParams]
+  order = FIRST
+  family = LAGRANGE
+  displacements = &#x27;disp_x disp_y disp_z&#x27;
+[]
+
+[Mesh]
+  file = cylinder.e
+[]
+
+[Problem]
+  extra_tag_vectors = &#x27;ref&#x27;
+[]
+
+[GlobalParams]
+  volumetric_locking_correction=true
+[]
+
+[AuxVariables]
+  [./saved_x]
+  [../]
+  [./saved_y]
+  [../]
+  [./saved_z]
+  [../]
+[]
+
+[AuxKernels]
+  [saved_x]
+    type = TagVectorAux
+    vector_tag = &#x27;ref&#x27;
+    v = &#x27;disp_x&#x27;
+    variable = &#x27;saved_x&#x27;
+  []
+  [saved_y]
+    type = TagVectorAux
+    vector_tag = &#x27;ref&#x27;
+    v = &#x27;disp_y&#x27;
+    variable = &#x27;saved_y&#x27;
+  []
+  [saved_z]
+    type = TagVectorAux
+    vector_tag = &#x27;ref&#x27;
+    v = &#x27;disp_z&#x27;
+    variable = &#x27;saved_z&#x27;
+  []
+[]
+
+[Modules/TensorMechanics/Master]
+  [master]
+    strain = FINITE
+    generate_output = &#x27;stress_xx&#x27;
+    add_variables = true
+    extra_vector_tags = &#x27;ref&#x27;
+  []
+[]
+
+[BCs]
+  [./bottom_x]
+    type = DirichletBC
+    variable = disp_x
+    boundary = 1
+    value = 0.0
+  [../]
+  [./bottom_y]
+    type = DirichletBC
+    variable = disp_y
+    boundary = 1
+    value = 0.0
+  [../]
+  [./bottom_z]
+    type = DirichletBC
+    variable = disp_z
+    boundary = 1
+    value = 0.0
+  [../]
+  [./top_x]
+    type = DisplacementAboutAxis
+    boundary = 2
+    function = &#x27;0.1*t&#x27;
+    angle_units = degrees
+    axis_origin = &#x27;10. 10. 10.&#x27;
+    axis_direction = &#x27;0 -1.0 1.0&#x27;
+    component = 0
+    variable = disp_x
+  [../]
+  [./top_y]
+    type = DisplacementAboutAxis
+    boundary = 2
+    function = &#x27;0.1*t&#x27;
+    angle_units = degrees
+    axis_origin = &#x27;10. 10. 10.&#x27;
+    axis_direction = &#x27;0 -1.0 1.0&#x27;
+    component = 1
+    variable = disp_y
+  [../]
+  [./top_z]
+    type = DisplacementAboutAxis
+    boundary = 2
+    function = &#x27;0.1*t&#x27;
+    angle_units = degrees
+    axis_origin = &#x27;10. 10. 10.&#x27;
+    axis_direction = &#x27;0 -1.0 1.0&#x27;
+    component = 2
+    variable = disp_z
+  [../]
+[]
+
+[Materials]
+  [./elasticity_tensor]
+    type = ComputeIsotropicElasticityTensor
+    youngs_modulus = 207000
+    poissons_ratio = 0.3
+  [../]
+  [./elastic_stress]
+    type = ComputeFiniteStrainElasticStress
+  [../]
+[]
+
+[Executioner]
+
+  type = Transient
+  solve_type = &#x27;PJFNK&#x27;
+
+  petsc_options = &#x27;-snes_ksp_ew&#x27;
+  petsc_options_iname = &#x27;-ksp_gmres_restart&#x27;
+  petsc_options_value = &#x27;101&#x27;
+
+  line_search = &#x27;none&#x27;
+
+  l_max_its = 50
+  nl_max_its = 20
+  nl_abs_tol = 1e-12
+  nl_rel_tol = 1e-11
+  l_tol = 1e-10
+
+  start_time = 0.0
+  dt = 0.25
+
+  end_time = 0.5
+[]
+
+[Postprocessors]
+  [./torque]
+    type = TorqueReaction
+    boundary = 2
+    reaction_force_variables = &#x27;saved_x saved_y saved_z&#x27;
+    axis_origin = &#x27;10. 10. 10.&#x27;
+    direction_vector = &#x27;0 -1.0 1.0&#x27;
+  [../]
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>

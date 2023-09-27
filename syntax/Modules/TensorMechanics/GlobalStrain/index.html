@@ -1,0 +1,164 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>Global Strain | Chamois</title><link rel="icon" type="image/x-icon" href="../../../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../../../media/framework/github-logo.png" class="github-mark"></img><img src="../../../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../../../getting_started.html">Getting Started</a></li><li><a href="../../../../singularity.html">Singularity container</a></li><li><a href="../../../../publications.html">Publications</a></li><li><a href="../../../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="6efe3b53-d833-4baf-a8ef-adfebac84266" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="8a98f757-1e6c-4662-8709-b05052959e9a"><i class="material-icons">menu</i></a><ul class="sidenav" id="8a98f757-1e6c-4662-8709-b05052959e9a"><li><a href="../../../../getting_started.html">Getting Started</a></li><li><a href="../../../../singularity.html">Singularity container</a></li><li><a href="../../../../publications.html">Publications</a></li><li><a href="../../../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="6afab2e3-5b9c-4807-8291-4bdfc5995956" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="6efe3b53-d833-4baf-a8ef-adfebac84266"><li><a href="../../../chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="6afab2e3-5b9c-4807-8291-4bdfc5995956"><li><a href="../../../chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="e86a8f83-c710-404f-aecb-72118799217e" data-section-level="1" data-section-text="Global Strain"><h1 id="global-strain">Global Strain</h1><p>The global strain system enables capturing the volume change, shear deformation etc. while still maintaining the periodicity. It relaxes the stresses along the periodic directions and allows the corresponding deformation. This, combined with the periodic displacement, enforces the strain periodicity.</p><p>The <a href="../../../../source/scalarkernels/GlobalStrain.html">global strain</a> is computed by setting integral of each of the stress components <span class="moose-katex-inline-equation" id="moose-equation-24414dee-b72e-40cb-a5da-a7cc70109b14"><script>var element = document.getElementById("moose-equation-24414dee-b72e-40cb-a5da-a7cc70109b14");katex.render("\\sigma_{ij}", element, {displayMode:false,throwOnError:false});</script></span> in the periodic direction to zero such that</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-12c8e438-96ad-4f3e-8f39-25e676f48a66"></span><span class="moose-katex-equation-number">(1)</span><script>var element = document.getElementById("moose-equation-12c8e438-96ad-4f3e-8f39-25e676f48a66");katex.render("  \t\\int_\\Omega {(\\sigma_{ij} - \\sigma^0_{ij})} d\\Omega = 0", element, {displayMode:true,throwOnError:false});</script></span></p><p>Here, indices <span class="moose-katex-inline-equation" id="moose-equation-49b47b99-0901-499d-bf52-0c939a2514e2"><script>var element = document.getElementById("moose-equation-49b47b99-0901-499d-bf52-0c939a2514e2");katex.render("i", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-da03399d-b45d-4c78-b5da-98cb6b709856"><script>var element = document.getElementById("moose-equation-da03399d-b45d-4c78-b5da-98cb6b709856");katex.render("j", element, {displayMode:false,throwOnError:false});</script></span> corresponds to the periodic directions and associated periodic displacement components, respectively. <span class="moose-katex-inline-equation" id="moose-equation-ac5df7f6-f718-4dc6-9abf-f1f4977b1c61"><script>var element = document.getElementById("moose-equation-ac5df7f6-f718-4dc6-9abf-f1f4977b1c61");katex.render("\\sigma^0_{ij}", element, {displayMode:false,throwOnError:false});</script></span> denotes the components of the stress tensor representing the applied loads in the periodic directions. The components of the global strain are considered constant over the whole domain.</p><p>The total strain <span class="moose-katex-inline-equation" id="moose-equation-bcd46acd-c1a9-42d3-82d2-01faa67c492b"><script>var element = document.getElementById("moose-equation-bcd46acd-c1a9-42d3-82d2-01faa67c492b");katex.render("\\epsilon_{ij}^{total}", element, {displayMode:false,throwOnError:false});</script></span> at any point is calculated considering the contribution of the global strain tensor as,</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-15a69a78-08ee-4439-9831-0b4fdebf1a1d"></span><span class="moose-katex-equation-number">(2)</span><script>var element = document.getElementById("moose-equation-15a69a78-08ee-4439-9831-0b4fdebf1a1d");katex.render("  \\epsilon_{ij}^{total} =  \\epsilon_{ij} + \\epsilon_{ij}^{g} - \\epsilon_{ij}^{0}", element, {displayMode:true,throwOnError:false});</script></span></p><p>where <span class="moose-katex-inline-equation" id="moose-equation-e8fdaf8f-8954-430c-9340-434645d9f509"><script>var element = document.getElementById("moose-equation-e8fdaf8f-8954-430c-9340-434645d9f509");katex.render("\\epsilon_{ij}", element, {displayMode:false,throwOnError:false});</script></span> are the <a href="../../../../source/materials/ComputeSmallStrain.html">strain components</a> calculated from the displacement gradients, <span class="moose-katex-inline-equation" id="moose-equation-8e67d603-fa03-41f7-94d8-742b6fc6e03d"><script>var element = document.getElementById("moose-equation-8e67d603-fa03-41f7-94d8-742b6fc6e03d");katex.render("\\epsilon_{ij}^g", element, {displayMode:false,throwOnError:false});</script></span> are the global strain components, and <span class="moose-katex-inline-equation" id="moose-equation-608be22c-9eeb-4ee8-a450-339fe0c578e2"><script>var element = document.getElementById("moose-equation-608be22c-9eeb-4ee8-a450-339fe0c578e2");katex.render("\\epsilon_{ij}^0", element, {displayMode:false,throwOnError:false});</script></span> are the eigen strain components. An additional <a href="../../../../source/auxkernels/GlobalDisplacementAux.html">displacement field</a> <span class="moose-katex-inline-equation" id="moose-equation-eba28959-b4e8-42e8-8182-72777b32135b"><script>var element = document.getElementById("moose-equation-eba28959-b4e8-42e8-8182-72777b32135b");katex.render("\\boldsymbol u^g", element, {displayMode:false,throwOnError:false});</script></span> is generated to visualize the effect of the global strain as</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-f50050b8-05fc-4e13-9f4c-6a497e66788a"></span><span class="moose-katex-equation-number">(3)</span><script>var element = document.getElementById("moose-equation-f50050b8-05fc-4e13-9f4c-6a497e66788a");katex.render("  \\boldsymbol {u}^g = (\\boldsymbol {r} - \\boldsymbol {r}_{0}) \\boldsymbol{\\epsilon}^g", element, {displayMode:true,throwOnError:false});</script></span></p><p>where <span class="moose-katex-inline-equation" id="moose-equation-890e9484-5116-489b-a239-c3c5ba285abd"><script>var element = document.getElementById("moose-equation-890e9484-5116-489b-a239-c3c5ba285abd");katex.render("\\boldsymbol {r}", element, {displayMode:false,throwOnError:false});</script></span> is the position vector, <span class="moose-katex-inline-equation" id="moose-equation-2f06d6e1-8636-4e2c-8bdf-bf008b8ce35b"><script>var element = document.getElementById("moose-equation-2f06d6e1-8636-4e2c-8bdf-bf008b8ce35b");katex.render("\\boldsymbol{r}_{0}", element, {displayMode:false,throwOnError:false});</script></span> is the location of the reference point, and <span class="moose-katex-inline-equation" id="moose-equation-18dfefee-fa57-4d96-abb0-5890f89ebdac"><script>var element = document.getElementById("moose-equation-18dfefee-fa57-4d96-abb0-5890f89ebdac");katex.render("\\boldsymbol{\\epsilon}^g", element, {displayMode:false,throwOnError:false});</script></span> is the global strain tensor. The reference point could be any fixed (<span class="moose-katex-inline-equation" id="moose-equation-a166bf44-dad7-46fa-8dda-14dd3792ff6f"><script>var element = document.getElementById("moose-equation-a166bf44-dad7-46fa-8dda-14dd3792ff6f");katex.render("\\boldsymbol {u}^{total} = \\boldsymbol {0}", element, {displayMode:false,throwOnError:false});</script></span>) point in the domain. For maintaining periodicity, it is recommended to fix the center point of the simulation domain as the reference point.</p><p>The total displacement is represented as</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-d0fca4d6-9a5f-462e-895e-f80404fd6991"></span><span class="moose-katex-equation-number">(4)</span><script>var element = document.getElementById("moose-equation-d0fca4d6-9a5f-462e-895e-f80404fd6991");katex.render("  \t\\boldsymbol {u}^{total} = \\boldsymbol {u} + \\boldsymbol {u}^g", element, {displayMode:true,throwOnError:false});</script></span></p><p>where <span class="moose-katex-inline-equation" id="moose-equation-b393c830-e365-43d0-a691-4351ea3fa07a"><script>var element = document.getElementById("moose-equation-b393c830-e365-43d0-a691-4351ea3fa07a");katex.render("\\boldsymbol u", element, {displayMode:false,throwOnError:false});</script></span> is the local displacement field calculated from the mechanical equilibrium.</p><p><a href="../../../../source/actions/GlobalStrainAction.html">GlobalStrainAction</a> can be used to set up the model for global strain and corresponding displacement calculation. This action can be created using the following syntax.</p><section id="f1fbbba6-d8c6-4748-aacd-f8064046e6b3" data-section-level="2" data-section-text="Example Input File Syntax"><h2 id="example-input-file-syntax">Example Input File Syntax</h2><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[./GlobalStrain]
+  [./global_strain]
+    scalar_global_strain = global_strain
+    displacements = &#x27;u_x u_y u_z&#x27;
+    auxiliary_displacements = &#x27;disp_x disp_y disp_z&#x27;
+    global_displacements = &#x27;ug_x ug_y ug_z&#x27;
+  [../]
+[../]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#e066e30f-d739-49c1-a6d8-0ab63e00b817">(moose/modules/tensor_mechanics/test/tests/global_strain/global_strain_action.i)</a></section><section id="b5e353dc-762d-40c3-beea-020538345a13" data-section-level="2" data-section-text="Subblocks"><h2 id="subblocks">Subblocks</h2><p>The subblocks of the GlobalStrain action triggers MOOSE objects to be built. It can be applied to the whole domain using a single subblock</p><pre class="moose-pre"><code class="language-text">
+[Modules/TensorMechanics/GlobalStrain]
+  [./all]
+    ...
+  [../]
+[]
+</code></pre><p>or multiple subblocks can be used to apply block restrictions to the objects</p><pre class="moose-pre"><code class="language-text">
+[Modules/TensorMechanics/GlobalStrain]
+  [./block_a]
+    ...
+  [../]
+  [./block_b]
+    ...
+  [../]
+[]
+</code></pre></section><section id="48050726-6140-46a5-a5b0-ac968b526009" data-section-level="2" data-section-text="Available Actions"><h2 id="available-actions">Available Actions</h2><ul class="moose-syntax-list collection with-header"><li class="collection-header">Tensor Mechanics App</li><li class="collection-item"><a href="../../../../source/actions/GlobalStrainAction.html">GlobalStrainAction</a>Set up the GlobalStrainAction environment</li></ul></section></section><div class="moose-modal modal" id="e066e30f-d739-49c1-a6d8-0ab63e00b817"><div class="modal-content"><h4>(moose/modules/tensor_mechanics/test/tests/global_strain/global_strain_action.i)</h4><pre class="moose-pre"><code class="language-text">[Mesh]
+  [generated_mesh]
+    type = GeneratedMeshGenerator
+    dim = 3
+    nx = 2
+    ny = 2
+    nz = 2
+    xmin = -0.5
+    xmax = 0.5
+    ymin = -0.5
+    ymax = 0.5
+    zmin = -0.5
+    zmax = 0.5
+  []
+  [cnode]
+    type = ExtraNodesetGenerator
+    coord = &#x27;0 -0.5 0&#x27;
+    new_boundary = 100
+    input = generated_mesh
+  []
+[]
+
+[GlobalParams]
+  displacements = &#x27;u_x u_y u_z&#x27;
+  block = 0
+[]
+
+[Variables]
+  [./global_strain]
+    order = SIXTH
+    family = SCALAR
+  [../]
+[]
+
+[Modules]
+  [./TensorMechanics]
+    # Master action for generating the tensor mechanics kernels, variables,
+    # strain calculation material, and the auxilliary system for visualization
+    [./Master]
+      [./stress_div]
+        strain = SMALL
+        add_variables = true
+        global_strain = global_strain #global strain contribution
+        generate_output = &#x27;strain_xx strain_xy strain_yy stress_xx stress_xy
+                           stress_yy vonmises_stress&#x27;
+      [../]
+    [../]
+    # GlobalStrain action for generating the objects associated with the global
+    # strain calculation and associated displacement visualization
+    [./GlobalStrain]
+      [./global_strain]
+        scalar_global_strain = global_strain
+        displacements = &#x27;u_x u_y u_z&#x27;
+        auxiliary_displacements = &#x27;disp_x disp_y disp_z&#x27;
+        global_displacements = &#x27;ug_x ug_y ug_z&#x27;
+      [../]
+    [../]
+  [../]
+[]
+
+[BCs]
+  [./Periodic]
+    [./all]
+      auto_direction = &#x27;z&#x27;
+      variable = &#x27;u_x u_y u_z&#x27;
+    [../]
+  [../]
+
+  # fix center point location
+  [./centerfix_x]
+    type = DirichletBC
+    boundary = 100
+    variable = u_x
+    value = 0
+  [../]
+  [./centerfix_z]
+    type = DirichletBC
+    boundary = 100
+    variable = u_z
+    value = 0
+  [../]
+  # applied displacement
+  [./appl_y]
+    type = DirichletBC
+    boundary = top
+    variable = u_y
+    value = 0.033
+  [../]
+  [./fix_y]
+    type = DirichletBC
+    boundary = bottom
+    variable = u_y
+    value = 0
+  [../]
+[]
+
+[Materials]
+  [./elasticity_tensor]
+    type = ComputeElasticityTensor
+    block = 0
+    C_ijkl = &#x27;7 0.33&#x27;
+    fill_method = symmetric_isotropic_E_nu
+  [../]
+  [./stress]
+    type = ComputeLinearElasticStress
+  [../]
+[]
+
+[Preconditioning]
+  [./SMP]
+    type = SMP
+    full = true
+  [../]
+[]
+
+[Executioner]
+  type = Transient
+  scheme = bdf2
+  solve_type = &#x27;PJFNK&#x27;
+
+  line_search = basic
+
+  petsc_options_iname = &#x27;-pc_type -ksp_gmres_restart -sub_ksp_type -sub_pc_type -pc_asm_overlap&#x27;
+  petsc_options_value = &#x27;asm         31   preonly   lu      1&#x27;
+
+  l_max_its = 30
+  nl_max_its = 12
+
+  l_tol = 1.0e-4
+
+  nl_rel_tol = 1.0e-6
+  nl_abs_tol = 1.0e-10
+
+  start_time = 0.0
+  num_steps = 2
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../../../js/init.js"></script><script type="text/javascript" src="../../../../js/navigation.js"></script><script type="text/javascript" src="../../../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../../../js/search_index.js"></script><script type="text/javascript" src="../../../../js/sqa_moose.js"></script>

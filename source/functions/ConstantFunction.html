@@ -1,0 +1,84 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>ConstantFunction | Chamois</title><link rel="icon" type="image/x-icon" href="../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="63f85cce-c805-4f0c-9755-377daa0625dc" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="bb3076cf-675c-4de7-9d7b-55ad3fdf4a2b"><i class="material-icons">menu</i></a><ul class="sidenav" id="bb3076cf-675c-4de7-9d7b-55ad3fdf4a2b"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="dbd4b898-ed2e-4b29-b463-110106cd949b" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="63f85cce-c805-4f0c-9755-377daa0625dc"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="dbd4b898-ed2e-4b29-b463-110106cd949b"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="262d460f-91c5-4030-adcc-b4d7af3a5eaf" data-section-level="1" data-section-text="ConstantFunction"><h1 id="constantfunction">ConstantFunction</h1><p>A function that returns a constant value as defined by an input parameter.</p><p>The <code>value</code> parameter of the <code>ConstantFunction</code> is controllable, so it may modified during the simulation using the <a href="../../syntax/Controls/index.html">Controls system</a>.</p><section id="2f796ec7-78f2-4171-81b3-e6c52e426ba0" data-section-level="2" data-section-text="Example input syntax"><h2 id="example-input-syntax">Example input syntax</h2><p>This example uses a <code>ConstantFunction</code> to feed into vectorized spatial samplers, which sample the function in specified locations. These samples are then compared using another postprocessor. The <code>ConstantFunction</code> sampled anywhere in time and space will return its constant value.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[Functions]
+  # Sampled values will be [2, 2, 2]
+  [./a_fn]
+    type = ConstantFunction
+    value = 2
+  [../]
+  # Sampled values will be [0, 1, 2]
+  [./b_fn]
+    type = ParsedFunction
+    expression = &#x27;x&#x27;
+  [../]
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#2d02feef-5c6d-49c7-8557-8fbe33c3091b">(moose/test/tests/postprocessors/vector_postprocessor_comparison/vector_postprocessor_comparison.i)</a></section><section id="28565acd-fc00-414a-8d81-a01c8e52ec77" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="8f3dde89-2855-45ca-b421-4149801886dd" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">execute_on</span><span class="moose-parameter-header-default">LINEAR</span><span class="moose-parameter-header-description">The list of flag(s) indicating when this object should be executed, the available options include NONE, INITIAL, LINEAR, NONLINEAR, TIMESTEP_END, TIMESTEP_BEGIN, MULTIAPP_FIXED_POINT_END, MULTIAPP_FIXED_POINT_BEGIN, FINAL, CUSTOM, ALWAYS.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>LINEAR</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>ExecFlagEnum</p><p class="moose-parameter-description-options"><span>Options:</span>NONE, INITIAL, LINEAR, NONLINEAR, TIMESTEP_END, TIMESTEP_BEGIN, MULTIAPP_FIXED_POINT_END, MULTIAPP_FIXED_POINT_BEGIN, FINAL, CUSTOM, ALWAYS</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of flag(s) indicating when this object should be executed, the available options include NONE, INITIAL, LINEAR, NONLINEAR, TIMESTEP_END, TIMESTEP_BEGIN, MULTIAPP_FIXED_POINT_END, MULTIAPP_FIXED_POINT_BEGIN, FINAL, CUSTOM, ALWAYS.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">value</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">The constant value</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>Yes</p><p class="moose-parameter-description"><span>Description:</span>The constant value</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="ba60823d-4b3a-4868-a64c-c9aa17a2981d" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section></section></section><div class="moose-modal modal" id="2d02feef-5c6d-49c7-8557-8fbe33c3091b"><div class="modal-content"><h4>(moose/test/tests/postprocessors/vector_postprocessor_comparison/vector_postprocessor_comparison.i)</h4><pre class="moose-pre"><code class="language-text"># This tests the VectorPostprocessorComparison post-processor, which takes two
+# vector post-processors and compares them.
+
+[Mesh]
+  type = GeneratedMesh
+  dim = 1
+  nx = 3
+  xmin = 0
+  xmax = 2
+[]
+
+[Functions]
+  # Sampled values will be [2, 2, 2]
+  [./a_fn]
+    type = ConstantFunction
+    value = 2
+  [../]
+  # Sampled values will be [0, 1, 2]
+  [./b_fn]
+    type = ParsedFunction
+    expression = &#x27;x&#x27;
+  [../]
+[]
+
+[VectorPostprocessors]
+  [./a_vpp]
+    type = LineFunctionSampler
+    functions = &#x27;a_fn&#x27;
+    num_points = 3
+    start_point = &#x27;0 0 0&#x27;
+    end_point = &#x27;2 0 0&#x27;
+    sort_by = x
+    execute_on = &#x27;initial&#x27;
+  [../]
+  [./b_vpp]
+    type = LineFunctionSampler
+    functions = &#x27;b_fn&#x27;
+    num_points = 3
+    start_point = &#x27;0 0 0&#x27;
+    end_point = &#x27;2 0 0&#x27;
+    sort_by = x
+    execute_on = &#x27;initial&#x27;
+  [../]
+[]
+
+[Postprocessors]
+  [./vpp_comparison]
+    type = VectorPostprocessorComparison
+    vectorpostprocessor_a = a_vpp
+    vectorpostprocessor_b = b_vpp
+    vector_name_a = a_fn
+    vector_name_b = b_fn
+    comparison_type = greater_than_equals
+    execute_on = &#x27;initial&#x27;
+  [../]
+[]
+
+[Problem]
+  solve = false
+[]
+
+[Executioner]
+  type = Steady
+[]
+
+[Outputs]
+  file_base = greater_than_equals
+  csv = true
+  show = &#x27;vpp_comparison&#x27;
+  execute_on = &#x27;initial&#x27;
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>

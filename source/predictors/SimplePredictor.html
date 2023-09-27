@@ -1,0 +1,109 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>SimplePredictor | Chamois</title><link rel="icon" type="image/x-icon" href="../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="3a913ce0-2db6-4ba2-902d-e9ae1469fb25" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="537a5504-43c6-468a-9cde-90756ebd531a"><i class="material-icons">menu</i></a><ul class="sidenav" id="537a5504-43c6-468a-9cde-90756ebd531a"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="6862b3de-801c-471c-bc77-875894682b1e" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="3a913ce0-2db6-4ba2-902d-e9ae1469fb25"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="6862b3de-801c-471c-bc77-875894682b1e"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="299d1372-227c-4b21-b8bf-4cbb1e71fc5f" data-section-level="1" data-section-text="SimplePredictor"><h1 id="simplepredictor">SimplePredictor</h1><p>Algorithm that will predict the next solution based on previous solutions.</p><p>The simple predictor uses the solution from the previous time step to update the solution before a non linear solve. The simple predictor update is:</p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-48f3ff94-501e-4996-a396-5c35205878da"></span><script>var element = document.getElementById("moose-equation-48f3ff94-501e-4996-a396-5c35205878da");katex.render("\\phi = \\phi (1 + s \\dfrac{\\Delta t}{\\Delta t_{old}}) - \\phi_{old} s \\dfrac{\\Delta t}{\\Delta t_{old}}", element, {displayMode:true,throwOnError:false});</script></span><p>with <span class="moose-katex-inline-equation" id="moose-equation-fddd6ee2-33a2-4d51-aa60-2e4698730805"><script>var element = document.getElementById("moose-equation-fddd6ee2-33a2-4d51-aa60-2e4698730805");katex.render("\\phi", element, {displayMode:false,throwOnError:false});</script></span> the solution vector, which includes all the application&#x27;s non linear variables, and <span class="moose-katex-inline-equation" id="moose-equation-1ece1bd1-7e51-4786-801a-149b94e555c5"><script>var element = document.getElementById("moose-equation-1ece1bd1-7e51-4786-801a-149b94e555c5");katex.render("s", element, {displayMode:false,throwOnError:false});</script></span> a scaling factor, specified by the <a href="#41f4916b-8754-4e5d-b638-b93fe55ccda5" class="moose-modal-link modal-trigger">&quot;scale&quot;</a> parameter. That scaling factor is further scaled with the size of the current time step <span class="moose-katex-inline-equation" id="moose-equation-89cd21fe-ef7f-40f6-96bd-18f95e33e3d7"><script>var element = document.getElementById("moose-equation-89cd21fe-ef7f-40f6-96bd-18f95e33e3d7");katex.render("\\Delta t", element, {displayMode:false,throwOnError:false});</script></span> divided by the previous one.</p><section id="ff3dfbb5-b6e8-4c1c-8dc3-54b42123af3f" data-section-level="2" data-section-text="Example input syntax"><h2 id="example-input-syntax">Example input syntax</h2><p>In this example, a <code>SimplePredictor</code> is specified in the executioner to use the previous time step solution to compute better initial guesses for each non linear solve.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[Executioner]
+  type = Transient
+  solve_type = &#x27;PJFNK&#x27;
+
+  nl_max_its = 15
+  nl_rel_tol = 1e-14
+  nl_abs_tol = 1e-14
+
+  start_time = 0.0
+  dt = 0.5
+  end_time = 1.0
+
+  [./Predictor]
+    type = SimplePredictor
+    scale = 1.0
+  [../]
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#b245dc0e-b00b-4959-9ee2-21840d7b2710">(moose/test/tests/predictors/simple/predictor_test.i)</a></section><section id="fe94d33b-19e4-4b1d-9a5a-756cba9b2f03" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="1498bd7e-a289-4d46-9ac7-9b6d1be73689" data-section-level="3" data-section-text="Required Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">scale</span><span class="moose-parameter-header-description">The scale factor for the predictor (can range from 0 to 1)</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The scale factor for the predictor (can range from 0 to 1)</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Required Parameters</h3></summary></details></section><section id="6c63c442-3c72-4258-a595-9cfaa1cb5839" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">skip_after_failed_timestep</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Skip prediction in a repeated time step after a failed time step</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Skip prediction in a repeated time step after a failed time step</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">skip_times</span><span class="moose-parameter-header-description">Skip the predictor if the current solution time is in this list of times</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;double&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Skip the predictor if the current solution time is in this list of times</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">skip_times_old</span><span class="moose-parameter-header-description">Skip the predictor if the previous solution time is in this list of times</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;double&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Skip the predictor if the previous solution time is in this list of times</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="b1dd570a-13c4-47dd-8384-84c613d913bd" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section></section></section><div class="moose-modal modal" id="41f4916b-8754-4e5d-b638-b93fe55ccda5"><div class="modal-content"><h4>scale</h4><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The scale factor for the predictor (can range from 0 to 1)</p></div></div><div class="moose-modal modal" id="b245dc0e-b00b-4959-9ee2-21840d7b2710"><div class="modal-content"><h4>(moose/test/tests/predictors/simple/predictor_test.i)</h4><pre class="moose-pre"><code class="language-text"># The purpose of this test is to test the simple predictor.  This is a very
+# small, monotonically loaded block of material.  If things are working right,
+# the predictor should come very close to exactly nailing the solution on steps
+# after the first step.
+
+# The main thing to check here is that when the predictor is applied in the
+# second step, the initial residual is almost zero.
+
+[Mesh]
+  type = GeneratedMesh
+  dim = 2
+  xmin = 0
+  xmax = 1
+  ymin = 0
+  ymax = 1
+  nx = 3
+  ny = 3
+[]
+
+[Functions]
+  [./ramp1]
+    type = ParsedFunction
+    expression = &#x27;t&#x27;
+  [../]
+[]
+
+[Variables]
+  [./u]
+    order = FIRST
+    family = LAGRANGE
+  [../]
+[]
+
+[Kernels]
+  [./diff_u]
+    type = Diffusion
+    variable = u
+  [../]
+[]
+
+[BCs]
+  [./bot]
+    type = DirichletBC
+    variable = u
+    boundary = bottom
+    value = 0.0
+  [../]
+  [./ss2_x]
+    type = FunctionDirichletBC
+    variable = u
+    boundary = top
+    function = ramp1
+  [../]
+[]
+
+[Executioner]
+  type = Transient
+  solve_type = &#x27;PJFNK&#x27;
+
+  nl_max_its = 15
+  nl_rel_tol = 1e-14
+  nl_abs_tol = 1e-14
+
+  start_time = 0.0
+  dt = 0.5
+  end_time = 1.0
+
+  [./Predictor]
+    type = SimplePredictor
+    scale = 1.0
+  [../]
+[]
+
+[Postprocessors]
+  [./final_residual]
+    type = Residual
+    residual_type = final
+  [../]
+  [./initial_residual_before]
+    type = Residual
+    residual_type = initial_before_preset
+  [../]
+  [./initial_residual_after]
+    type = Residual
+    residual_type = initial_after_preset
+  [../]
+[]
+
+[Outputs]
+  csv = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>

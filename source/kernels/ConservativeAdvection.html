@@ -1,0 +1,404 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>ConservativeAdvection | Chamois</title><link rel="icon" type="image/x-icon" href="../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="2e1bd8a4-6dee-4b05-97ab-6a605c454db3" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="996fe6c0-2688-48d8-9e31-7e423ad20da0"><i class="material-icons">menu</i></a><ul class="sidenav" id="996fe6c0-2688-48d8-9e31-7e423ad20da0"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="4dd4ba4b-ef22-4825-99a9-9c9e117a5d2a" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="2e1bd8a4-6dee-4b05-97ab-6a605c454db3"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="4dd4ba4b-ef22-4825-99a9-9c9e117a5d2a"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="4eaa77c1-2711-41b8-a326-466ea002cac2" data-section-level="1" data-section-text="ConservativeAdvection"><h1 id="conservativeadvection">ConservativeAdvection</h1><section id="87823888-76c5-4fa0-b67c-b564af65ed74" data-section-level="2" data-section-text="Description"><h2 id="description">Description</h2><p>The <code>ConservativeAdvection</code> kernel implements an advection term given for the domain (<span class="moose-katex-inline-equation" id="moose-equation-3e018df9-ebb6-4611-8002-425c60044858"><script>var element = document.getElementById("moose-equation-3e018df9-ebb6-4611-8002-425c60044858");katex.render("\\Omega", element, {displayMode:false,throwOnError:false});</script></span>) defined as</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-6fe08af9-ac3f-43f6-acd1-4647cf0f7451"></span><script>var element = document.getElementById("moose-equation-6fe08af9-ac3f-43f6-acd1-4647cf0f7451");katex.render("\\underbrace{\\nabla \\cdot \\vec{v} u}_{\\textrm{ConservativeAdvection}} + \\sum_{i=1}^n \\beta_i = 0 \\in \\Omega,", element, {displayMode:true,throwOnError:false});</script></span> where <span class="moose-katex-inline-equation" id="moose-equation-b5b9724c-cd24-4946-8ea9-8bc800b60f67"><script>var element = document.getElementById("moose-equation-b5b9724c-cd24-4946-8ea9-8bc800b60f67");katex.render("v", element, {displayMode:false,throwOnError:false});</script></span> is the advecting velocity and the second term on the left hand side represents the strong forms of other kernels. <code>ConservativeAdvection</code> does not assume that the velocity is divergence free and instead applies <span class="moose-katex-inline-equation" id="moose-equation-0fbf75e5-b9c2-45aa-9609-69f5b524677d"><script>var element = document.getElementById("moose-equation-0fbf75e5-b9c2-45aa-9609-69f5b524677d");katex.render("\\nabla", element, {displayMode:false,throwOnError:false});</script></span> to the test function <span class="moose-katex-inline-equation" id="moose-equation-79926b7c-ced6-4c49-beb9-ac5d33790bb8"><script>var element = document.getElementById("moose-equation-79926b7c-ced6-4c49-beb9-ac5d33790bb8");katex.render("\\psi_i", element, {displayMode:false,throwOnError:false});</script></span> in the weak variational form after integrating by parts, which results in the following (without numerical stabilization)</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-b3a90ce6-3a51-4b2c-9317-3051e8037e68"></span><script>var element = document.getElementById("moose-equation-b3a90ce6-3a51-4b2c-9317-3051e8037e68");katex.render("R_i(u_h) = \\underbrace{-(\\nabla \\psi_i, \\vec{v} u)}_{\\textrm{ConservativeAdvection}} + \\langle\\psi_i, \\vec{v} u \\cdot \\vec{n}\\rangle \\quad \\forall \\psi_i,", element, {displayMode:true,throwOnError:false});</script></span> where <span class="moose-katex-inline-equation" id="moose-equation-0f90ed95-bba4-4285-b78d-cf5f42187554"><script>var element = document.getElementById("moose-equation-0f90ed95-bba4-4285-b78d-cf5f42187554");katex.render("\\psi_i", element, {displayMode:false,throwOnError:false});</script></span> are the test functions and <span class="moose-katex-inline-equation" id="moose-equation-a1e3cdfb-7451-4460-a2bd-6a96c1f72627"><script>var element = document.getElementById("moose-equation-a1e3cdfb-7451-4460-a2bd-6a96c1f72627");katex.render("u_h \\in \\mathcal{S}^h", element, {displayMode:false,throwOnError:false});</script></span> is the finite element solution of the weak formulation. The first term is the volumetric term and the second term is a surface term describing the advective flux out of the volume. <code>ConservativeAdvection</code> corresponds to the former volumetric term, while the surface term is implemented as a BC in MOOSE (see discussion below regarding <code>OutflowBC</code> and <code>InflowBC</code>).</p><p>Without numerical stabilization the corresponding Jacobian is given by</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-7aa8017a-b82a-44d5-97e6-166e35fea2c3"></span><script>var element = document.getElementById("moose-equation-7aa8017a-b82a-44d5-97e6-166e35fea2c3");katex.render("\\frac{\\partial R_i(u_h)}{\\partial u_j} = -(\\nabla \\psi_i, \\vec{v} \\phi_j).", element, {displayMode:true,throwOnError:false});</script></span></p></section><section id="148163a4-cb5b-46a3-9ea7-7d4676d68ddc" data-section-level="2" data-section-text="Full upwinding"><h2 id="full-upwinding">Full upwinding</h2><p>Advective flow is notoriously prone to physically-incorrect overshoots and undershoots, so in many simulations some numerical stabilization is used to reduce or eliminate this spurious behaviour. Full-upwinding <a href="#dalen1979">Dalen (1979)</a> and <a href="#adhikary2011">Adhikary and Wilkins (2011)</a> is an example of numerical stabilization and this essentially adds numerical diffusion to completely eliminate overshoots and undershoots.  Full-upwinding is available in <code>ConservativeAdvection</code> by setting the <code>upwinding_type</code> appropriately.</p><div class="card moose-alert moose-alert-note"><div class="card-title moose-alert-title"><i class="material-icons moose-inline-icon">comment</i><span class="moose-alert-title-brand">note</span></div><div class="card-content"><div class="moose-alert-content"><p>Full upwinding only works for continuous FEM</p></div></div></div><p>In DE systems describing more than just advection (e.g., in diffusion-advection problems) full upwinding may be used on the advection alone.  In practice, it is reasonably common that these more complicated cases benefit from numerical stabilization on their other terms too, in which case full upwinding could also be used, but this is not mandatory and is not implemented in the <code>ConservativeAdvection</code> Kernel.</p><p>For each element in the mesh, full upwinding is implemented in the following way.  For each <span class="moose-katex-inline-equation" id="moose-equation-97991d9b-1b26-441a-acfd-ea562d8b29ac"><script>var element = document.getElementById("moose-equation-97991d9b-1b26-441a-acfd-ea562d8b29ac");katex.render("i", element, {displayMode:false,throwOnError:false});</script></span>, the quantity <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-953d30d4-b1d3-48c8-a8c1-dfe4fd70fc5a"></span><script>var element = document.getElementById("moose-equation-953d30d4-b1d3-48c8-a8c1-dfe4fd70fc5a");katex.render("\\tilde{R}_{i} = -(\\nabla\\psi_i, \\vec{v}) \\ ,", element, {displayMode:true,throwOnError:false});</script></span> is evaluated.  If <span class="moose-katex-inline-equation" id="moose-equation-1b941804-4ebe-4bb3-9fbe-6da575779dc2"><script>var element = document.getElementById("moose-equation-1b941804-4ebe-4bb3-9fbe-6da575779dc2");katex.render("\\tilde{R}_{i}>0", element, {displayMode:false,throwOnError:false});</script></span> is positive then mass (or heat, or whatever <span class="moose-katex-inline-equation" id="moose-equation-f06b3346-dff1-46e2-a35f-fc31f72e4d03"><script>var element = document.getElementById("moose-equation-f06b3346-dff1-46e2-a35f-fc31f72e4d03");katex.render("u", element, {displayMode:false,throwOnError:false});</script></span> represents) is flowing <em>out</em> of node <span class="moose-katex-inline-equation" id="moose-equation-f68581c0-b5f7-4ac7-8301-2c7848d1fdfc"><script>var element = document.getElementById("moose-equation-f68581c0-b5f7-4ac7-8301-2c7848d1fdfc");katex.render("i", element, {displayMode:false,throwOnError:false});</script></span>, and this is called an &quot;upwind&quot; node.  If <span class="moose-katex-inline-equation" id="moose-equation-0e6acfe0-e30b-4d97-8eb9-af2eca658436"><script>var element = document.getElementById("moose-equation-0e6acfe0-e30b-4d97-8eb9-af2eca658436");katex.render("\\tilde{R}_{i}\\geq 0", element, {displayMode:false,throwOnError:false});</script></span>, the residual for node <span class="moose-katex-inline-equation" id="moose-equation-91f76b58-1724-454f-82d7-734dd8f989e4"><script>var element = document.getElementById("moose-equation-91f76b58-1724-454f-82d7-734dd8f989e4");katex.render("i", element, {displayMode:false,throwOnError:false});</script></span> is set to <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-b6ae41e8-97a1-4fc7-b3ea-67da0bbe4680"></span><script>var element = document.getElementById("moose-equation-b6ae41e8-97a1-4fc7-b3ea-67da0bbe4680");katex.render("R_{i} = u_{i}\\tilde{R}_{i} \\ \\ \\texttt{ for } \\ \\ \\tilde{R}_{i}\\geq 0.", element, {displayMode:true,throwOnError:false});</script></span> Here <span class="moose-katex-inline-equation" id="moose-equation-7c3db3fb-c5da-4327-b7c0-f163eeb1cbe4"><script>var element = document.getElementById("moose-equation-7c3db3fb-c5da-4327-b7c0-f163eeb1cbe4");katex.render("u_{i}", element, {displayMode:false,throwOnError:false});</script></span> is the value of <span class="moose-katex-inline-equation" id="moose-equation-2e1af6ea-519f-4ba5-b90d-b11368139a0b"><script>var element = document.getElementById("moose-equation-2e1af6ea-519f-4ba5-b90d-b11368139a0b");katex.render("u", element, {displayMode:false,throwOnError:false});</script></span> at the node <span class="moose-katex-inline-equation" id="moose-equation-0ad0c4a4-d6c5-4037-84c8-9db0e5c5c612"><script>var element = document.getElementById("moose-equation-0ad0c4a4-d6c5-4037-84c8-9db0e5c5c612");katex.render("i", element, {displayMode:false,throwOnError:false});</script></span>.  Define the total mass flowing from the upwind nodes: <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-fa655d69-f739-41c3-888c-ce02e76fadbe"></span><script>var element = document.getElementById("moose-equation-fa655d69-f739-41c3-888c-ce02e76fadbe");katex.render("M_{\\mathrm{out}} = \\sum_{i\\ \\mathrm{ with }\\ \\tilde{R}_{i}\\geq 0} u_{i}\\tilde{R}_{i} \\ .", element, {displayMode:true,throwOnError:false});</script></span> Similarly, define <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-7f58239d-6ad0-4eee-beb4-a18f48314a29"></span><script>var element = document.getElementById("moose-equation-7f58239d-6ad0-4eee-beb4-a18f48314a29");katex.render("\\tilde{M}_{\\mathrm{in}} = - \\sum_{i \\ \\mathrm{ with }\\  \\tilde{R}_{i}< 0} \\tilde{R}_{i} \\ .", element, {displayMode:true,throwOnError:false});</script></span> Mass is conserved if the residual for the downwind nodes is defined to be <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-0c5d58af-8f15-4598-af33-b3a1138064c4"></span><script>var element = document.getElementById("moose-equation-0c5d58af-8f15-4598-af33-b3a1138064c4");katex.render("R_{i} = \\tilde{R}_{i} M_{\\mathrm{out}} / M_{\\mathrm{in}}  \\ \\ \\texttt{ for } \\ \\ \\tilde{R}_{i}< 0.", element, {displayMode:true,throwOnError:false});</script></span></p><p>Full upwinding adds more numerical diffusion than most other numerical stabilization techniques such as SUPG and TVD.  Another problem is that steady-state can be hard to achieve in nonlinear problems where the velocity is not fixed and changes every nonlinear iteration (this does not occur for <code>ConservativeAdvection</code>).  On the other hand, full upwinding is computationally cheap.</p></section><section id="10bd0c31-5ab5-4807-b9d1-215f33a78b98" data-section-level="2" data-section-text="Example Syntax"><h2 id="example-syntax">Example Syntax</h2><p><code>ConservativeAdvection</code> can be used in a variety of problems, including advection-diffusion-reaction. The syntax for <code>ConservativeAdvection</code> is demonstrated in this <code>Kernels</code> block from a pure advection test case:</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[Kernels]
+  [./udot]
+    type = TimeDerivative
+    variable = u
+  [../]
+  [./advection]
+    type = ConservativeAdvection
+    variable = u
+    velocity = &#x27;1 0 0&#x27;
+  [../]
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#a7c9bf56-984d-44db-afa2-062da55a6e5c">(moose/test/tests/kernels/conservative_advection/no_upwinding_1D.i)</a><p>The velocity is supplied as a three component vector with order <span class="moose-katex-inline-equation" id="moose-equation-7fd0b6a3-360f-4233-8eb3-815ed432e45f"><script>var element = document.getElementById("moose-equation-7fd0b6a3-360f-4233-8eb3-815ed432e45f");katex.render("v_x", element, {displayMode:false,throwOnError:false});</script></span>, <span class="moose-katex-inline-equation" id="moose-equation-3a8d52e1-f79c-47bd-9d80-385d891c7cfe"><script>var element = document.getElementById("moose-equation-3a8d52e1-f79c-47bd-9d80-385d891c7cfe");katex.render("v_y", element, {displayMode:false,throwOnError:false});</script></span>, and  <span class="moose-katex-inline-equation" id="moose-equation-b0931f5e-1bd6-42db-a3dd-169248c6dc93"><script>var element = document.getElementById("moose-equation-b0931f5e-1bd6-42db-a3dd-169248c6dc93");katex.render("v_z", element, {displayMode:false,throwOnError:false});</script></span>.</p></section><section id="9628a771-ef5f-47ad-a9a0-cc1c46c4ef41" data-section-level="2" data-section-text="Boundary conditions for pure advection"><h2 id="boundary-conditions-for-pure-advection">Boundary conditions for pure advection</h2><p>To form the correct equations, the boundary term <span class="moose-katex-inline-equation" id="moose-equation-fb791b04-4f82-4b6e-a4dd-d1669891b9eb"><script>var element = document.getElementById("moose-equation-fb791b04-4f82-4b6e-a4dd-d1669891b9eb");katex.render("\\langle\\psi_i, \\vec{v} u \\cdot \\vec{n}\\rangle", element, {displayMode:false,throwOnError:false});</script></span> needs to be included in the <code>BCs</code> block of a MOOSE input file (<span class="moose-katex-inline-equation" id="moose-equation-a91cf335-01d8-4ea5-8d38-a3ddd65a3207"><script>var element = document.getElementById("moose-equation-a91cf335-01d8-4ea5-8d38-a3ddd65a3207");katex.render("\\vec{n}", element, {displayMode:false,throwOnError:false});</script></span> is the outward normal to the boundary).  An <code>OutflowBC</code> may be used, for instance</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[BCs]
+  [./allow_mass_out]
+    type = OutflowBC
+    boundary = right
+    variable = u
+    velocity = &#x27;1 0 0&#x27;
+  [../]
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#615514e6-5c0e-4d1b-8416-91fd1d01b414">(moose/test/tests/kernels/conservative_advection/none_in_all_out.i)</a><p>Physically this subtracts <span class="moose-katex-inline-equation" id="moose-equation-bb3649ff-c674-45e0-8437-569319a4379e"><script>var element = document.getElementById("moose-equation-bb3649ff-c674-45e0-8437-569319a4379e");katex.render("\\langle\\psi_i, \\vec{v} u \\cdot \\vec{n}\\rangle", element, {displayMode:false,throwOnError:false});</script></span> &quot;fluid mass&quot; (or whatever <span class="moose-katex-inline-equation" id="moose-equation-0189b4e3-f772-4a77-b874-0aa9af04177f"><script>var element = document.getElementById("moose-equation-0189b4e3-f772-4a77-b874-0aa9af04177f");katex.render("u", element, {displayMode:false,throwOnError:false});</script></span> represents) from the boundary.</p><p>For <span class="moose-katex-inline-equation" id="moose-equation-e65d7470-ebe7-4468-bd88-cb4f0756f26c"><script>var element = document.getElementById("moose-equation-e65d7470-ebe7-4468-bd88-cb4f0756f26c");katex.render("\\vec{v} \\cdot \\vec{n} > 0", element, {displayMode:false,throwOnError:false});</script></span> adding the <code>OutflowBC</code> allows &quot;fluid&quot; to flow freely through the boundary. The advective velocity is &quot;blowing fluid&quot; into this boundary, and the <code>OutflowBC</code> is removing it at the correct rate, because the flux through any area is <span class="moose-katex-inline-equation" id="moose-equation-2e590df8-6ca5-4933-b418-abe674bde110"><script>var element = document.getElementById("moose-equation-2e590df8-6ca5-4933-b418-abe674bde110");katex.render("\\langle\\psi_i, \\vec{v} u \\cdot \\vec{n}\\rangle", element, {displayMode:false,throwOnError:false});</script></span>.</p><p>On the other hand, including an <code>OutflowBC</code> for <span class="moose-katex-inline-equation" id="moose-equation-2d74bd83-f11a-47c2-a469-a5d16bfe5fed"><script>var element = document.getElementById("moose-equation-2d74bd83-f11a-47c2-a469-a5d16bfe5fed");katex.render("\\vec{v} \\cdot \\vec{n} < 0", element, {displayMode:false,throwOnError:false});</script></span> isn&#x27;t usually desirable.  Adding the <code>OutflowBC</code> in this case fixes <span class="moose-katex-inline-equation" id="moose-equation-a0588643-2eed-4b16-801c-8a3698dadcd1"><script>var element = document.getElementById("moose-equation-a0588643-2eed-4b16-801c-8a3698dadcd1");katex.render("u", element, {displayMode:false,throwOnError:false});</script></span> at the boundary to its initial condition. This is because the <code>ConservativeAdvection</code> Kernel is taking fluid from the boundary to the interior of the model, but at the same time the <code>OutflowBC</code> is removing <span class="moose-katex-inline-equation" id="moose-equation-5c588c45-bf00-4e85-ba18-a0d5fc530020"><script>var element = document.getElementById("moose-equation-5c588c45-bf00-4e85-ba18-a0d5fc530020");katex.render("\\langle\\psi_i, \\vec{v} u \\cdot \\vec{n}\\rangle", element, {displayMode:false,throwOnError:false});</script></span>: note that <span class="moose-katex-inline-equation" id="moose-equation-8ff3e8fa-aa2d-48a9-8188-4e194b5ef500"><script>var element = document.getElementById("moose-equation-8ff3e8fa-aa2d-48a9-8188-4e194b5ef500");katex.render("\\vec{v} \\cdot \\vec{n} < 0", element, {displayMode:false,throwOnError:false});</script></span>, so the <code>OutflowBC</code> is actually adding fluid at the same rate the <code>ConservativeAdvection</code> Kernel is removing it. The physical interpretation is that something external to the model is adding fluid at exactly the rate specified by the initial conditions at that boundary.</p><p>Instead, for <span class="moose-katex-inline-equation" id="moose-equation-eff73b68-8be8-4361-8a68-10c208dd79f3"><script>var element = document.getElementById("moose-equation-eff73b68-8be8-4361-8a68-10c208dd79f3");katex.render("\\vec{v} \\cdot \\vec{n} < 0", element, {displayMode:false,throwOnError:false});</script></span> users typically want to specify a particular value for an injected flux.  This is achieved by using an <code>InflowBC</code>.  This adds <span class="moose-katex-inline-equation" id="moose-equation-6c92c9dd-66dc-489d-b625-063f39809c38"><script>var element = document.getElementById("moose-equation-6c92c9dd-66dc-489d-b625-063f39809c38");katex.render("\\langle\\psi_i, \\vec{v} u_{B} \\cdot \\vec{n}\\rangle", element, {displayMode:false,throwOnError:false});</script></span>, where <span class="moose-katex-inline-equation" id="moose-equation-df5f4ea5-2cda-490d-8ca5-503b8c50d52f"><script>var element = document.getElementById("moose-equation-df5f4ea5-2cda-490d-8ca5-503b8c50d52f");katex.render("u_B", element, {displayMode:false,throwOnError:false});</script></span> (kg.m<span class="moose-katex-inline-equation" id="moose-equation-1ec3d38b-ca42-484f-933e-3e6a5d1bfe89"><script>var element = document.getElementById("moose-equation-1ec3d38b-ca42-484f-933e-3e6a5d1bfe89");katex.render("^{-2}", element, {displayMode:false,throwOnError:false});</script></span>.s<span class="moose-katex-inline-equation" id="moose-equation-ca85d3aa-69a4-4df9-837f-e543db7ab084"><script>var element = document.getElementById("moose-equation-ca85d3aa-69a4-4df9-837f-e543db7ab084");katex.render("^{-1}", element, {displayMode:false,throwOnError:false});</script></span>) is the injection rate.  For instance</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[BCs]
+  [./u_injection_left]
+    type = InflowBC
+    boundary = left
+    variable = u
+    velocity = &#x27;1 0 0&#x27;
+    inlet_conc = 1
+  [../]
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#1d4ed292-08ae-4433-8e62-1739e9f01ad4">(moose/test/tests/kernels/conservative_advection/full_upwinding_1D.i)</a><p>To make impermeable boundaries, either for <span class="moose-katex-inline-equation" id="moose-equation-4b85e6a2-cff5-4ceb-b4fa-c900e08801d2"><script>var element = document.getElementById("moose-equation-4b85e6a2-cff5-4ceb-b4fa-c900e08801d2");katex.render("\\vec{v} \\cdot \\vec{n} < 0", element, {displayMode:false,throwOnError:false});</script></span> or <span class="moose-katex-inline-equation" id="moose-equation-b6a66779-68eb-43bc-a495-120f453118c3"><script>var element = document.getElementById("moose-equation-b6a66779-68eb-43bc-a495-120f453118c3");katex.render("\\vec{v} \\cdot \\vec{n} > 0", element, {displayMode:false,throwOnError:false});</script></span>, simply use no BC at that boundary. Then for <span class="moose-katex-inline-equation" id="moose-equation-330aca63-c04f-474e-bee8-580475344cca"><script>var element = document.getElementById("moose-equation-330aca63-c04f-474e-bee8-580475344cca");katex.render("\\vec{v} \\cdot \\vec{n} > 0", element, {displayMode:false,throwOnError:false});</script></span> there is no BC to remove fluid from that boundary so the fluid &quot;piles up&quot; there. For <span class="moose-katex-inline-equation" id="moose-equation-4d4033f5-cf7d-4dbb-99f9-bf44ad1edc59"><script>var element = document.getElementById("moose-equation-4d4033f5-cf7d-4dbb-99f9-bf44ad1edc59");katex.render("\\vec{v} \\cdot \\vec{n} < 0", element, {displayMode:false,throwOnError:false});</script></span> the omission of a BC can be thought of setting <span class="moose-katex-inline-equation" id="moose-equation-a9633258-a393-41df-b80e-f6ce1997dd6f"><script>var element = document.getElementById("moose-equation-a9633258-a393-41df-b80e-f6ce1997dd6f");katex.render("u_B=0", element, {displayMode:false,throwOnError:false});</script></span> in an <code>InflowBC</code>.</p></section><section id="fe567433-9874-4479-8b22-9e2c83df3166" data-section-level="2" data-section-text="Comparison of no upwinding and full upwinding"><h2 id="comparison-of-no-upwinding-and-full-upwinding">Comparison of no upwinding and full upwinding</h2><p>The tests</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text"># ConservativeAdvection with upwinding_type = None
+# Apply a velocity = (1, 0, 0) and see a pulse advect to the right
+# Note there are overshoots and undershoots
+[Mesh]
+  type = GeneratedMesh
+  dim = 1
+  nx = 10
+[]
+
+[Variables]
+  [./u]
+  [../]
+[]
+
+[BCs]
+  [./u_injection_left]
+    type = InflowBC
+    boundary = left
+    variable = u
+    velocity = &#x27;1 0 0&#x27;
+    inlet_conc = 1
+  [../]
+[]
+
+[Kernels]
+  [./udot]
+    type = TimeDerivative
+    variable = u
+  [../]
+  [./advection]
+    type = ConservativeAdvection
+    variable = u
+    velocity = &#x27;1 0 0&#x27;
+  [../]
+[]
+
+[Executioner]
+  type = Transient
+  solve_type = LINEAR
+  dt = 0.1
+  end_time = 1
+  l_tol = 1E-14
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#19a8326f-5a11-4c96-8a80-761ccc858f81">(moose/test/tests/kernels/conservative_advection/no_upwinding_1D.i)</a><p>and</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text"># ConservativeAdvection with upwinding_type = full
+# Apply a velocity = (1, 0, 0) and see a pulse advect to the right
+# Note that the pulse diffuses more than with no upwinding,
+# but there are no overshoots and undershoots and that the
+# center of the pulse at u=0.5 advects with the correct velocity
+[Mesh]
+  type = GeneratedMesh
+  dim = 1
+  nx = 10
+[]
+
+[Variables]
+  [./u]
+  [../]
+[]
+
+[BCs]
+  [./u_injection_left]
+    type = InflowBC
+    boundary = left
+    variable = u
+    velocity = &#x27;1 0 0&#x27;
+    inlet_conc = 1
+  [../]
+[]
+
+[Kernels]
+  [./udot]
+    type = MassLumpedTimeDerivative
+    variable = u
+  [../]
+  [./advection]
+    type = ConservativeAdvection
+    variable = u
+    velocity = &#x27;1 0 0&#x27;
+    upwinding_type = full
+  [../]
+[]
+
+[Executioner]
+  type = Transient
+  solve_type = LINEAR
+  dt = 0.1
+  end_time = 1
+  l_tol = 1E-14
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#ce0d9508-a5fd-46d0-b03f-62a1dcc94b50">(moose/test/tests/kernels/conservative_advection/full_upwinding_1D.i)</a><p>describe the same physical situation: advection from left to right along a line.  A source at the left boundary introduces <span class="moose-katex-inline-equation" id="moose-equation-30db484a-b7a5-44a7-9828-812fe4046d8b"><script>var element = document.getElementById("moose-equation-30db484a-b7a5-44a7-9828-812fe4046d8b");katex.render("u", element, {displayMode:false,throwOnError:false});</script></span> into the domain at a fixed rate (using an <code>InflowBC</code>).  The right boundary is impermeable (no BC), so when <span class="moose-katex-inline-equation" id="moose-equation-1643b11b-2f30-4dfc-b50d-7742d76521d2"><script>var element = document.getElementById("moose-equation-1643b11b-2f30-4dfc-b50d-7742d76521d2");katex.render("u", element, {displayMode:false,throwOnError:false});</script></span> arrives there it starts building up at the boundary.  It is clear from the figures below that no upwinding leads to unphysical overshoots and undershoots, while full upwinding results in none of that oscillatory behaviour but instead produces more numerical diffusion.</p><div class="card moose-float" style="width:30%;margin-left:3%"><div class="card-content"><picture class="materialboxed moose-image"><img src="../../media/framework/kernels/conservative_advection_1d_1.png"></img></picture><p class="moose-caption"><span class="moose-caption-text"><span class="moose-katex-inline-equation" id="moose-equation-f2de6732-b5e4-4383-8c16-088732a08dd2"><script>var element = document.getElementById("moose-equation-f2de6732-b5e4-4383-8c16-088732a08dd2");katex.render("u", element, {displayMode:false,throwOnError:false});</script></span> after 0.1 seconds of advection</span></p></div></div><div class="card moose-float" style="width:30%;margin-left:3%"><div class="card-content"><picture class="materialboxed moose-image"><img src="../../media/framework/kernels/conservative_advection_1d_5.png"></img></picture><p class="moose-caption"><span class="moose-caption-text"><span class="moose-katex-inline-equation" id="moose-equation-5e2baa06-d173-4199-9c34-afea3fd86002"><script>var element = document.getElementById("moose-equation-5e2baa06-d173-4199-9c34-afea3fd86002");katex.render("u", element, {displayMode:false,throwOnError:false});</script></span> after 0.5 seconds of advection</span></p></div></div></section><section id="1f660e99-bfce-4b42-b543-bcb63a1342b4" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="cf898094-7785-4915-8b7a-c2570b9fd8ee" data-section-level="3" data-section-text="Required Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">variable</span><span class="moose-parameter-header-description">The name of the variable that this residual object operates on</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>NonlinearVariableName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of the variable that this residual object operates on</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">velocity</span><span class="moose-parameter-header-description">Velocity vector</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;VariableName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Velocity vector</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Required Parameters</h3></summary></details></section><section id="a5d82eee-f474-4bc0-a0fb-5d6b6d35fd9e" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">block</span><span class="moose-parameter-header-description">The list of blocks (ids or names) that this object will be applied</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;SubdomainName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of blocks (ids or names) that this object will be applied</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">displacements</span><span class="moose-parameter-header-description">The displacements</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;VariableName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The displacements</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">prop_getter_suffix</span><span class="moose-parameter-header-description">An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">upwinding_type</span><span class="moose-parameter-header-default">none</span><span class="moose-parameter-header-description">Type of upwinding used.  None: Typically results in overshoots and undershoots, but numerical diffusion is minimized.  Full: Overshoots and undershoots are avoided, but numerical diffusion is large</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>none</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>none, full</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Type of upwinding used.  None: Typically results in overshoots and undershoots, but numerical diffusion is minimized.  Full: Overshoots and undershoots are avoided, but numerical diffusion is large</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="1137b483-e820-4a33-88a1-fd95b2464bbb" data-section-level="3" data-section-text="Tagging Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">absolute_value_vector_tags</span><span class="moose-parameter-header-description">The tags for the vectors this residual object should fill with the absolute value of the residual contribution</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;TagName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The tags for the vectors this residual object should fill with the absolute value of the residual contribution</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">extra_matrix_tags</span><span class="moose-parameter-header-description">The extra tags for the matrices this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;TagName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The extra tags for the matrices this Kernel should fill</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">extra_vector_tags</span><span class="moose-parameter-header-description">The extra tags for the vectors this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;TagName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The extra tags for the vectors this Kernel should fill</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">matrix_tags</span><span class="moose-parameter-header-default">system</span><span class="moose-parameter-header-description">The tag for the matrices this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>system</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MultiMooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>nontime, system</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The tag for the matrices this Kernel should fill</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">vector_tags</span><span class="moose-parameter-header-default">nontime</span><span class="moose-parameter-header-description">The tag for the vectors this Kernel should fill</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>nontime</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MultiMooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>nontime, time</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The tag for the vectors this Kernel should fill</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Tagging Parameters</h3></summary></details></section><section id="86698c86-6eee-4399-91db-be0325c17b60" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">diag_save_in</span><span class="moose-parameter-header-description">The name of auxiliary variables to save this Kernel's diagonal Jacobian contributions to. Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;AuxVariableName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of auxiliary variables to save this Kernel's diagonal Jacobian contributions to. Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>Yes</p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">implicit</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Determines whether this object is calculated using an implicit or explicit form</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Determines whether this object is calculated using an implicit or explicit form</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">save_in</span><span class="moose-parameter-header-description">The name of auxiliary variables to save this Kernel's residual contributions to.  Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;AuxVariableName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of auxiliary variables to save this Kernel's residual contributions to.  Everything about that variable must match everything about this variable (the type, what blocks it's on, etc.)</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">seed</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">The seed for the master random number generator</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>unsigned int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The seed for the master random number generator</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_displaced_mesh</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether or not this object should use the displaced mesh for computation. Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether or not this object should use the displaced mesh for computation. Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section></section><section id="7a5bd7a3-8d6a-4808-8086-2b1aceac09ce" data-section-level="2" data-section-text="References"><h2 id="references">References</h2><div class="moose-bibliography"><ol><li id="adhikary2011">D.&nbsp;Adhikary and A.&nbsp;Wilkins.
+<span class="bibtex-protected">Analysis of finite element discretisation schemes for multi-phase Darcy flow</span>.
+<em>Defect and Diffusion Forum</em>, 318:33–40, 2011.
+<a href="https://doi.org/10.4028/www.scientific.net/DDF.318.33">doi:10.4028/www.scientific.net/DDF.318.33</a>.<a href="#c25c8ebc-30f4-4ad2-9970-3af8b4b3cb93" class="modal-trigger moose-bibtex-modal" style="padding-left:10px;">[BibTeX]</a><div class="modal" id="c25c8ebc-30f4-4ad2-9970-3af8b4b3cb93"><div class="modal-content"><pre style="line-height:1.25;"><code class="language-latex">@article{adhikary2011,
+    author = "Adhikary, D. and Wilkins, A.",
+    abstract = "We demonstrate that care must be taken in a finite element discretisation of multi-phase compressible Darcy flow, otherwise constraints of non-negativity of fluid mass can become violated. Generalising a technique pioneered by Dalen, a lumped, finite-difference-inspired approximation with upstream weighting is described. This is numerically cheap, physically elegant, and the fluid mass at all nodes remains non-negative.",
+    doi = "10.4028/www.scientific.net/DDF.318.33",
+    journal = "Defect and Diffusion Forum",
+    pages = "33--40",
+    title = "{Analysis of finite element discretisation schemes for multi-phase Darcy flow}",
+    volume = "318",
+    year = "2011"
+}
+</code></pre></div></div></li><li id="dalen1979">V.&nbsp;Dalen.
+<span class="bibtex-protected">Simplified Finite-Element Models for Reservoir Flow Problems</span>.
+<em>Society of Petroleum Engineers Journal</em>, 19:333&ndash;342, 1979.
+<a href="https://doi.org/10.2118/7196-PA">doi:10.2118/7196-PA</a>.<a href="#ce08ba1a-5c8a-44f9-8538-d9c8030ad791" class="modal-trigger moose-bibtex-modal" style="padding-left:10px;">[BibTeX]</a><div class="modal" id="ce08ba1a-5c8a-44f9-8538-d9c8030ad791"><div class="modal-content"><pre style="line-height:1.25;"><code class="language-latex">@article{dalen1979,
+    author = "Dalen, V.",
+    abstract = "This paper summarizes some research that was conducted to construct finite-element models for reservoir flow problems. The models are based on Galerkin's method, but the method is applied in an unorthodox manner to simplify calculation of coefficients and to improve stability. Specifically, techniques of compatibility relaxation, capacity lumping, and upstream mobility weighting are used, and schemes are obtained that seem to combine the simplicity and high stability of conventional finite-difference models with the generality and modeling flexibility of finite-element methods. The development of a model for single-phase gas flow and a two-phase oil/water model is described. Numerical examples are included to illustrate the usefulness of finite elements. In particular, the triangular element with linear interpolation is shown to be an attractive alternative to the standard five-point, finite-difference approximation for two-dimensional analysis.",
+    doi = "10.2118/7196-PA",
+    journal = "Society of Petroleum Engineers Journal",
+    pages = "333-342",
+    title = "{Simplified Finite-Element Models for Reservoir Flow Problems}",
+    volume = "19",
+    year = "1979"
+}
+</code></pre></div></div></li></ol></div></section></section><div class="moose-modal modal" id="a7c9bf56-984d-44db-afa2-062da55a6e5c"><div class="modal-content"><h4>(moose/test/tests/kernels/conservative_advection/no_upwinding_1D.i)</h4><pre class="moose-pre"><code class="language-text"># ConservativeAdvection with upwinding_type = None
+# Apply a velocity = (1, 0, 0) and see a pulse advect to the right
+# Note there are overshoots and undershoots
+[Mesh]
+  type = GeneratedMesh
+  dim = 1
+  nx = 10
+[]
+
+[Variables]
+  [./u]
+  [../]
+[]
+
+[BCs]
+  [./u_injection_left]
+    type = InflowBC
+    boundary = left
+    variable = u
+    velocity = &#x27;1 0 0&#x27;
+    inlet_conc = 1
+  [../]
+[]
+
+[Kernels]
+  [./udot]
+    type = TimeDerivative
+    variable = u
+  [../]
+  [./advection]
+    type = ConservativeAdvection
+    variable = u
+    velocity = &#x27;1 0 0&#x27;
+  [../]
+[]
+
+[Executioner]
+  type = Transient
+  solve_type = LINEAR
+  dt = 0.1
+  end_time = 1
+  l_tol = 1E-14
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="615514e6-5c0e-4d1b-8416-91fd1d01b414"><div class="modal-content"><h4>(moose/test/tests/kernels/conservative_advection/none_in_all_out.i)</h4><pre class="moose-pre"><code class="language-text"># Using ConservativeAdvection with full upwinding
+# This demonstrates BCs that introduce no mass into
+# the domain but allow it to exit freely.
+[Mesh]
+  type = GeneratedMesh
+  dim = 1
+  xmin = 0
+  xmax = 10
+  nx = 100
+[]
+
+[Variables]
+  [./u]
+  [../]
+[]
+
+[ICs]
+  [./u]
+    type = FunctionIC
+    variable = u
+    function = &#x27;if(x&lt;5,x,10-x)&#x27;
+  [../]
+[]
+
+[Kernels]
+  [./dot]
+    type = MassLumpedTimeDerivative
+    variable = u
+  [../]
+  [./advection]
+    type = ConservativeAdvection
+    variable = u
+    upwinding_type = full
+    velocity = &#x27;1 0 0&#x27;
+  [../]
+[]
+
+[BCs]
+  [./allow_mass_out]
+    type = OutflowBC
+    boundary = right
+    variable = u
+    velocity = &#x27;1 0 0&#x27;
+  [../]
+[]
+
+[Executioner]
+  type = Transient
+  solve_type = Linear
+  dt = 1
+  end_time = 10
+  l_tol = 1E-14
+[]
+
+[Outputs]
+  exodus = true
+[]
+
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="1d4ed292-08ae-4433-8e62-1739e9f01ad4"><div class="modal-content"><h4>(moose/test/tests/kernels/conservative_advection/full_upwinding_1D.i)</h4><pre class="moose-pre"><code class="language-text"># ConservativeAdvection with upwinding_type = full
+# Apply a velocity = (1, 0, 0) and see a pulse advect to the right
+# Note that the pulse diffuses more than with no upwinding,
+# but there are no overshoots and undershoots and that the
+# center of the pulse at u=0.5 advects with the correct velocity
+[Mesh]
+  type = GeneratedMesh
+  dim = 1
+  nx = 10
+[]
+
+[Variables]
+  [./u]
+  [../]
+[]
+
+[BCs]
+  [./u_injection_left]
+    type = InflowBC
+    boundary = left
+    variable = u
+    velocity = &#x27;1 0 0&#x27;
+    inlet_conc = 1
+  [../]
+[]
+
+[Kernels]
+  [./udot]
+    type = MassLumpedTimeDerivative
+    variable = u
+  [../]
+  [./advection]
+    type = ConservativeAdvection
+    variable = u
+    velocity = &#x27;1 0 0&#x27;
+    upwinding_type = full
+  [../]
+[]
+
+[Executioner]
+  type = Transient
+  solve_type = LINEAR
+  dt = 0.1
+  end_time = 1
+  l_tol = 1E-14
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="19a8326f-5a11-4c96-8a80-761ccc858f81"><div class="modal-content"><h4>(moose/test/tests/kernels/conservative_advection/no_upwinding_1D.i)</h4><pre class="moose-pre"><code class="language-text"># ConservativeAdvection with upwinding_type = None
+# Apply a velocity = (1, 0, 0) and see a pulse advect to the right
+# Note there are overshoots and undershoots
+[Mesh]
+  type = GeneratedMesh
+  dim = 1
+  nx = 10
+[]
+
+[Variables]
+  [./u]
+  [../]
+[]
+
+[BCs]
+  [./u_injection_left]
+    type = InflowBC
+    boundary = left
+    variable = u
+    velocity = &#x27;1 0 0&#x27;
+    inlet_conc = 1
+  [../]
+[]
+
+[Kernels]
+  [./udot]
+    type = TimeDerivative
+    variable = u
+  [../]
+  [./advection]
+    type = ConservativeAdvection
+    variable = u
+    velocity = &#x27;1 0 0&#x27;
+  [../]
+[]
+
+[Executioner]
+  type = Transient
+  solve_type = LINEAR
+  dt = 0.1
+  end_time = 1
+  l_tol = 1E-14
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="ce0d9508-a5fd-46d0-b03f-62a1dcc94b50"><div class="modal-content"><h4>(moose/test/tests/kernels/conservative_advection/full_upwinding_1D.i)</h4><pre class="moose-pre"><code class="language-text"># ConservativeAdvection with upwinding_type = full
+# Apply a velocity = (1, 0, 0) and see a pulse advect to the right
+# Note that the pulse diffuses more than with no upwinding,
+# but there are no overshoots and undershoots and that the
+# center of the pulse at u=0.5 advects with the correct velocity
+[Mesh]
+  type = GeneratedMesh
+  dim = 1
+  nx = 10
+[]
+
+[Variables]
+  [./u]
+  [../]
+[]
+
+[BCs]
+  [./u_injection_left]
+    type = InflowBC
+    boundary = left
+    variable = u
+    velocity = &#x27;1 0 0&#x27;
+    inlet_conc = 1
+  [../]
+[]
+
+[Kernels]
+  [./udot]
+    type = MassLumpedTimeDerivative
+    variable = u
+  [../]
+  [./advection]
+    type = ConservativeAdvection
+    variable = u
+    velocity = &#x27;1 0 0&#x27;
+    upwinding_type = full
+  [../]
+[]
+
+[Executioner]
+  type = Transient
+  solve_type = LINEAR
+  dt = 0.1
+  end_time = 1
+  l_tol = 1E-14
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>

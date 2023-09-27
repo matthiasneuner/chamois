@@ -1,0 +1,219 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>InterfaceKernels System | Chamois</title><link rel="icon" type="image/x-icon" href="../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="1c051d65-71bd-4d4a-a9e2-053e7a5a4968" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="f3c2f44f-cbb5-42c1-82fd-4ed8f54035ea"><i class="material-icons">menu</i></a><ul class="sidenav" id="f3c2f44f-cbb5-42c1-82fd-4ed8f54035ea"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="82c58293-2315-44f2-839d-96849031d675" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="1c051d65-71bd-4d4a-a9e2-053e7a5a4968"><li><a href="../chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="82c58293-2315-44f2-839d-96849031d675"><li><a href="../chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="9cff7b6d-7288-4a4c-88fd-8204aa215c49" data-section-level="1" data-section-text="InterfaceKernels System"><h1 id="interfacekernels-system">InterfaceKernels System</h1><p>Interface kernels are meant to assist in coupling different physics across sub-domains. The most straightforward example is the case in which one wants to set the flux of a specie A in subdomain 0 equal to the flux of a specie B in subdomain 1 at the boundary between subdomains 0 and 1. In mathematical terms, we might be interested in establishing the condition:</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-dbcc0a24-b2da-4226-bf97-2f91810ccee4"></span><script>var element = document.getElementById("moose-equation-dbcc0a24-b2da-4226-bf97-2f91810ccee4");katex.render("-D_0 \\frac{\\partial c_0}{\\partial x} = -D_1 \\frac{\\partial c_1}{\\partial x}", element, {displayMode:true,throwOnError:false});</script></span></p><p>where <span class="moose-katex-inline-equation" id="moose-equation-70005f8a-4a71-4d6a-9377-bb795e2dc15f"><script>var element = document.getElementById("moose-equation-70005f8a-4a71-4d6a-9377-bb795e2dc15f");katex.render("D_i", element, {displayMode:false,throwOnError:false});</script></span> is the diffusion coefficient of specie <span class="moose-katex-inline-equation" id="moose-equation-886d2eb5-40c8-4e99-abb6-3ebb5c2cc972"><script>var element = document.getElementById("moose-equation-886d2eb5-40c8-4e99-abb6-3ebb5c2cc972");katex.render("i", element, {displayMode:false,throwOnError:false});</script></span> in subdomain <span class="moose-katex-inline-equation" id="moose-equation-e535569b-d60b-4221-b764-4e7c58f5b70d"><script>var element = document.getElementById("moose-equation-e535569b-d60b-4221-b764-4e7c58f5b70d");katex.render("i", element, {displayMode:false,throwOnError:false});</script></span>, and <span class="moose-katex-inline-equation" id="moose-equation-212853aa-9bae-485f-a023-66c0f99cee43"><script>var element = document.getElementById("moose-equation-212853aa-9bae-485f-a023-66c0f99cee43");katex.render("c_i", element, {displayMode:false,throwOnError:false});</script></span> is the concentration of specie <span class="moose-katex-inline-equation" id="moose-equation-f4700fd6-6aaf-4e88-b4e5-c0485121836f"><script>var element = document.getElementById("moose-equation-f4700fd6-6aaf-4e88-b4e5-c0485121836f");katex.render("i", element, {displayMode:false,throwOnError:false});</script></span> in subdomain <span class="moose-katex-inline-equation" id="moose-equation-9925a41b-894b-4e87-a648-1b9cc837064f"><script>var element = document.getElementById("moose-equation-9925a41b-894b-4e87-a648-1b9cc837064f");katex.render("i", element, {displayMode:false,throwOnError:false});</script></span>. An example of this condition is shown in the MOOSE test directory; see files below:</p><p><a class="moose-source-filename tooltipped modal-trigger" href="#2fa03113-5ca3-459c-bc61-d53abb5134d0">(moose/test/tests/interfacekernels/2d_interface/coupled_value_coupled_flux.i)</a></p><p><a class="moose-source-filename tooltipped modal-trigger" href="#729a23df-52ee-4363-a8bb-b599edf58822">(moose/framework/src/interfacekernels/InterfaceDiffusion.C)</a></p><p><a class="moose-source-filename tooltipped modal-trigger" href="#a330aa4c-cb70-4e93-a4d2-1e38dae15219">(moose/framework/include/interfacekernels/InterfaceDiffusion.h)</a></p><p>Interface kernels can be used to provide any general flux condition at an interface, and even more generally can be used to impose any interfacial condition that requires access to values of different variables and gradients of different variables on either side of an interface. In an input file, the user will specify at a minimum the following parameters:</p><ul class="browser-default"><li><p><code>type</code>: The type of interface kernel to be used </p></li><li><p><code>variable</code>: This is the &quot;primary&quot; variable. Note that the primary variable must exist on the same subdomain as the sideset specified in the <code>boundary</code> parameter. The existence of a &quot;primary&quot; and &quot;secondary&quot; or &quot;neighbor&quot; variable ensures that the interface kernel residual and jacobian functions get called the correct number of times. <code>variable</code> could be <span class="moose-katex-inline-equation" id="moose-equation-82224f02-eb8b-4f65-94f9-5fb482caa32b"><script>var element = document.getElementById("moose-equation-82224f02-eb8b-4f65-94f9-5fb482caa32b");katex.render("c_0", element, {displayMode:false,throwOnError:false});</script></span> from our example above. </p></li><li><p><code>neighbor_var</code>: The &quot;secondary&quot; variable. This could be <span class="moose-katex-inline-equation" id="moose-equation-02af9932-48ba-43af-8508-d1687972fc81"><script>var element = document.getElementById("moose-equation-02af9932-48ba-43af-8508-d1687972fc81");katex.render("c_1", element, {displayMode:false,throwOnError:false});</script></span> from our example above. </p></li><li><p><code>boundary</code>: The interfacial boundary between the subdomains. Note that this must be a sideset and again must exist on the same subdomain as the primary variable. The fact that this boundary is a sideset allows access to variable gradients.</p></li></ul><p>For additional information about the interface kernel system, don&#x27;t hesitate to contact the <a href="https://github.com/idaholab/moose/discussions">MOOSE Discussion forum</a>.</p><section id="74f214e3-3fb3-4fc6-8101-fc9a989ceeea" data-section-level="2" data-section-text="Available Objects"><h2 id="available-objects">Available Objects</h2><ul class="moose-syntax-list collection with-header"><li class="collection-header">Moose App</li><li class="collection-item"><a href="../../source/interfacekernels/PenaltyInterfaceDiffusion.html">ADPenaltyInterfaceDiffusion</a>A penalty-based interface condition that forcesthe continuity of variables and the flux equivalence across an interface.</li><li class="collection-item"><a href="../../source/interfacekernels/PenaltyInterfaceDiffusion.html">ADVectorPenaltyInterfaceDiffusion</a>A penalty-based interface condition that forcesthe continuity of variables and the flux equivalence across an interface.</li><li class="collection-item"><a href="../../source/interfacekernels/InterfaceDiffusion.html">InterfaceDiffusion</a>The kernel is utilized to establish flux equivalence on an interface for variables.</li><li class="collection-item"><a href="../../source/interfacekernels/InterfaceReaction.html">InterfaceReaction</a>Implements a reaction to establish ReactionRate=k_f*u-k_b*v at interface.</li><li class="collection-item"><a href="../../source/interfacekernels/PenaltyInterfaceDiffusion.html">PenaltyInterfaceDiffusion</a>A penalty-based interface condition that forcesthe continuity of variables and the flux equivalence across an interface.</li><li class="collection-item"><a href="../../source/interfacekernels/PenaltyInterfaceDiffusion.html">VectorPenaltyInterfaceDiffusion</a>A penalty-based interface condition that forcesthe continuity of variables and the flux equivalence across an interface.</li><li class="collection-header">Tensor Mechanics App</li><li class="collection-item"><a href="../../source/interfacekernels/ADCZMInterfaceKernelSmallStrain.html">ADCZMInterfaceKernelSmallStrain</a>CZM Interface kernel to use when using the small strain kinematic formulation.</li><li class="collection-item"><a href="../../source/interfacekernels/ADCZMInterfaceKernelTotalLagrangian.html">ADCZMInterfaceKernelTotalLagrangian</a>CZM Interface kernel to use when using the total Lagrangian formulation.</li><li class="collection-item"><a href="../../source/interfacekernels/CZMInterfaceKernelSmallStrain.html">CZMInterfaceKernelSmallStrain</a>CZM Interface kernel to use when using the Small Strain kinematic formulation.</li><li class="collection-item"><a href="../../source/interfacekernels/CZMInterfaceKernelTotalLagrangian.html">CZMInterfaceKernelTotalLagrangian</a></li></ul></section><section id="7174f73b-f61c-4b87-8031-8cc72b1a0955" data-section-level="2" data-section-text="Available Actions"><h2 id="available-actions">Available Actions</h2><ul class="moose-syntax-list collection with-header"><li class="collection-header">Moose App</li><li class="collection-item"><a href="../../source/actions/AddInterfaceKernelAction.html">AddInterfaceKernelAction</a>Add an InterfaceKernel object to the simulation.</li></ul></section></section><div class="moose-modal modal" id="2fa03113-5ca3-459c-bc61-d53abb5134d0"><div class="modal-content"><h4>(moose/test/tests/interfacekernels/2d_interface/coupled_value_coupled_flux.i)</h4><pre class="moose-pre"><code class="language-text">[Mesh]
+  [gen]
+    type = GeneratedMeshGenerator
+    dim = 2
+    nx = 2
+    xmax = 2
+    ny = 2
+    ymax = 2
+  []
+  [./subdomain1]
+    input = gen
+    type = SubdomainBoundingBoxGenerator
+    bottom_left = &#x27;0 0 0&#x27;
+    top_right = &#x27;1 1 0&#x27;
+    block_id = 1
+  [../]
+  [./interface]
+    type = SideSetsBetweenSubdomainsGenerator
+    input = subdomain1
+    primary_block = &#x27;0&#x27;
+    paired_block = &#x27;1&#x27;
+    new_boundary = &#x27;primary0_interface&#x27;
+  [../]
+  [./break_boundary]
+    input = interface
+    type = BreakBoundaryOnSubdomainGenerator
+  [../]
+[]
+
+[Variables]
+  [./u]
+    order = FIRST
+    family = LAGRANGE
+    block = 0
+  [../]
+
+  [./v]
+    order = FIRST
+    family = LAGRANGE
+    block = 1
+  [../]
+[]
+
+[Kernels]
+  [./diff_u]
+    type = CoeffParamDiffusion
+    variable = u
+    D = 4
+    block = 0
+  [../]
+  [./diff_v]
+    type = CoeffParamDiffusion
+    variable = v
+    D = 2
+    block = 1
+  [../]
+  [./source_u]
+    type = BodyForce
+    variable = u
+    value = 1
+  [../]
+[]
+
+[InterfaceKernels]
+  [./interface]
+    type = PenaltyInterfaceDiffusion
+    variable = u
+    neighbor_var = v
+    boundary = primary0_interface
+    penalty = 1e6
+  [../]
+[]
+
+[BCs]
+  [./u]
+    type = VacuumBC
+    variable = u
+    boundary = &#x27;left_to_0 bottom_to_0 right top&#x27;
+  [../]
+  [./v]
+    type = VacuumBC
+    variable = v
+    boundary = &#x27;left_to_1 bottom_to_1&#x27;
+  [../]
+[]
+
+[Postprocessors]
+  [./u_int]
+    type = ElementIntegralVariablePostprocessor
+    variable = u
+    block = 0
+  [../]
+  [./v_int]
+    type = ElementIntegralVariablePostprocessor
+    variable = v
+    block = 1
+  [../]
+[]
+
+[Preconditioning]
+  [./smp]
+    type = SMP
+    full = true
+  [../]
+[]
+
+[Executioner]
+  type = Steady
+  solve_type = NEWTON
+[]
+
+[Outputs]
+  exodus = true
+  print_linear_residuals = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="729a23df-52ee-4363-a8bb-b599edf58822"><div class="modal-content"><h4>(moose/framework/src/interfacekernels/InterfaceDiffusion.C)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#include &quot;InterfaceDiffusion.h&quot;
+
+registerMooseObject(&quot;MooseApp&quot;, InterfaceDiffusion);
+
+InputParameters
+InterfaceDiffusion::validParams()
+{
+  InputParameters params = InterfaceKernel::validParams();
+  params.addParam&lt;MaterialPropertyName&gt;(&quot;D&quot;, &quot;D&quot;, &quot;The diffusion coefficient.&quot;);
+  params.addParam&lt;MaterialPropertyName&gt;(
+      &quot;D_neighbor&quot;, &quot;D_neighbor&quot;, &quot;The neighboring diffusion coefficient.&quot;);
+  params.addClassDescription(
+      &quot;The kernel is utilized to establish flux equivalence on an interface for variables.&quot;);
+  return params;
+}
+
+InterfaceDiffusion::InterfaceDiffusion(const InputParameters &amp; parameters)
+  : InterfaceKernel(parameters),
+    _D(getMaterialProperty&lt;Real&gt;(&quot;D&quot;)),
+    _D_neighbor(getNeighborMaterialProperty&lt;Real&gt;(&quot;D_neighbor&quot;))
+{
+}
+
+Real
+InterfaceDiffusion::computeQpResidual(Moose::DGResidualType type)
+{
+  Real r = 0;
+
+  switch (type)
+  {
+    case Moose::Element:
+      r = _test[_i][_qp] * -_D_neighbor[_qp] * _grad_neighbor_value[_qp] * _normals[_qp];
+      break;
+
+    case Moose::Neighbor:
+      r = _test_neighbor[_i][_qp] * _D[_qp] * _grad_u[_qp] * _normals[_qp];
+      break;
+  }
+
+  return r;
+}
+
+Real
+InterfaceDiffusion::computeQpJacobian(Moose::DGJacobianType type)
+{
+  Real jac = 0;
+
+  switch (type)
+  {
+    case Moose::ElementElement:
+    case Moose::NeighborNeighbor:
+      break;
+
+    case Moose::NeighborElement:
+      jac = _test_neighbor[_i][_qp] * _D[_qp] * _grad_phi[_j][_qp] * _normals[_qp];
+      break;
+
+    case Moose::ElementNeighbor:
+      jac = _test[_i][_qp] * -_D_neighbor[_qp] * _grad_phi_neighbor[_j][_qp] * _normals[_qp];
+      break;
+  }
+
+  return jac;
+}
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="a330aa4c-cb70-4e93-a4d2-1e38dae15219"><div class="modal-content"><h4>(moose/framework/include/interfacekernels/InterfaceDiffusion.h)</h4><pre class="moose-pre"><code class="language-cpp">// This file is part of the MOOSE framework
+// https://www.mooseframework.org
+//
+// All rights reserved, see COPYRIGHT for full restrictions
+// https://github.com/idaholab/moose/blob/master/COPYRIGHT
+//
+// Licensed under LGPL 2.1, please see LICENSE for details
+// https://www.gnu.org/licenses/lgpl-2.1.html
+
+#pragma once
+
+#include &quot;InterfaceKernel.h&quot;
+
+/**
+ * DG kernel for interfacing diffusion between two variables on adjacent blocks
+ */
+class InterfaceDiffusion : public InterfaceKernel
+{
+public:
+  static InputParameters validParams();
+
+  InterfaceDiffusion(const InputParameters &amp; parameters);
+
+protected:
+  virtual Real computeQpResidual(Moose::DGResidualType type) override;
+  virtual Real computeQpJacobian(Moose::DGJacobianType type) override;
+
+  const MaterialProperty&lt;Real&gt; &amp; _D;
+  const MaterialProperty&lt;Real&gt; &amp; _D_neighbor;
+};
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>

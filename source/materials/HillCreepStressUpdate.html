@@ -1,0 +1,277 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>Hill Creep Stress Update | Chamois</title><link rel="icon" type="image/x-icon" href="../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="4237572f-d130-4a67-929b-846df1d9876f" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="c0c4ea7b-a80c-41f7-9d40-172a82724f64"><i class="material-icons">menu</i></a><ul class="sidenav" id="c0c4ea7b-a80c-41f7-9d40-172a82724f64"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="451d1fa0-8ce8-4f92-8252-b23d53974d2a" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="4237572f-d130-4a67-929b-846df1d9876f"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="451d1fa0-8ce8-4f92-8252-b23d53974d2a"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="5fd77f9b-112b-40cf-be00-607ca163b906" data-section-level="1" data-section-text="Hill Creep Stress Update"><h1 id="hill-creep-stress-update">Hill Creep Stress Update</h1><p>This class uses the stress update material in a generalized radial return anisotropic power law creep model.  This class can be used in conjunction with other creep and plasticity materials for more complex simulations.</p><section id="e8a72cc1-1fa5-4d25-a29b-254220addcd5" data-section-level="2" data-section-text="Description"><h2 id="description">Description</h2><p>This class computes a creep strain rate based on an equivalent deviatoric stress function that is calculated as a function of Hill&#x27;s function anisotropy parameters <span class="moose-katex-inline-equation" id="moose-equation-f0220441-1ff9-4a37-bf7a-fd0023a10828"><script>var element = document.getElementById("moose-equation-f0220441-1ff9-4a37-bf7a-fd0023a10828");katex.render("F", element, {displayMode:false,throwOnError:false});</script></span>, <span class="moose-katex-inline-equation" id="moose-equation-c640b14c-71ed-46f4-9360-1db55aad17eb"><script>var element = document.getElementById("moose-equation-c640b14c-71ed-46f4-9360-1db55aad17eb");katex.render("G", element, {displayMode:false,throwOnError:false});</script></span>, <span class="moose-katex-inline-equation" id="moose-equation-542b26ff-1a2d-45a4-8af2-d66c72e01a8c"><script>var element = document.getElementById("moose-equation-542b26ff-1a2d-45a4-8af2-d66c72e01a8c");katex.render("H", element, {displayMode:false,throwOnError:false});</script></span>, <span class="moose-katex-inline-equation" id="moose-equation-deb08ee0-a9ba-4355-8de6-27021bdf9828"><script>var element = document.getElementById("moose-equation-deb08ee0-a9ba-4355-8de6-27021bdf9828");katex.render("L", element, {displayMode:false,throwOnError:false});</script></span>, <span class="moose-katex-inline-equation" id="moose-equation-3944e299-79aa-4fdc-bd98-9f722b8ad70c"><script>var element = document.getElementById("moose-equation-3944e299-79aa-4fdc-bd98-9f722b8ad70c");katex.render("M", element, {displayMode:false,throwOnError:false});</script></span>, and <span class="moose-katex-inline-equation" id="moose-equation-8a90baa1-dff3-4746-9d32-87e7b5ee7e5f"><script>var element = document.getElementById("moose-equation-8a90baa1-dff3-4746-9d32-87e7b5ee7e5f");katex.render("N", element, {displayMode:false,throwOnError:false});</script></span>: <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-c72f1671-49fa-4d09-a1e0-dd75a724e45c"></span><script>var element = document.getElementById("moose-equation-c72f1671-49fa-4d09-a1e0-dd75a724e45c");katex.render("\\tilde{q}(\\sigma) = {[F(\\sigma_{22} - \\sigma_{33})^2 + G(\\sigma_{33} - \\sigma_{11})^2 + H(\\sigma_{11} - \\sigma_{22})^2 + 2L\\sigma_{23}^2 + 2M\\sigma_{13}^2 + 2N\\sigma_{12}^2]}^{1/2}", element, {displayMode:true,throwOnError:false});</script></span></p><p>The equivalent creep strain rate function may then be obtained as <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-7f00e13d-a0f5-40cd-8365-816908739f36"></span><script>var element = document.getElementById("moose-equation-7f00e13d-a0f5-40cd-8365-816908739f36");katex.render("\\dot{\\epsilon} = A_{aniso} (\\tilde{q})^{n}", element, {displayMode:true,throwOnError:false});</script></span></p><p>where <span class="moose-katex-inline-equation" id="moose-equation-f007d168-1a54-4166-a8cc-88d9f06464e1"><script>var element = document.getElementById("moose-equation-f007d168-1a54-4166-a8cc-88d9f06464e1");katex.render("A_{aniso}", element, {displayMode:false,throwOnError:false});</script></span> is a creep coefficient and <span class="moose-katex-inline-equation" id="moose-equation-697e2ef3-7ee0-41d2-962d-c78c43252ecd"><script>var element = document.getElementById("moose-equation-697e2ef3-7ee0-41d2-962d-c78c43252ecd");katex.render("n", element, {displayMode:false,throwOnError:false});</script></span> the creep exponent.</p><p>The effective creep strain increment is obtained within the framework of a generalized (Hill plasticity) radial return mapping, see <a href="GeneralizedRadialReturnStressUpdate.html">GeneralizedRadialReturnStressUpdate</a>. This class computes the generalized radial return inelastic increment.</p><p>More details on the Hill-type creep material model may be found in <a href="#stewart2011anisotropic">Stewart et al. (2011)</a>.</p><section id="d5f47633-5b72-40e6-b590-a53401a9ec27" data-section-level="3" data-section-text="Numerical time integration error"><h3 id="numerical-time-integration-error">Numerical time integration error</h3><p>The return mapping algorithm used to solve for elastic and inelastic strains relies on an additive decomposition. The stress increment can be determined, assuming a one-dimensional problem, as <span class="moose-katex-inline-equation" id="moose-equation-c94cc203-166e-47f4-9d6c-54c9ed31aa77"><script>var element = document.getElementById("moose-equation-c94cc203-166e-47f4-9d6c-54c9ed31aa77");katex.render("\\Delta\\sigma = E \\Delta\\epsilon^{elastic} = E (\\Delta\\epsilon^{total} - \\Delta\\epsilon^{creep})", element, {displayMode:false,throwOnError:false});</script></span>, where <span class="moose-katex-inline-equation" id="moose-equation-a08ab640-8fbd-4307-931c-31a06d20ba5e"><script>var element = document.getElementById("moose-equation-a08ab640-8fbd-4307-931c-31a06d20ba5e");katex.render("E", element, {displayMode:false,throwOnError:false});</script></span> is a representative value of the Young&#x27;s modulus. One way of limiting the error incurred in the numerical time integration is to compare it with the elastic strain increment during such an increment. Namely, we want to ensure that <span class="moose-katex-inline-equation" id="moose-equation-bb28074e-a485-4e87-a14b-a078c7db8311"><script>var element = document.getElementById("moose-equation-bb28074e-a485-4e87-a14b-a078c7db8311");katex.render("err_{creep} \\ll \\frac{\\Delta\\sigma}{E}", element, {displayMode:false,throwOnError:false});</script></span>. Estimating the creep numerical integration error as proportional to the increment of creep strain rates: <span class="moose-katex-inline-equation" id="moose-equation-94f8f9be-6598-405f-9ee1-d204630e003e"><script>var element = document.getElementById("moose-equation-94f8f9be-6598-405f-9ee1-d204630e003e");katex.render("err_{creep} = (\\Delta\\dot{\\epsilon}_{t+\\Delta t} - \\Delta\\dot{\\epsilon}_{t}) \\cdot \\Delta t", element, {displayMode:false,throwOnError:false});</script></span>, the recommended time step is</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-831ed645-d9cd-47a7-9a97-c88bb092999d"></span><span class="moose-katex-equation-number">(1)</span><script>var element = document.getElementById("moose-equation-831ed645-d9cd-47a7-9a97-c88bb092999d");katex.render("\\Delta t_{limit} = \\frac{\\Delta t \\cdot E \\cdot userTolerance}{\\Delta\\sigma}, ", element, {displayMode:true,throwOnError:false});</script></span></p><p>where <span class="moose-katex-inline-equation" id="moose-equation-4ef9f152-6c17-4ca4-b085-a51684c1a494"><script>var element = document.getElementById("moose-equation-4ef9f152-6c17-4ca4-b085-a51684c1a494");katex.render("\\Delta t_{limit}", element, {displayMode:false,throwOnError:false});</script></span> is the computed time step limit, <span class="moose-katex-inline-equation" id="moose-equation-2d34f2e5-b7b4-44a7-8faf-d9196b1c9e7f"><script>var element = document.getElementById("moose-equation-2d34f2e5-b7b4-44a7-8faf-d9196b1c9e7f");katex.render("\\Delta t", element, {displayMode:false,throwOnError:false});</script></span> is the current time step, <span class="moose-katex-inline-equation" id="moose-equation-00908528-55f0-499a-9cc1-cca22d27527b"><script>var element = document.getElementById("moose-equation-00908528-55f0-499a-9cc1-cca22d27527b");katex.render("\\Delta\\sigma", element, {displayMode:false,throwOnError:false});</script></span> denotes a stress time increment scalar, and <span class="moose-katex-inline-equation" id="moose-equation-098a5668-cfca-4390-865c-022053e88c7d"><script>var element = document.getElementById("moose-equation-098a5668-cfca-4390-865c-022053e88c7d");katex.render("userTolerance", element, {displayMode:false,throwOnError:false});</script></span> is the maximum numerical time integration error selected by the user. As Eq. (1) suggests, the creep error depends on the material stiffness and the given stress increment. For complex simulation scenarios, controlling this error by only prescribing a maximum inelastic strain increment may not be sufficient to limit creep error. Furthermore, too conservative selection of the maximum inelastic strain may lead to a large increase in the number of time steps required to finish the simulation.</p><div class="card moose-alert moose-alert-warning"><div class="card-title moose-alert-title"><i class="material-icons moose-inline-icon">warning</i><span class="moose-alert-title-brand">warning:</span>Selection of time step increments with creep</div><div class="card-content"><div class="moose-alert-content"><p>It is recommended to choose a <code>max_inelastic_increment</code> that guarantees that creep strain increments are well within the small strain increment assumption. Complementarily, <code>max_integration_error</code> must be selected such that the numerical time integration will not significantly affect the creep results. Usually, for most applications, values on the order of <span class="moose-katex-inline-equation" id="moose-equation-815be1bb-8fa5-4655-84b2-63c2120512b9"><script>var element = document.getElementById("moose-equation-815be1bb-8fa5-4655-84b2-63c2120512b9");katex.render("1.0\\cdot10^{-3}", element, {displayMode:false,throwOnError:false});</script></span> - <span class="moose-katex-inline-equation" id="moose-equation-18af9426-67b0-465e-b2a0-ef1ab0da47da"><script>var element = document.getElementById("moose-equation-18af9426-67b0-465e-b2a0-ef1ab0da47da");katex.render("1.0\\cdot10^{-5}", element, {displayMode:false,throwOnError:false});</script></span> will suffice. For better results, these time integration limits may be combined with a soft <a href="../userobjects/Terminator.html">Terminator</a>.</p></div></div></div><p>For three-dimensional problems, a norm of the stress diference and a representative value for the Young&#x27;s modulus is used internally.</p></section></section><section id="a190e03b-b808-45c5-9f13-82d1d0bef3ac" data-section-level="2" data-section-text="Example Input File Syntax"><h2 id="example-input-file-syntax">Example Input File Syntax</h2><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[trial_creep_two]
+  type = ADHillCreepStressUpdate
+  coefficient = 1e-16
+  n_exponent = 9
+  m_exponent = 0
+  activation_energy = 0
+  max_inelastic_increment = 0.00003
+  absolute_tolerance = 1e-20
+  relative_tolerance = 1e-20
+  # Force it to not use integration error
+  max_integration_error = 0.000001
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#dec48707-d98a-4d0b-b78a-267bf52f5a7f">(moose/modules/tensor_mechanics/test/tests/ad_anisotropic_creep/ad_aniso_creep_y_3d.i)</a></section><section id="79c6af85-96db-43f5-89d7-4bd066020d35" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="7718b545-13c4-4383-969f-27cee8e9cfc5" data-section-level="3" data-section-text="Required Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">activation_energy</span><span class="moose-parameter-header-description">Activation energy</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Activation energy</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">coefficient</span><span class="moose-parameter-header-description">Leading coefficient in power-law equation</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Leading coefficient in power-law equation</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">effective_inelastic_strain_name</span><span class="moose-parameter-header-default">effective_creep_strain</span><span class="moose-parameter-header-description">Name of the material property that stores the effective inelastic strain</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>effective_creep_strain</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::string</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Name of the material property that stores the effective inelastic strain</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">inelastic_strain_rate_name</span><span class="moose-parameter-header-default">creep_strain_rate</span><span class="moose-parameter-header-description">Name of the material property that stores the inelastic strain rate</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>creep_strain_rate</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::string</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Name of the material property that stores the inelastic strain rate</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">n_exponent</span><span class="moose-parameter-header-description">Exponent on effective stress in power-law equation</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Exponent on effective stress in power-law equation</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Required Parameters</h3></summary></details></section><section id="a1a083ae-8649-4046-b67d-cc9d181143cb" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">absolute_tolerance</span><span class="moose-parameter-header-default">1e-11</span><span class="moose-parameter-header-description">Absolute convergence tolerance for Newton iteration</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>1e-11</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Absolute convergence tolerance for Newton iteration</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">acceptable_multiplier</span><span class="moose-parameter-header-default">10</span><span class="moose-parameter-header-description">Factor applied to relative and absolute tolerance for acceptable convergence if iterations are no longer making progress</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>10</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Factor applied to relative and absolute tolerance for acceptable convergence if iterations are no longer making progress</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">base_name</span><span class="moose-parameter-header-description">Optional parameter that defines a prefix for all material properties related to this stress update model. This allows for multiple models of the same type to be used without naming conflicts.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::string</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Optional parameter that defines a prefix for all material properties related to this stress update model. This allows for multiple models of the same type to be used without naming conflicts.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">block</span><span class="moose-parameter-header-description">The list of blocks (ids or names) that this object will be applied</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;SubdomainName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of blocks (ids or names) that this object will be applied</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">boundary</span><span class="moose-parameter-header-description">The list of boundaries (ids or names) from the mesh where this object applies</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;BoundaryName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of boundaries (ids or names) from the mesh where this object applies</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">constant_on</span><span class="moose-parameter-header-default">NONE</span><span class="moose-parameter-header-description">When ELEMENT, MOOSE will only call computeQpProperties() for the 0th quadrature point, and then copy that value to the other qps.When SUBDOMAIN, MOOSE will only call computeQpProperties() for the 0th quadrature point, and then copy that value to the other qps. Evaluations on element qps will be skipped</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>NONE</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>NONE, ELEMENT, SUBDOMAIN</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>When ELEMENT, MOOSE will only call computeQpProperties() for the 0th quadrature point, and then copy that value to the other qps.When SUBDOMAIN, MOOSE will only call computeQpProperties() for the 0th quadrature point, and then copy that value to the other qps. Evaluations on element qps will be skipped</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">declare_suffix</span><span class="moose-parameter-header-description">An optional suffix parameter that can be appended to any declared properties. The suffix will be prepended with a '_' character.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>An optional suffix parameter that can be appended to any declared properties. The suffix will be prepended with a '_' character.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">gas_constant</span><span class="moose-parameter-header-default">8.3143</span><span class="moose-parameter-header-description">Universal gas constant</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>8.3143</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Universal gas constant</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">m_exponent</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">Exponent on time in power-law equation</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Exponent on time in power-law equation</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">max_inelastic_increment</span><span class="moose-parameter-header-default">0.0001</span><span class="moose-parameter-header-description">The maximum inelastic strain increment allowed in a time step</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0.0001</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The maximum inelastic strain increment allowed in a time step</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">max_integration_error</span><span class="moose-parameter-header-default">0.0005</span><span class="moose-parameter-header-description">The maximum inelastic strain increment integration error allowed</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0.0005</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The maximum inelastic strain increment integration error allowed</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">prop_getter_suffix</span><span class="moose-parameter-header-description">An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">relative_tolerance</span><span class="moose-parameter-header-default">1e-08</span><span class="moose-parameter-header-description">Relative convergence tolerance for Newton iteration</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>1e-08</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Relative convergence tolerance for Newton iteration</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">start_time</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">Start time (if not zero)</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Start time (if not zero)</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">temperature</span><span class="moose-parameter-header-description">Coupled temperature</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;VariableName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Coupled temperature</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_transformation</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Whether to employ updated Hill's tensor due to rigid body or large deformation kinematic rotations. If an initial rigid body rotation is provided by the user in increments of 90 degrees (e.g. 90, 180, 270), this option can be set to false, in which case the Hill's coefficients are extracted from the transformed Hill's tensor.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether to employ updated Hill's tensor due to rigid body or large deformation kinematic rotations. If an initial rigid body rotation is provided by the user in increments of 90 degrees (e.g. 90, 180, 270), this option can be set to false, in which case the Hill's coefficients are extracted from the transformed Hill's tensor.</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="5770ff7e-af4d-4c88-b4fb-d6a75a0b374a" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>Yes</p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">implicit</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Determines whether this object is calculated using an implicit or explicit form</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Determines whether this object is calculated using an implicit or explicit form</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">seed</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">The seed for the master random number generator</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>unsigned int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The seed for the master random number generator</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_displaced_mesh</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section><section id="e32d1a88-62ec-471e-9ac2-a37cde1f1868" data-section-level="3" data-section-text="Debug Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">internal_solve_full_iteration_history</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Set true to output full internal Newton iteration history at times determined by `internal_solve_output_on`. If false, only a summary is output.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Set true to output full internal Newton iteration history at times determined by `internal_solve_output_on`. If false, only a summary is output.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">internal_solve_output_on</span><span class="moose-parameter-header-default">on_error</span><span class="moose-parameter-header-description">When to output internal Newton solve information</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>on_error</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>never, on_error, always</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>When to output internal Newton solve information</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Debug Parameters</h3></summary></details></section><section id="3d6b6eea-0493-402b-87e1-f6de8a84194e" data-section-level="3" data-section-text="Outputs Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">output_properties</span><span class="moose-parameter-header-description">List of material properties, from this material, to output (outputs must also be defined to an output type)</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>List of material properties, from this material, to output (outputs must also be defined to an output type)</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">outputs</span><span class="moose-parameter-header-default">none </span><span class="moose-parameter-header-description">Vector of output names where you would like to restrict the output of variables(s) associated with this object</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>none </p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;OutputName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Vector of output names where you would like to restrict the output of variables(s) associated with this object</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Outputs Parameters</h3></summary></details></section></section><section id="f91808c7-f17f-42d1-9a77-a36445f9cb25" data-section-level="2" data-section-text="References"><h2 id="references">References</h2><div class="moose-bibliography"><ol><li id="stewart2011anisotropic">Calvin&nbsp;M Stewart, Ali&nbsp;P Gordon, Young&nbsp;Wha Ma, and Richard&nbsp;W Neu.
+An anisotropic tertiary creep damage constitutive model for anisotropic materials.
+<em>International Journal of Pressure Vessels and Piping</em>, 88(8-9):356–364, 2011.<a href="#59022254-935c-4cea-b0e8-8161000b3b24" class="modal-trigger moose-bibtex-modal" style="padding-left:10px;">[BibTeX]</a><div class="modal" id="59022254-935c-4cea-b0e8-8161000b3b24"><div class="modal-content"><pre style="line-height:1.25;"><code class="language-latex">@article{stewart2011anisotropic,
+    author = "Stewart, Calvin M and Gordon, Ali P and Ma, Young Wha and Neu, Richard W",
+    title = "An anisotropic tertiary creep damage constitutive model for anisotropic materials",
+    journal = "International Journal of Pressure Vessels and Piping",
+    volume = "88",
+    number = "8-9",
+    pages = "356--364",
+    year = "2011",
+    publisher = "Elsevier"
+}
+</code></pre></div></div></li></ol></div></section></section><div class="moose-modal modal" id="dec48707-d98a-4d0b-b78a-267bf52f5a7f"><div class="modal-content"><h4>(moose/modules/tensor_mechanics/test/tests/ad_anisotropic_creep/ad_aniso_creep_y_3d.i)</h4><pre class="moose-pre"><code class="language-text">[Mesh]
+  [gen]
+    type = GeneratedMeshGenerator
+    dim = 3
+    nx = 2
+    ny = 10
+    nz = 2
+
+    xmin = 0.0
+    ymin = 0.0
+    zmin = 0.0
+
+    xmax = 1.0
+    ymax = 10.0
+    zmax = 1.0
+  []
+  [corner_node]
+    type = ExtraNodesetGenerator
+    new_boundary = &#x27;100&#x27;
+    nodes = &#x27;4 10&#x27;
+    input = gen
+  []
+  [corner_node_2]
+    type = ExtraNodesetGenerator
+    new_boundary = &#x27;101&#x27;
+    nodes = &#x27;1 67&#x27;
+    input = corner_node
+  []
+[]
+
+[GlobalParams]
+  displacements = &#x27;disp_x disp_y disp_z&#x27;
+  volumetric_locking_correction = true
+[]
+
+[AuxVariables]
+  [hydrostatic_stress]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+  [creep_strain_xx]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+  [creep_strain_xy]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+  [creep_strain_yy]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+  [creep_strain_zz]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+[]
+
+[AuxKernels]
+  [hydrostatic_stress]
+    type = ADRankTwoScalarAux
+    variable = hydrostatic_stress
+    rank_two_tensor = stress
+    scalar_type = Hydrostatic
+  []
+  [creep_strain_xx]
+    type = ADRankTwoAux
+    rank_two_tensor = creep_strain
+    variable = creep_strain_xx
+    index_i = 0
+    index_j = 0
+  []
+  [creep_strain_xy]
+    type = ADRankTwoAux
+    rank_two_tensor = creep_strain
+    variable = creep_strain_xy
+    index_i = 0
+    index_j = 1
+  []
+  [creep_strain_yy]
+    type = ADRankTwoAux
+    rank_two_tensor = creep_strain
+    variable = creep_strain_yy
+    index_i = 1
+    index_j = 1
+  []
+  [creep_strain_zz]
+    type = ADRankTwoAux
+    rank_two_tensor = creep_strain
+    variable = creep_strain_yy
+    index_i = 1
+    index_j = 1
+  []
+  [sigma_yy]
+    type = ADRankTwoAux
+    rank_two_tensor = stress
+    variable = stress_yy
+    index_i = 1
+    index_j = 1
+  []
+[]
+
+[Functions]
+  [pull]
+    type = PiecewiseLinear
+    x = &#x27;0 1.0e-11 1.0&#x27;
+    y = &#x27;0 -4e1 -4e1&#x27;
+  []
+[]
+
+[Modules/TensorMechanics/Master]
+  [all]
+    strain = FINITE
+    generate_output = &#x27;elastic_strain_yy stress_yy&#x27;
+    use_automatic_differentiation = true
+    add_variables = true
+  []
+[]
+
+[Materials]
+  [elasticity_tensor]
+    type = ADComputeIsotropicElasticityTensor
+    youngs_modulus = 700
+    poissons_ratio = 0.0
+  []
+
+  [elastic_strain]
+    type = ADComputeMultipleInelasticStress
+    inelastic_models = &quot;trial_creep_two&quot;
+    max_iterations = 50
+    absolute_tolerance = 1e-16
+  []
+
+  [hill_tensor]
+    type = ADHillConstants
+    # F G H L M N
+    hill_constants = &quot;0.5 0.25 0.3866 1.6413 1.6413 1.2731&quot;
+  []
+
+  [trial_creep_two]
+    type = ADHillCreepStressUpdate
+    coefficient = 1e-16
+    n_exponent = 9
+    m_exponent = 0
+    activation_energy = 0
+    max_inelastic_increment = 0.00003
+    absolute_tolerance = 1e-20
+    relative_tolerance = 1e-20
+    # Force it to not use integration error
+    max_integration_error = 0.000001
+  []
+[]
+
+[BCs]
+  [no_disp_x]
+    type = ADDirichletBC
+    variable = disp_x
+    boundary = 101
+    value = 0.0
+  []
+
+  [no_disp_y]
+    type = ADDirichletBC
+    variable = disp_y
+    boundary = bottom
+    value = 0.0
+  []
+
+  [no_disp_z]
+    type = ADDirichletBC
+    variable = disp_z
+    boundary = 100
+    value = 0.0
+  []
+
+  [pressure]
+    type = ADPressure
+    boundary = top
+    function = pull
+    variable = disp_y
+    component = 1
+  []
+[]
+
+[Executioner]
+  type = Transient
+
+  solve_type = NEWTON
+  petsc_options_iname = &#x27;-pc_type -pc_factor_mat_solver_package&#x27;
+  petsc_options_value = &#x27;lu     superlu_dist&#x27;
+
+  nl_rel_tol = 1.0e-13
+  nl_abs_tol = 1.0e-13
+  l_max_its = 90
+  num_steps = 10
+  dt = 1.0e-4
+  start_time = 0
+  automatic_scaling = true
+[]
+
+[Postprocessors]
+  [matl_ts_min]
+    type = MaterialTimeStepPostprocessor
+  []
+  [max_disp_x]
+    type = ElementExtremeValue
+    variable = disp_x
+  []
+  [max_disp_y]
+    type = ElementExtremeValue
+    variable = disp_y
+  []
+  [max_hydro]
+    type = ElementAverageValue
+    variable = hydrostatic_stress
+  []
+  [dt]
+    type = TimestepSize
+  []
+  [num_lin]
+    type = NumLinearIterations
+    outputs = console
+  []
+  [num_nonlin]
+    type = NumNonlinearIterations
+    outputs = console
+  []
+  [creep_strain_yy]
+    type = ElementalVariableValue
+    variable = creep_strain_yy
+    execute_on = &#x27;TIMESTEP_END&#x27;
+    elementid = 39
+  []
+  [elastic_strain_yy]
+    type = ElementalVariableValue
+    variable = elastic_strain_yy
+    execute_on = &#x27;TIMESTEP_END&#x27;
+    elementid = 39
+  []
+  [sigma_yy]
+    type = ElementalVariableValue
+    variable = stress_yy
+    execute_on = &#x27;TIMESTEP_END&#x27;
+    elementid = 39
+  []
+[]
+
+[Outputs]
+  csv = true
+  exodus = true
+  perf_graph = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>

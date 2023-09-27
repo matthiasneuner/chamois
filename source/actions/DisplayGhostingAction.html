@@ -1,0 +1,83 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>DisplayGhostingAction | Chamois</title><link rel="icon" type="image/x-icon" href="../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="a56a4fb4-e5d3-4189-a318-16a48a9a3d7e" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="9e11f399-1796-40c1-b75c-94a273882813"><i class="material-icons">menu</i></a><ul class="sidenav" id="9e11f399-1796-40c1-b75c-94a273882813"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="ce0f3bfb-6680-4114-baae-8a3563b6b6fa" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="a56a4fb4-e5d3-4189-a318-16a48a9a3d7e"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="ce0f3bfb-6680-4114-baae-8a3563b6b6fa"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="04e8b230-9e84-4d7b-8413-ed28370f59d2" data-section-level="1" data-section-text="DisplayGhostingAction"><h1 id="displayghostingaction">DisplayGhostingAction</h1><p>The <code>DisplayGhostingAction</code> is for outputting the ghosting of your simulation. In MOOSE, we attempt to ghost only the minimum amount of data for running the simulation. In order to know what ghosting we need each object can add one or more <code>RelationshipManager</code> classes. This object sets up several <code>AuxVariables</code> and <code>AuxKernels</code> for outputting both the &quot;Geometric&quot; and &quot;Algebraic&quot; ghosting.</p><p>To output ghosting add the following parameter(s) to your Mesh block: <code></code>` <a href="/Mesh/index.md">Mesh</a>   ...   output_ghosting = true   include_local_in_ghosting = true [] <code></code>`</p><p>The <code>include_local_in_ghosting</code> parameter will also include all of a processors local elements in the ghosting field to give you a complete view of ghosting.</p><p>Example:</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[Mesh]
+  type = GeneratedMesh
+  dim = 2
+  nx = 10
+  ny = 10
+  [Partitioner]
+    type = GridPartitioner
+    nx = 2
+    ny = 2
+  []
+
+  output_ghosting = true
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#9aab30ff-7369-439e-98a3-04fc25218d3a">(moose/test/tests/auxkernels/ghosting_aux/ghosting_aux.i)</a><section id="52b40806-c9b2-458c-95e4-d432204d22cd" data-section-level="2" data-section-text="References"><h2 id="references">References</h2>No citations exist within this document.</section></section><div class="moose-modal modal" id="9aab30ff-7369-439e-98a3-04fc25218d3a"><div class="modal-content"><h4>(moose/test/tests/auxkernels/ghosting_aux/ghosting_aux.i)</h4><pre class="moose-pre"><code class="language-text">[Mesh]
+  type = GeneratedMesh
+  dim = 2
+  nx = 10
+  ny = 10
+  [Partitioner]
+    type = GridPartitioner
+    nx = 2
+    ny = 2
+  []
+
+  output_ghosting = true
+[]
+
+[Variables]
+  [u]
+  []
+[]
+
+[Kernels]
+  [diff]
+    type = Diffusion
+    variable = u
+  []
+[]
+
+[AuxVariables]
+  [pid]
+    family = MONOMIAL
+    order = CONSTANT
+  []
+[]
+
+[AuxKernels]
+  [pid]
+    type = ProcessorIDAux
+    variable = pid
+  []
+[]
+
+[BCs]
+  [left]
+    type = DirichletBC
+    variable = u
+    boundary = &#x27;left&#x27;
+    value = 0
+  []
+  [right]
+    type = DirichletBC
+    variable = u
+    boundary = &#x27;right&#x27;
+    value = 1
+  []
+[]
+
+[Executioner]
+  type = Steady
+  solve_type = PJFNK
+  petsc_options_iname = &#x27;-pc_type -pc_hypre_type&#x27;
+  petsc_options_value = &#x27;hypre boomeramg&#x27;
+[]
+
+[Outputs]
+  exodus = true
+[]
+
+[Problem]
+  default_ghosting = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>

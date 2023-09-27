@@ -1,0 +1,96 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>ConstantIC | Chamois</title><link rel="icon" type="image/x-icon" href="../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="97e60ead-4a5b-4605-aa31-e71f16d512e9" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="84197084-6219-4bd4-b750-12c191afb98b"><i class="material-icons">menu</i></a><ul class="sidenav" id="84197084-6219-4bd4-b750-12c191afb98b"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="b54f09ac-7667-4f43-aa0c-74c1b8812576" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="97e60ead-4a5b-4605-aa31-e71f16d512e9"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="b54f09ac-7667-4f43-aa0c-74c1b8812576"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="fd2ac01a-80f5-4f31-8ae0-bb473e415f96" data-section-level="1" data-section-text="ConstantIC"><h1 id="constantic">ConstantIC</h1><p>Sets a constant field value.</p><p>Sets a constant initial condition described by parameter <a href="#7c907511-c1c2-4ba0-bcbc-a241d1083792" class="moose-modal-link modal-trigger">&quot;value&quot;</a>. It can be restricted to particular blocks and boundaries using the <a href="#3212ae30-a817-4e56-bec9-8012e63a75b8" class="moose-modal-link modal-trigger">&quot;block&quot;</a> and <a href="#efed5fea-a86b-44a3-b984-e2bd2db0025a" class="moose-modal-link modal-trigger">&quot;boundary&quot;</a> parameters, respectively.</p><section id="3e025b08-0f46-4888-93c0-d322b6d5a154" data-section-level="2" data-section-text="Example input syntax"><h2 id="example-input-syntax">Example input syntax</h2><p>In this example, constant initial conditions are set for variable <code>u</code> and auxiliary array variable <code>u_aux</code>. The values of <code>u_aux</code> in block 1 and 2 are set differently by two <code>ConstantIC</code> objects.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[ICs]
+  [./ic_u_1]
+    type = ConstantIC
+    variable = u
+    value = 42
+    block = &#x27;1 2&#x27;
+  [../]
+
+  [./ic_u_aux_1]
+    type = ConstantIC
+    variable = u_aux
+    value = 6.25
+    block = &#x27;1&#x27;
+  [../]
+  [./ic_u_aux_2]
+    type = ConstantIC
+    variable = u_aux
+    value = 9.99
+    block = &#x27;2&#x27;
+  [../]
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#cc122e0a-747c-47cd-a20e-85f05d97a271">(moose/test/tests/ics/constant_ic/subdomain_constant_ic_test.i)</a></section><section id="25f9261f-bba9-4f11-a7a5-b70d75318974" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="44962f0d-42f2-4e22-9ad7-b29f94a1f852" data-section-level="3" data-section-text="Required Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">value</span><span class="moose-parameter-header-description">The value to be set in IC</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The value to be set in IC</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">variable</span><span class="moose-parameter-header-description">The variable this initial condition is supposed to provide values for.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>VariableName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The variable this initial condition is supposed to provide values for.</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Required Parameters</h3></summary></details></section><section id="2385c41e-d68a-40e1-834c-8d579c2640d6" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">block</span><span class="moose-parameter-header-description">The list of blocks (ids or names) that this object will be applied</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;SubdomainName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of blocks (ids or names) that this object will be applied</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">boundary</span><span class="moose-parameter-header-description">The list of boundaries (ids or names) from the mesh where this object applies</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;BoundaryName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of boundaries (ids or names) from the mesh where this object applies</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">prop_getter_suffix</span><span class="moose-parameter-header-description">An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="93c72544-5fb1-492f-96ab-e75fb0527984" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">ignore_uo_dependency</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">When set to true, a UserObject retrieved by this IC will not be executed before the this IC</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>When set to true, a UserObject retrieved by this IC will not be executed before the this IC</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section></section></section><div class="moose-modal modal" id="7c907511-c1c2-4ba0-bcbc-a241d1083792"><div class="modal-content"><h4>value</h4><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The value to be set in IC</p></div></div><div class="moose-modal modal" id="3212ae30-a817-4e56-bec9-8012e63a75b8"><div class="modal-content"><h4>block</h4><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;SubdomainName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of blocks (ids or names) that this object will be applied</p></div></div><div class="moose-modal modal" id="efed5fea-a86b-44a3-b984-e2bd2db0025a"><div class="modal-content"><h4>boundary</h4><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;BoundaryName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of boundaries (ids or names) from the mesh where this object applies</p></div></div><div class="moose-modal modal" id="cc122e0a-747c-47cd-a20e-85f05d97a271"><div class="modal-content"><h4>(moose/test/tests/ics/constant_ic/subdomain_constant_ic_test.i)</h4><pre class="moose-pre"><code class="language-text">[Mesh]
+  file = sq-2blk.e
+  uniform_refine = 1
+[]
+
+[Variables]
+  [./u]
+    order = FIRST
+    family = LAGRANGE
+  [../]
+[]
+
+[AuxVariables]
+  [./u_aux]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+[]
+
+[ICs]
+  [./ic_u_1]
+    type = ConstantIC
+    variable = u
+    value = 42
+    block = &#x27;1 2&#x27;
+  [../]
+
+  [./ic_u_aux_1]
+    type = ConstantIC
+    variable = u_aux
+    value = 6.25
+    block = &#x27;1&#x27;
+  [../]
+  [./ic_u_aux_2]
+    type = ConstantIC
+    variable = u_aux
+    value = 9.99
+    block = &#x27;2&#x27;
+  [../]
+[]
+
+[Kernels]
+  [./diff]
+    type = Diffusion
+    variable = u
+  [../]
+[]
+
+[BCs]
+  [./left]
+    type = DirichletBC
+    variable = u
+    boundary = 1
+    value = 0
+  [../]
+
+  [./right]
+    type = DirichletBC
+    variable = u
+    boundary = 2
+    value = 1
+  [../]
+[]
+
+[Executioner]
+  type = Steady
+
+  solve_type = &#x27;PJFNK&#x27;
+  nl_rel_tol = 1e-10
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>

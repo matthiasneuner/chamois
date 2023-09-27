@@ -1,0 +1,1732 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>Compute Elasticity Tensor | Chamois</title><link rel="icon" type="image/x-icon" href="../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="40ee20aa-dd58-4afa-9033-cc91665f6531" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="c94183b0-925b-4619-9438-e778e023a1b6"><i class="material-icons">menu</i></a><ul class="sidenav" id="c94183b0-925b-4619-9438-e778e023a1b6"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="19ba5616-e627-405d-847a-9fd087bf4bff" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="40ee20aa-dd58-4afa-9033-cc91665f6531"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="19ba5616-e627-405d-847a-9fd087bf4bff"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="f1dd7bf4-b17c-492a-972b-f63e7d1e8861" data-section-level="1" data-section-text="Compute Elasticity Tensor"><h1 id="compute-elasticity-tensor">Compute Elasticity Tensor</h1><p>Compute an elasticity tensor.</p><section id="f30a85ab-4dc3-4d78-a1a3-c8eb09081ca1" data-section-level="2" data-section-text="Description"><h2 id="description">Description</h2><p>The material <code>ComputeElasticityTensor</code> builds the elasticity (stiffness) tensor with various user-selected material symmetry options.  <code>ComputeElasticityTensor</code> also rotates the elasticity tensor during the initial time step only; this class does not rotate the elasticity tensor during the simulation.  The initial rotation is performed if the user provides arguments to the three Euler angle parameters; the Bunge Euler angles provided in this class are used to perform passive (from the sample to the crystal) rotations using the <a href="https://en.wikipedia.org/wiki/Euler_angles#Rotation_matrix">extrinsic <span class="moose-katex-inline-equation" id="moose-equation-845de853-7bea-4f4b-b3d9-fb6441a27ebc"><script>var element = document.getElementById("moose-equation-845de853-7bea-4f4b-b3d9-fb6441a27ebc");katex.render("Z_1 X_2 Z_3", element, {displayMode:false,throwOnError:false});</script></span> convention</a> to build the rotation matrix <span class="moose-katex-inline-equation" id="moose-equation-2ee1a8ac-d1c2-4182-8959-85e8ed15f4b0"><script>var element = document.getElementById("moose-equation-2ee1a8ac-d1c2-4182-8959-85e8ed15f4b0");katex.render("R", element, {displayMode:false,throwOnError:false});</script></span>. Alternatively, the 3x3 rotation matrix can be defined directly in the input file. Rotations to the elasticity tensor are applied as <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-a03864e4-9871-47e8-973a-2427a4271578"></span><span class="moose-katex-equation-number">(1)</span><script>var element = document.getElementById("moose-equation-a03864e4-9871-47e8-973a-2427a4271578");katex.render("   C_{ijkl} = R_{im} R_{jn} R_{ko} R_{lp} C_{mnop}", element, {displayMode:true,throwOnError:false});</script></span> See <a href="ComputeElasticityTensor.html#rotation-examples">below</a> for examples of tensor rotations.</p><p>For a general stiffness tensor with 21 independent components, the elasticity tensor within the tensor mechanics module can be represented with the notation shown in <a href="#moose-equation-0a59ab68-7c2f-4226-b22f-c78cc1d45a8c">Eq. (2)</a>.  Nonetheless, the full Rank-4 tensor with all 81 components is created by <code>ComputeElasticityTensor</code>. <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-0a59ab68-7c2f-4226-b22f-c78cc1d45a8c"></span><span class="moose-katex-equation-number">(2)</span><script>var element = document.getElementById("moose-equation-0a59ab68-7c2f-4226-b22f-c78cc1d45a8c");katex.render("   \\begin{aligned}         C_{ijkl} \\implies & \\underbrace{\\begin{bmatrix}                       C_{11} & C_{12} & C_{13} & C_{14} & C_{15} & C_{16} \\\\                       C_{21} & C_{22} & C_{23} & C_{24} & C_{25} & C_{26} \\\\                       C_{31} & C_{32} & C_{33} & C_{34} & C_{35} & C_{36} \\\\                       C_{41} & C_{42} & C_{43} & C_{44} & C_{45} & C_{46} \\\\                       C_{51} & C_{52} & C_{53} & C_{54} & C_{55} & C_{56} \\\\                       C_{61} & C_{62} & C_{63} & C_{64} & C_{65} & C_{66}                       \\end{bmatrix}}_{\\text{textbook engineering notation}} \\\\[5.0em]          \\implies & \\underbrace{\\begin{bmatrix}                                    C_{1111} & C_{1122} & C_{1133} & C_{1123} & C_{1131} & C_{1112} \\\\                                    C_{2211} & C_{2222} & C_{2233} & C_{2223} & C_{2231} & C_{2212} \\\\                                    C_{3311} & C_{3322} & C_{3333} & C_{3323} & C_{3331} & C_{3312} \\\\                                    C_{2311} & C_{2322} & C_{2333} & C_{2323} & C_{2331} & C_{2312} \\\\                                    C_{3111} & C_{3122} & C_{3133} & C_{3123} & C_{3131} & C_{3112} \\\\                                    C_{1211} & C_{1222} & C_{1233} & C_{1223} & C_{1231} & C_{1212}                                    \\end{bmatrix}}_{\\text{textbook Einstein index notation}} \\\\[5.0em]          \\implies & \\underbrace{\\begin{bmatrix}                       C_{0000} & C_{0011} & C_{0022} & C_{0012} & C_{0020} & C_{0001} \\\\                       C_{1100} & C_{1111} & C_{1122} & C_{1112} & C_{1120} & C_{1101} \\\\                       C_{2200} & C_{2211} & C_{2222} & C_{2212} & C_{2220} & C_{2201} \\\\                       C_{1200} & C_{1211} & C_{1222} & C_{1212} & C_{1220} & C_{1201} \\\\                       C_{2000} & C_{2011} & C_{2022} & C_{2012} & C_{2020} & C_{2001} \\\\                       C_{0100} & C_{0111} & C_{0122} & C_{0112} & C_{0120} & C_{0101}                       \\end{bmatrix}}_{\\text{Compute Elasticity Tensor indices}}   \\end{aligned}", element, {displayMode:true,throwOnError:false});</script></span></p><p>There are several different material symmetry options that a user can apply to build the elasticity tensor for a mechanics simulation that are discussed below.</p></section><section id="574cc9b5-6ac8-47a2-9553-244d801aa9c5" data-section-level="2" data-section-text="General Symmetry"><h2 id="general-symmetry">General Symmetry</h2><p>The fill method <code>symmetric21</code> is used to create the elasticity tensor for a linear hyperelastic material with 21 independent components: the symmetries shown in <a href="#moose-equation-400ab018-1b28-4a59-b67b-f3a114ee3e12">Eq. (3)</a> are used to determine the independent components (<a href="#slaughter2012linearized">Slaughter, 2012</a>). <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-400ab018-1b28-4a59-b67b-f3a114ee3e12"></span><span class="moose-katex-equation-number">(3)</span><script>var element = document.getElementById("moose-equation-400ab018-1b28-4a59-b67b-f3a114ee3e12");katex.render("   \\begin{aligned}     C_{ijkl} & = C_{jikl} \\impliedby \\quad \\text{satisfies angular momentum} \\\\     C_{ijkl} & = C_{ijlk} \\impliedby \\quad \\text{symmetric strain tensor assumption} \\\\     C_{ijkl} & = C_{klij} \\impliedby \\quad \\text{linear hyperelastic material assumption}   \\end{aligned}", element, {displayMode:true,throwOnError:false});</script></span></p><section id="9b935e2a-034e-4def-9280-9a4d96438587" data-section-level="3" data-section-text="Example Input File Syntax"><h3 id="example-input-file-syntax">Example Input File Syntax</h3><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[./elasticity_tensor]
+  type = ComputeElasticityTensor
+  fill_method = symmetric21
+  C_ijkl = &#x27;1111 1122 1133 1123 1113 1112 2222 2233 2223 2213 2212 3333 3323 3313 3312 2323 2313 2312 1313 1312 1212&#x27;
+[../]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#70b8f700-9f03-49c9-a9bb-31523f7e0de5">(moose/modules/combined/test/tests/linear_elasticity/tensor.i)</a><p>which shows the expected order of the elasticity tensor components in the input argument string.</p></section></section><section id="2eb662d0-3819-434f-8d89-fa3ecb743380" data-section-level="2" data-section-text="Orthotropic Symmetry"><h2 id="orthotropic-symmetry">Orthotropic Symmetry</h2><p>The fill method <code>symmetric9</code> is appropriate for materials with three orthotropic planes of symmetry (<a href="#malvern1969introduction">Malvern, 1969</a>), and is often used for simulations of anistropic materials such as cubic crystals.  The enginering elasticity tensor notation, <a href="#moose-equation-0a59ab68-7c2f-4226-b22f-c78cc1d45a8c">Eq. (2)</a>, for an orthotropic material is given in <a href="#moose-equation-96a7457f-bff2-4388-9b50-a782c10a1731">Eq. (4)</a> <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-96a7457f-bff2-4388-9b50-a782c10a1731"></span><span class="moose-katex-equation-number">(4)</span><script>var element = document.getElementById("moose-equation-96a7457f-bff2-4388-9b50-a782c10a1731");katex.render(" C_{ijkl}^{orthotropic} = \\begin{bmatrix}               C_{11} & C_{12} & C_{13} &      0 &      0 &      0 \\\\               C_{12} & C_{22} & C_{23} &      0 &      0 &      0 \\\\               C_{13} & C_{23} & C_{33} &      0 &      0 &      0 \\\\                    0 &      0 &      0 & C_{44} &      0 &      0 \\\\                    0 &      0 &      0 &      0 & C_{55} &      0 \\\\                    0 &      0 &      0 &      0 &      0 & C_{66}               \\end{bmatrix}", element, {displayMode:true,throwOnError:false});</script></span></p><p>The user can also select the fill method <code>orthotropic</code>, which generates an elasticity tensor based directly on material parameters. That is, the elasticity tensor is computed via moduli of elasticity, Poisson&#x27;s ratios, and shear stiffnesses, see <a href="#moose-equation-81e07012-29ec-4afe-b77f-0b97598f4afd">Eq. (5)</a> <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-81e07012-29ec-4afe-b77f-0b97598f4afd"></span><span class="moose-katex-equation-number">(5)</span><script>var element = document.getElementById("moose-equation-81e07012-29ec-4afe-b77f-0b97598f4afd");katex.render(" C_{ijkl}^{orthotropic} = \\begin{bmatrix}               E_{1} (1 - \\nu_{23} \\nu_{32})/k & E_{1} (\\nu_{23} \\nu_{31} + \\nu_{21})/k & E_{1} (\\nu_{21} \\nu_{32} + \\nu_{31})/k  &      0 &      0 &      0 \\\\               E_{2} (\\nu_{13} \\nu_{32} + \\nu_{12})/k & E_{2} (1 - \\nu_{13} \\nu_{31})/k & E_{2} (\\nu_{12} \\nu_{31} + \\nu_{32})/k &      0 &      0 &      0 \\\\               E_{3} (\\nu_{12} \\nu_{23} + \\nu_{13})/k & E_{3} (\\nu_{13} \\nu_{21} + \\nu_{23})/k & E_{3} (1 - \\nu_{12} \\nu_{21})/k &      0 &      0 &      0 \\\\                    0 &      0 &      0 & G_{12} &      0 &      0 \\\\                    0 &      0 &      0 &      0 & G_{31} &      0 \\\\                    0 &      0 &      0 &      0 &      0 & G_{23}               \\end{bmatrix}", element, {displayMode:true,throwOnError:false});</script></span> where <span class="moose-katex-inline-equation" id="moose-equation-74f8617e-298d-498e-aa5f-983c31eb8531"><script>var element = document.getElementById("moose-equation-74f8617e-298d-498e-aa5f-983c31eb8531");katex.render("k = 1 - \\nu_{12} \\nu_{21} - \\nu_{23} \\nu_{32} - \\nu_{31} \\nu_{13} - \\nu_{12} \\nu_{23} \\nu_{31} - \\nu_{21} \\nu_{32} \\nu_{13}", element, {displayMode:false,throwOnError:false});</script></span>.</p><section id="9bec48ba-58ed-4e9b-b0ce-7e1e61cd75dc" data-section-level="3" data-section-text="Example Input File Syntax"><h3 id="example-input-file-syntax">Example Input File Syntax</h3><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[./elasticity_tensor]
+  type = ComputeElasticityTensor
+  C_ijkl = &#x27;1.684e5 0.176e5 0.176e5 1.684e5 0.176e5 1.684e5 0.754e5 0.754e5 0.754e5&#x27;
+  fill_method = symmetric9
+[../]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#b551f5e6-f928-40f6-8265-32cf151bd11b">(moose/modules/tensor_mechanics/test/tests/finite_strain_elastic/finite_strain_elastic_new_test.i)</a><p>In the Einstein index notation shown in <a href="#moose-equation-0a59ab68-7c2f-4226-b22f-c78cc1d45a8c">Eq. (2)</a>, the parameter <code>C_ijkl</code> expects the elasticity components in the order <code>C_ijkl = &#x27;1111 1122 1133 2222 2233 3333 2323 3131
+1212&#x27;</code> for the <code>symmetric9</code> fill method option. Note that, in this case, the method <code>symmetric9</code> is used to enter an isotropic elasticity tensor.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[elasticity_tensor]
+  type = ComputeElasticityTensor
+  fill_method = orthotropic
+  C_ijkl = &#x27;2.0e3 2.0e5 2.0e3 0.71428571e3 0.71428571e3 0.71428571e3 0.4 0.2 0.004 0.004 0.2 0.4&#x27;
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#cd5e1253-03ca-49ca-a854-760add975a7a">(moose/modules/tensor_mechanics/test/tests/finite_strain_elastic_anisotropy/3d_bar_orthotropic_full_rotation.i)</a><p>For the <code>orthotropic</code> fill method, the material parameters need to be referred to the global frame and introduced in the following order: <span class="moose-katex-inline-equation" id="moose-equation-ebedcd47-9c48-4183-ab1a-dcc3ee63291e"><script>var element = document.getElementById("moose-equation-ebedcd47-9c48-4183-ab1a-dcc3ee63291e");katex.render("E_{11}\\;E_{22}\\;E_{33}\\;G_{12}\\;G_{23}\\;G_{31}\\;\\nu_{21}\\;\\nu_{31}\\;\\nu_{32}\\;\\nu_{12}\\;\\nu_{13}\\;\\nu_{23}", element, {displayMode:false,throwOnError:false});</script></span>. For cases where axes of orthotropy do not coincide with global axes, Euler angles can be provided to perform a general rotation of the elasticity tensor at the beginning of the simulation.</p></section></section><section id="46b04aa5-1688-4cf7-821c-d897db5dc5ea" data-section-level="2" data-section-text="Linear Isotropic Symmetry"><h2 id="linear-isotropic-symmetry">Linear Isotropic Symmetry</h2><p>The two constant isotropic symmetry fill methods <code>symmetric_isotropic</code> and <code>symmetric_isotropic_E_nu</code> are used in the dedicated isotropic elasticity tensor <a href="ComputeIsotropicElasticityTensor.html">ComputeIsotropicElasticityTensor</a>.  These two fill methods use the symmetries shown in <a href="#moose-equation-1e53641a-dfb7-4924-8a83-876a9c9ca8f0">Eq. (6)</a> to build the elasticity tensor. <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-1e53641a-dfb7-4924-8a83-876a9c9ca8f0"></span><span class="moose-katex-equation-number">(6)</span><script>var element = document.getElementById("moose-equation-1e53641a-dfb7-4924-8a83-876a9c9ca8f0");katex.render(" C_{ijkl} = C_{klij} = C_{jikl} = C_{jilk}", element, {displayMode:true,throwOnError:false});</script></span> Please see the documentation page for <a href="ComputeIsotropicElasticityTensor.html">ComputeIsotropicElasticityTensor</a> for details and examples of the input file syntax for linear elastic isotropic elasticity tensors.</p></section><section id="4f429b89-a050-48f5-8d0c-d047d28ea4aa" data-section-level="2" data-section-text="Antisymmetric Isotropic Symmetry"><h2 id="antisymmetric-isotropic-symmetry">Antisymmetric Isotropic Symmetry</h2><p>The fill method <code>antisymmetric_isotropic</code> is used for an antisymmetric isotropic material in a shear case.  The elasticity tensor is built using the symmetries shown in <a href="#moose-equation-4d6c0cc7-7866-4f7f-91d9-e7afa1651dc4">Eq. (7)</a> <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-4d6c0cc7-7866-4f7f-91d9-e7afa1651dc4"></span><span class="moose-katex-equation-number">(7)</span><script>var element = document.getElementById("moose-equation-4d6c0cc7-7866-4f7f-91d9-e7afa1651dc4");katex.render(" C_{ijkl}^{antisymmetric-isotropic} = \\kappa e_{ijm} e_{klm}", element, {displayMode:true,throwOnError:false});</script></span> where <span class="moose-katex-inline-equation" id="moose-equation-cdcdd02e-4099-4ea9-bb77-4709b7b1c359"><script>var element = document.getElementById("moose-equation-cdcdd02e-4099-4ea9-bb77-4709b7b1c359");katex.render("e", element, {displayMode:false,throwOnError:false});</script></span> is the permutation tensor and <span class="moose-katex-inline-equation" id="moose-equation-a6f80f30-2ae1-4f08-a3ee-8d3ad57677e8"><script>var element = document.getElementById("moose-equation-a6f80f30-2ae1-4f08-a3ee-8d3ad57677e8");katex.render("m", element, {displayMode:false,throwOnError:false});</script></span> is the summation index.</p></section><section id="c2eb67e6-5e39-4acb-830e-2939c31ddeeb" data-section-level="2" data-section-text="Transverse Isotropic ( Axisymmetric )"><h2 id="transverse-isotropic-axisymmetric">Transverse Isotropic (Axisymmetric)</h2><p>The fill method <code>axisymmetric_rz</code> is used for materials which are isotropic with respect to an axis of symmetry, such as a material composed of fibers which are parallel to the axis of symmetry (<a href="#slaughter2012linearized">Slaughter, 2012</a>). The engineering notation matrix in this case is shown by <a href="#moose-equation-ddea775e-79a7-438a-a7c9-3d6e5e8b7375">Eq. (8)</a>. <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-ddea775e-79a7-438a-a7c9-3d6e5e8b7375"></span><span class="moose-katex-equation-number">(8)</span><script>var element = document.getElementById("moose-equation-ddea775e-79a7-438a-a7c9-3d6e5e8b7375");katex.render(" C_{ijkl}^{axisymmetric} = \\begin{bmatrix}               C_{11} & C_{12} & C_{13} &      0 &      0 &      0 \\\\               C_{12} & C_{11} & C_{13} &      0 &      0 &      0 \\\\               C_{13} & C_{13} & C_{33} &      0 &      0 &      0 \\\\                    0 &      0 &      0 & C_{44} &      0 &      0 \\\\                    0 &      0 &      0 &      0 & C_{44} &      0 \\\\                    0 &      0 &      0 &      0 &      0 & \\frac{1}{2} \\left( C_{11} - C_{12} \\right)               \\end{bmatrix}", element, {displayMode:true,throwOnError:false});</script></span></p><section id="c33f6b28-b48e-4734-8d40-a8412d1d9ad0" data-section-level="3" data-section-text="Example Input File Syntax"><h3 id="example-input-file-syntax">Example Input File Syntax</h3><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[./elasticity_tensor]
+  #Material constants selected to match isotropic lambda and shear modulus case
+  type = ComputeElasticityTensor
+  C_ijkl = &#x27;1022726 113636 113636 1022726 454545&#x27;
+  fill_method = axisymmetric_rz
+[../]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#0d3f93de-f8cc-4530-948f-0b4c62bda7de">(moose/modules/tensor_mechanics/test/tests/isotropic_elasticity_tensor/2D-axisymmetric_rz_test.i)</a><p>In the Einstein index notation shown in <a href="#moose-equation-0a59ab68-7c2f-4226-b22f-c78cc1d45a8c">Eq. (2)</a>, the parameter <code>C_ijkl</code> expects the elasticity components in the order <code>C_ijkl = &#x27;1111, 1122, 1133, 3333, 2323&#x27;</code> for the <code>axisymmetric_rz</code> fill method option.</p></section></section><section id="77e263bb-c520-4d73-ac54-c16bf4df33fd" data-section-level="2" data-section-text="Principal Directions for Stress and Strain"><h2 id="principal-directions-for-stress-and-strain">Principal Directions for Stress and Strain</h2><p>The fill method <code>principal</code> is appropriate for the case when the principal directions of strain and stress align.  The engineering notation representation of the elasticity tensor is shown in <a href="#moose-equation-f7ced51b-31c0-430b-b948-d839b8543995">Eq. (9)</a>. <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-f7ced51b-31c0-430b-b948-d839b8543995"></span><span class="moose-katex-equation-number">(9)</span><script>var element = document.getElementById("moose-equation-f7ced51b-31c0-430b-b948-d839b8543995");katex.render(" C_{ijkl}^{orthotropic} = \\begin{bmatrix}               C_{11} & C_{12} & C_{13} &      0 &      0 &      0 \\\\               C_{21} & C_{22} & C_{23} &      0 &      0 &      0 \\\\               C_{31} & C_{32} & C_{33} &      0 &      0 &      0 \\\\                    0 &      0 &      0 &      0 &      0 &      0 \\\\                    0 &      0 &      0 &      0 &      0 &      0 \\\\                    0 &      0 &      0 &      0 &      0 &      0               \\end{bmatrix}", element, {displayMode:true,throwOnError:false});</script></span></p><p>In the Einstein index notation shown in <a href="#moose-equation-0a59ab68-7c2f-4226-b22f-c78cc1d45a8c">Eq. (2)</a>, the parameter <code>C_ijkl</code> expects the elasticity components in the order <code>C_ijkl = &#x27;1111 1122 1133 2211 2222 2233 3311 3322
+3333&#x27;</code> for the <code>principal</code> fill method option.</p></section><section id="3f6c0329-9a6c-480c-92cc-f00d666dd14c" data-section-level="2" data-section-text="Cosserat Elasticity Specific Fill Methods"><h2 id="cosserat-elasticity-specific-fill-methods">Cosserat Elasticity Specific Fill Methods</h2><p>The following fill methods are available within <code>ComputeElasticityTensor</code>, but the use cases for these methods fall within the Cosserat applications which do not preserve the equilibruim of angular momentum.</p><section id="6d720a44-61f2-494f-bd4d-5404a087e7d1" data-section-level="3" data-section-text="General Isotropic Symmetry"><h3 id="general-isotropic-symmetry">General Isotropic Symmetry</h3><p>The fill method <code>general_isotropic</code> is used for the case of three independent components of an elasticity tensor, <a href="#moose-equation-32b99e87-5486-4716-84e0-b551eba40001">Eq. (10)</a>. <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-32b99e87-5486-4716-84e0-b551eba40001"></span><span class="moose-katex-equation-number">(10)</span><script>var element = document.getElementById("moose-equation-32b99e87-5486-4716-84e0-b551eba40001");katex.render(" C_{ijkl}^{isotropic} = \\lambda \\delta_{ij} \\delta_{kl} + \\mu \\delta_{ik} \\delta_{ji} + \\kappa \\delta_{il} \\delta_{jk}", element, {displayMode:true,throwOnError:false});</script></span></p><p>This fill method case is used in the child class <a href="ComputeCosseratElasticityTensor.html">ComputeCosseratElasticityTensor</a>; please see the documentation for <a href="ComputeCosseratElasticityTensor.html">ComputeCosseratElasticityTensor</a> for details and examples of the input file syntax.</p></section><section id="281a2df8-f27a-4e21-b8f6-8e8e0c100fbb" data-section-level="3" data-section-text="General Antisymmetric"><h3 id="general-antisymmetric">General Antisymmetric</h3><p>The fill method <code>antisymmetric</code> builds an antisymmetric elasticity tensor for a shear-only case.  The symmetries shown in <a href="#moose-equation-0fbec10b-4969-4a36-b3b5-31eed744f0eb">Eq. (11)</a> are used to create the complete tensor <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-0fbec10b-4969-4a36-b3b5-31eed744f0eb"></span><span class="moose-katex-equation-number">(11)</span><script>var element = document.getElementById("moose-equation-0fbec10b-4969-4a36-b3b5-31eed744f0eb");katex.render(" C_{ijkl} = - C_{jikl} = - C_{ijlk} = C_{klij}", element, {displayMode:true,throwOnError:false});</script></span> and the engineering notation representation of the anitsymmetric elasticity tensor is given in <a href="#moose-equation-e2be854e-4c94-4906-ac6c-2034534fa604">Eq. (12)</a>. <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-e2be854e-4c94-4906-ac6c-2034534fa604"></span><span class="moose-katex-equation-number">(12)</span><script>var element = document.getElementById("moose-equation-e2be854e-4c94-4906-ac6c-2034534fa604");katex.render(" C_{ijkl}^{antisymmetric} = \\begin{bmatrix}                    0 &      0 &      0 &      0 &      0 &      0 \\\\                    0 &      0 &      0 &      0 &      0 &      0 \\\\                    0 &      0 &      0 &      0 &      0 &      0 \\\\                    0 &      0 &      0 &  C_{44} & -C_{54} &  C_{64} \\\\                    0 &      0 &      0 & -C_{54} & -C_{55} & -C_{65} \\\\                    0 &      0 &      0 &  C_{64} & -C_{65} &  C_{66}               \\end{bmatrix}", element, {displayMode:true,throwOnError:false});</script></span></p><p>This fill method case is used in the child class <a href="ComputeCosseratElasticityTensor.html">ComputeCosseratElasticityTensor</a>; please see the documentation for <a href="ComputeCosseratElasticityTensor.html">ComputeCosseratElasticityTensor</a> for details and examples of the input file syntax.</p></section><section id="b884060a-6d09-4f12-87ff-cc25787d7c2a" data-section-level="3" data-section-text="No Symmetry"><h3 id="no-symmetry">No Symmetry</h3><p>The <code>general</code> fill method for the Compute Elasticity Tensor class does not make any assumptions about symmetry for the elasticity tensor and requires all 81 components of the stiffness tensor as an input string.  This fill method case is used in the child class <a href="ComputeCosseratElasticityTensor.html">ComputeCosseratElasticityTensor</a>; please see the documentation for <a href="ComputeCosseratElasticityTensor.html">ComputeCosseratElasticityTensor</a> for details and examples of the input file syntax.</p></section></section><section id="d6b4c127-f72b-4171-b1ec-e14dc9777681" data-section-level="2" data-section-text="Rotation Examples"><h2 id="rotation-examples">Rotation Examples</h2><p>Since the elasticity tensor is defined with respect to a given crystal orientation which may be different than the simulation coordinate frame, one may wish to apply a rotation to the elasticity tensor. Some example use cases include simulating a specific crystal plane in a 2D simulation or embedding a secondary phase in a matrix phase. The rotation ensures the correct stress is generated when a given strain is applied. Strain is calculated in the &quot;sample&quot; or &quot;simulation&quot; reference frame and so the proper &quot;sample to crystal&quot; rotation must be applied. As shown in <a href="#moose-equation-a03864e4-9871-47e8-973a-2427a4271578">Eq. (1)</a>, a rotation matrix is needed for this operation, which can be built with Euler angles or entered in the input file directly.</p><section id="2605a302-b8ce-4325-ac48-97d93b42ea18" data-section-level="3" data-section-text="Rotation About An Axis"><h3 id="rotation-about-an-axis">Rotation About An Axis</h3><p>Suppose we wish to rotate the elasticity tensor about the z-axis by 30 degrees. The rotation matrix for rotating a vector by 30 degrees about the z-axis (an &quot;active&quot; rotation matrix) is <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-431f4840-8e00-4bf0-98d6-1b17a3f7f1a5"></span><span class="moose-katex-equation-number">(13)</span><script>var element = document.getElementById("moose-equation-431f4840-8e00-4bf0-98d6-1b17a3f7f1a5");katex.render(" R_z = \\begin{bmatrix}           \\frac{\\sqrt{3}}{2} & -\\frac{1}{2}       &  0  \\\\           \\frac{1}{2}        & \\frac{\\sqrt{3}}{2} &  0  \\\\           0                  &      0             &  1       \\end{bmatrix}   \\approx       \\begin{bmatrix}              0.8660254 & -0.5      &  0  \\\\              0.5       & 0.8660254 &  0  \\\\              0         & 0         &  1       \\end{bmatrix}", element, {displayMode:true,throwOnError:false});</script></span> Such a rotation can be implemented by directly supplying the rotation matrix in the input file using the <code>rotation_matrix</code> parameter in <code>ComputeElasticityTensor</code>.</p></section><section id="479c20f5-64cf-4cb2-a6c0-335227da566e" data-section-level="3" data-section-text="Example Input File Syntax"><h3 id="example-input-file-syntax">Example Input File Syntax</h3><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[./elasticity_matrix]
+  type = ComputeElasticityTensor
+  block = 0
+  base_name = &#x27;rotation_matrix&#x27;
+  fill_method = symmetric9
+  C_ijkl = &#x27;1111 1122 1133 2222 2233 3333 2323 1313 1212&#x27;
+  # rotation matrix for rotating a vector 30 degrees about the z-axis
+  rotation_matrix = &#x27;0.8660254 -0.5       0.
+                       0.5        0.8660254 0
+                       0          0         1&#x27;
+[../]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#4e227f19-9de4-462a-aa37-1e7c1ff7e809">(moose/modules/tensor_mechanics/test/tests/elasticitytensor/rotation_matrix_1_rotation.i)</a><p>Note that the same rotation can be applied using Euler angles. MOOSE expects the &quot;passive&quot; (Bunge) convention, so the input angle is -30 degrees. Also note that since the <span class="moose-katex-inline-equation" id="moose-equation-8bfb972e-c62a-4a31-a2c3-07899d9445ab"><script>var element = document.getElementById("moose-equation-8bfb972e-c62a-4a31-a2c3-07899d9445ab");katex.render("Z_1 X_2 Z_3", element, {displayMode:false,throwOnError:false});</script></span> convention is used, and only a single rotation is needed, the angle could be entered as either <code>euler_angle_1</code> or <code>euler_angle_3</code>.</p></section><section id="436b777b-21ff-418b-be08-96072c7e625a" data-section-level="3" data-section-text="Example Input File Syntax"><h3 id="example-input-file-syntax">Example Input File Syntax</h3><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[./elasticity_euler]
+  type = ComputeElasticityTensor
+  block = 0
+  base_name = &#x27;euler&#x27;
+  fill_method = symmetric9
+  C_ijkl = &#x27;1111 1122 1133 2222 2233 3333 2323 1313 1212&#x27;
+  euler_angle_1 = -30. # same as above but opposite direction because _transpose_ gets built from these angles
+  euler_angle_2 = 0.
+  euler_angle_3 = 0.
+[../]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#3aeb999b-7d1f-4ae3-904a-7ef658ece73c">(moose/modules/tensor_mechanics/test/tests/elasticitytensor/rotation_matrix_1_rotation.i)</a></section><section id="11fa7b87-906a-46d6-822d-381d7c450db5" data-section-level="3" data-section-text="Orientation Relationship Rotation"><h3 id="orientation-relationship-rotation">Orientation Relationship Rotation</h3><p>Rather than a specific axis-angle rotation, sometimes the elasticity tensor must be rotated to satisfy a particular orientation relationship. In this case, the basis vectors of the rotated coordinate system are known, and the corresponding rotation matrix can be built using the unit basis vectors as rows of the rotation matrix. For example suppose we have the following rotation matrix that can be used in the case where the <span class="moose-katex-inline-equation" id="moose-equation-d2028f7b-0a81-48bf-9319-43d4ac983b20"><script>var element = document.getElementById("moose-equation-d2028f7b-0a81-48bf-9319-43d4ac983b20");katex.render("\\left<111\\right>", element, {displayMode:false,throwOnError:false});</script></span> direction of our rotated or &quot;crystal&quot; system points along the z-axis of our simulation or &quot;sample&quot; system. <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-e7eb54ef-1f4b-43b7-8b1a-0df14d471cc2"></span><span class="moose-katex-equation-number">(14)</span><script>var element = document.getElementById("moose-equation-e7eb54ef-1f4b-43b7-8b1a-0df14d471cc2");katex.render(" R = \\begin{bmatrix}         \\frac{\\sqrt{2}}{2} & \\frac{\\sqrt{6}}{6} & \\frac{\\sqrt{3}}{3}  \\\\        -\\frac{\\sqrt{2}}{2} & \\frac{\\sqrt{6}}{6} & \\frac{\\sqrt{3}}{3}  \\\\         0                  & -\\frac{\\sqrt{6}}{3} & \\frac{\\sqrt{3}}{3}     \\end{bmatrix}  \\approx     \\begin{bmatrix}          0.70710678 &  0.40824829 & 0.57735027  \\\\         -0.70710678 &  0.40824829 & 0.57735027  \\\\          0          & -0.81649658 & 0.57735027     \\end{bmatrix}", element, {displayMode:true,throwOnError:false});</script></span> To verify, we apply this rotation matrix to the <span class="moose-katex-inline-equation" id="moose-equation-b4dffad4-30fb-49e0-bdc4-df46e4139fec"><script>var element = document.getElementById("moose-equation-b4dffad4-30fb-49e0-bdc4-df46e4139fec");katex.render("\\hat{z}=\\left<001\\right>", element, {displayMode:false,throwOnError:false});</script></span> direction of our &quot;sample&quot; or simulation frame: <span class="moose-katex-inline-equation" id="moose-equation-66879097-c471-4aee-91bf-39f197321cfd"><script>var element = document.getElementById("moose-equation-66879097-c471-4aee-91bf-39f197321cfd");katex.render("R\\hat{z}=\\left<111\\right>", element, {displayMode:false,throwOnError:false});</script></span>, meaning it correctly converts directions from &quot;sample&quot; to &quot;crystal&quot; frame, which is a &quot;passive&quot; rotation.</p></section><section id="e974e8da-6441-4322-973b-42ec6bac47d2" data-section-level="3" data-section-text="Example Input File Syntax"><h3 id="example-input-file-syntax">Example Input File Syntax</h3><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[./elasticity_matrix]
+  type = ComputeElasticityTensor
+  block = 0
+  base_name = &#x27;rotation_matrix&#x27;
+  fill_method = symmetric9
+  C_ijkl = &#x27;1111 1122 1133 2222 2233 3333 2323 1313 1212&#x27;
+  # rotation matrix for rotating a vector
+  #   1. 45 degrees about z-axis
+  #   2. ~54.7 degrees (arccos(1/sqrt(3)) radians) about x-axis
+  # then taking the tranpose to give sample-to-crystal rotation,
+  # ie. R*([0,0,1]) = [1,1,1], meaning the &lt;001&gt; direction of the sample
+  # (or simulation) frame points along the &lt;111&gt; direction of the crystal
+  rotation_matrix = &#x27;0.70710678  0.40824829  0.57735027
+                      -0.70710678  0.40824829  0.57735027
+                       0.         -0.81649658  0.57735027&#x27;
+[../]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#30ad8a33-905a-4129-940d-fa14d58b5080">(moose/modules/tensor_mechanics/test/tests/elasticitytensor/rotation_matrix_2_rotations.i)</a><p>The rotation matrix in <a href="#moose-equation-e7eb54ef-1f4b-43b7-8b1a-0df14d471cc2">Eq. (14)</a> can also be built in an &quot;active&quot; sense by doing a 45 degree rotation about the z-axis and then a ~54.7 degree (<span class="moose-katex-inline-equation" id="moose-equation-c431516c-3cd1-44fc-8f36-a2aaa69e64e8"><script>var element = document.getElementById("moose-equation-c431516c-3cd1-44fc-8f36-a2aaa69e64e8");katex.render("\\arccos\\left(1/\\sqrt{3}\\right)", element, {displayMode:false,throwOnError:false});</script></span> radians) rotation about the x-axis, then taking the transpose. Therefore these are the corresponding Euler angles to be used since we rotated the elasticity tensor by the &quot;passive&quot; matrix rather than the &quot;active&quot; matrix in the previous example. However, where more than 1 rotation is needed, the order of rotations matter. Since the Euler angle convention in MOOSE uses &quot;extrinsic&quot; rotations, the order must be reversed.</p></section><section id="06037d73-f422-48fd-9d84-4fc03fbd9ac4" data-section-level="3" data-section-text="Example Input File Syntax"><h3 id="example-input-file-syntax">Example Input File Syntax</h3><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[./elasticity_euler]
+  type = ComputeElasticityTensor
+  block = 0
+  base_name = &#x27;euler&#x27;
+  fill_method = symmetric9
+  C_ijkl = &#x27;1111 1122 1133 2222 2233 3333 2323 1313 1212&#x27;
+  # the angles here are the same as used to build the rotation matrix above because
+  # we build the _transpose_ from euler angles in MOOSE, but we also transposed
+  # the matrix for this example, so it goes back to the original;
+  # the reversed order is due to the &quot;extrinsic&quot; convention used by MOOSE
+  euler_angle_1 = 0.
+  euler_angle_2 = 54.73561032
+  euler_angle_3 = 45.
+[../]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#9c7e39af-f7c0-45bc-aa8c-3bb4ec3f919f">(moose/modules/tensor_mechanics/test/tests/elasticitytensor/rotation_matrix_2_rotations.i)</a></section></section><section id="7d56f862-dc9b-47ff-bc1b-c9ed63fb3ff3" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="a617851c-868c-4050-a23f-612838c694c8" data-section-level="3" data-section-text="Required Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">C_ijkl</span><span class="moose-parameter-header-description">Stiffness tensor for material</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;double&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Stiffness tensor for material</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Required Parameters</h3></summary></details></section><section id="f60b0f02-af3b-492e-ae30-9fafbc0b3ab6" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">base_name</span><span class="moose-parameter-header-description">Optional parameter that allows the user to define multiple mechanics material systems on the same block, i.e. for multiple phases</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::string</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Optional parameter that allows the user to define multiple mechanics material systems on the same block, i.e. for multiple phases</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">block</span><span class="moose-parameter-header-description">The list of blocks (ids or names) that this object will be applied</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;SubdomainName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of blocks (ids or names) that this object will be applied</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">boundary</span><span class="moose-parameter-header-description">The list of boundaries (ids or names) from the mesh where this object applies</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;BoundaryName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of boundaries (ids or names) from the mesh where this object applies</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">compute</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">When false, MOOSE will not call compute methods on this material. The user must call computeProperties() after retrieving the MaterialBase via MaterialBasePropertyInterface::getMaterialBase(). Non-computed MaterialBases are not sorted for dependencies.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>When false, MOOSE will not call compute methods on this material. The user must call computeProperties() after retrieving the MaterialBase via MaterialBasePropertyInterface::getMaterialBase(). Non-computed MaterialBases are not sorted for dependencies.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">constant_on</span><span class="moose-parameter-header-default">NONE</span><span class="moose-parameter-header-description">When ELEMENT, MOOSE will only call computeQpProperties() for the 0th quadrature point, and then copy that value to the other qps.When SUBDOMAIN, MOOSE will only call computeQpProperties() for the 0th quadrature point, and then copy that value to the other qps. Evaluations on element qps will be skipped</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>NONE</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>NONE, ELEMENT, SUBDOMAIN</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>When ELEMENT, MOOSE will only call computeQpProperties() for the 0th quadrature point, and then copy that value to the other qps.When SUBDOMAIN, MOOSE will only call computeQpProperties() for the 0th quadrature point, and then copy that value to the other qps. Evaluations on element qps will be skipped</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">declare_suffix</span><span class="moose-parameter-header-description">An optional suffix parameter that can be appended to any declared properties. The suffix will be prepended with a '_' character.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>An optional suffix parameter that can be appended to any declared properties. The suffix will be prepended with a '_' character.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">elasticity_tensor_prefactor</span><span class="moose-parameter-header-description">Optional function to use as a scalar prefactor on the elasticity tensor.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>FunctionName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Optional function to use as a scalar prefactor on the elasticity tensor.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">euler_angle_1</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">Euler angle in direction 1</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Euler angle in direction 1</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">euler_angle_2</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">Euler angle in direction 2</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Euler angle in direction 2</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">euler_angle_3</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">Euler angle in direction 3</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Euler angle in direction 3</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">fill_method</span><span class="moose-parameter-header-default">symmetric9</span><span class="moose-parameter-header-description">The fill method</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>symmetric9</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>antisymmetric, symmetric9, symmetric21, general_isotropic, symmetric_isotropic, symmetric_isotropic_E_nu, antisymmetric_isotropic, axisymmetric_rz, general, principal, orthotropic</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The fill method</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">prop_getter_suffix</span><span class="moose-parameter-header-description">An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">rotation_matrix</span><span class="moose-parameter-header-description">Rotation matrix to apply to elasticity tensor.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>libMesh::TensorValue&lt;double&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Rotation matrix to apply to elasticity tensor.</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="ca475911-ad3d-4490-b76a-04de69569d07" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>Yes</p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">implicit</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Determines whether this object is calculated using an implicit or explicit form</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Determines whether this object is calculated using an implicit or explicit form</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">seed</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">The seed for the master random number generator</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>unsigned int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The seed for the master random number generator</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_displaced_mesh</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section><section id="362b5b13-343b-475c-8bf9-f119f866514a" data-section-level="3" data-section-text="Outputs Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">output_properties</span><span class="moose-parameter-header-description">List of material properties, from this material, to output (outputs must also be defined to an output type)</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>List of material properties, from this material, to output (outputs must also be defined to an output type)</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">outputs</span><span class="moose-parameter-header-default">none </span><span class="moose-parameter-header-description">Vector of output names where you would like to restrict the output of variables(s) associated with this object</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>none </p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;OutputName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Vector of output names where you would like to restrict the output of variables(s) associated with this object</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Outputs Parameters</h3></summary></details></section></section><section id="0c4fe219-227f-4fd7-873d-94e51aec3665" data-section-level="2" data-section-text="References"><h2 id="references">References</h2><div class="moose-bibliography"><ol><li id="malvern1969introduction">Lawrence&nbsp;E Malvern.
+<em>Introduction to the Mechanics of a Continuous Medium</em>.
+Prentice-Hall, 1969.<a href="#e871d06f-a6ef-4138-a266-0c6b76557548" class="modal-trigger moose-bibtex-modal" style="padding-left:10px;">[BibTeX]</a><div class="modal" id="e871d06f-a6ef-4138-a266-0c6b76557548"><div class="modal-content"><pre style="line-height:1.25;"><code class="language-latex">@book{malvern1969introduction,
+    author = "Malvern, Lawrence E",
+    title = "Introduction to the Mechanics of a Continuous Medium",
+    year = "1969",
+    publisher = "Prentice-Hall"
+}
+</code></pre></div></div></li><li id="slaughter2012linearized">William&nbsp;S Slaughter.
+<em>The Linearized Theory of Elasticity</em>.
+Springer Science &amp; Business Media, 2012.<a href="#18ec2a8f-0c1b-47fb-8e93-8786bd3c7b07" class="modal-trigger moose-bibtex-modal" style="padding-left:10px;">[BibTeX]</a><div class="modal" id="18ec2a8f-0c1b-47fb-8e93-8786bd3c7b07"><div class="modal-content"><pre style="line-height:1.25;"><code class="language-latex">@book{slaughter2012linearized,
+    author = "Slaughter, William S",
+    title = "The Linearized Theory of Elasticity",
+    year = "2012",
+    publisher = "Springer Science \\& Business Media"
+}
+</code></pre></div></div></li></ol></div></section></section><div class="moose-modal modal" id="70b8f700-9f03-49c9-a9bb-31523f7e0de5"><div class="modal-content"><h4>(moose/modules/combined/test/tests/linear_elasticity/tensor.i)</h4><pre class="moose-pre"><code class="language-text"># This input file is designed to test the RankTwoAux and RankFourAux
+# auxkernels, which report values out of the Tensors used in materials
+# properties.
+
+[GlobalParams]
+  displacements = &#x27;disp_x disp_y&#x27;
+[]
+
+[Mesh]
+  type = GeneratedMesh
+  dim = 2
+  nx = 2
+  ny = 2
+  nz = 0
+  xmin = 0
+  xmax = 2
+  ymin = 0
+  ymax = 2
+  zmin = 0
+  zmax = 0
+  elem_type = QUAD4
+[]
+
+[Variables]
+  [./diffused]
+     [./InitialCondition]
+      type = RandomIC
+     [../]
+  [../]
+[]
+
+[AuxVariables]
+  [./C11]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C12]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C13]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C14]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C15]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C16]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C22]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C23]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C24]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C25]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C26]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C33]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C34]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C35]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C36]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C44]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C45]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C46]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C55]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C56]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C66]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+[]
+
+[Modules/TensorMechanics/Master/All]
+  strain = SMALL
+  add_variables = true
+  generate_output = &#x27;stress_xx stress_yy stress_zz stress_xy stress_yz stress_zx&#x27;
+[]
+
+[Kernels]
+  [./diff]
+    type = Diffusion
+    variable = diffused
+  [../]
+[]
+
+[AuxKernels]
+  [./matl_C11]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 0
+    index_l = 0
+    variable = C11
+  [../]
+  [./matl_C12]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 1
+    index_l = 1
+    variable = C12
+  [../]
+  [./matl_C13]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 2
+    index_l = 2
+    variable = C13
+  [../]
+  [./matl_C14]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 1
+    index_l = 2
+    variable = C14
+  [../]
+  [./matl_C15]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 0
+    index_l = 2
+    variable = C15
+  [../]
+  [./matl_C16]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 0
+    index_l = 1
+    variable = C16
+  [../]
+  [./matl_C22]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 1
+    index_j = 1
+    index_k = 1
+    index_l = 1
+    variable = C22
+  [../]
+  [./matl_C23]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 1
+    index_j = 1
+    index_k = 2
+    index_l = 2
+    variable = C23
+  [../]
+  [./matl_C24]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 1
+    index_j = 1
+    index_k = 1
+    index_l = 2
+    variable = C24
+  [../]
+  [./matl_C25]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 1
+    index_j = 1
+    index_k = 0
+    index_l = 2
+    variable = C25
+  [../]
+  [./matl_C26]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 1
+    index_j = 1
+    index_k = 0
+    index_l = 1
+    variable = C26
+  [../]
+ [./matl_C33]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 2
+    index_j = 2
+    index_k = 2
+    index_l = 2
+    variable = C33
+  [../]
+  [./matl_C34]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 2
+    index_j = 2
+    index_k = 1
+    index_l = 2
+    variable = C34
+  [../]
+  [./matl_C35]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 2
+    index_j = 2
+    index_k = 0
+    index_l = 2
+    variable = C35
+  [../]
+  [./matl_C36]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 2
+    index_j = 2
+    index_k = 0
+    index_l = 1
+    variable = C36
+  [../]
+  [./matl_C44]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 1
+    index_j = 2
+    index_k = 1
+    index_l = 2
+    variable = C44
+  [../]
+  [./matl_C45]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 1
+    index_j = 2
+    index_k = 0
+    index_l = 2
+    variable = C45
+  [../]
+  [./matl_C46]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 1
+    index_j = 2
+    index_k = 0
+    index_l = 1
+    variable = C46
+  [../]
+  [./matl_C55]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 0
+    index_j = 2
+    index_k = 0
+    index_l = 2
+    variable = C55
+  [../]
+  [./matl_C56]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 0
+    index_j = 2
+    index_k = 0
+    index_l = 1
+    variable = C56
+  [../]
+  [./matl_C66]
+    type = RankFourAux
+    rank_four_tensor = elasticity_tensor
+    index_i = 0
+    index_j = 1
+    index_k = 0
+    index_l = 1
+    variable = C66
+  [../]
+[]
+
+[Materials]
+  [./elasticity_tensor]
+    type = ComputeElasticityTensor
+    fill_method = symmetric21
+    C_ijkl =&#x27;1111 1122 1133 1123 1113 1112 2222 2233 2223 2213 2212 3333 3323 3313 3312 2323 2313 2312 1313 1312 1212&#x27;
+  [../]
+  [./stress]
+    type = ComputeLinearElasticStress
+  [../]
+[]
+
+[BCs]
+  [./bottom]
+    type = DirichletBC
+    variable = diffused
+    boundary = &#x27;1&#x27;
+    value = 1
+  [../]
+  [./top]
+    type = DirichletBC
+    variable = diffused
+    boundary = &#x27;2&#x27;
+    value = 0
+  [../]
+  [./disp_x_BC]
+    type = DirichletBC
+    variable = disp_x
+    boundary = &#x27;0 2&#x27;
+    value = 0.5
+  [../]
+  [./disp_x_BC2]
+    type = DirichletBC
+    variable = disp_x
+    boundary = &#x27;1 3&#x27;
+    value = 0.01
+  [../]
+  [./disp_y_BC]
+    type = DirichletBC
+    variable = disp_y
+    boundary = &#x27;0 2&#x27;
+    value = 0.8
+  [../]
+  [./disp_y_BC2]
+    type = DirichletBC
+    variable = disp_y
+    boundary = &#x27;1 3&#x27;
+    value = 0.02
+  [../]
+[]
+
+[Executioner]
+  type = Steady
+  solve_type = &#x27;PJFNK&#x27;
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="b551f5e6-f928-40f6-8265-32cf151bd11b"><div class="modal-content"><h4>(moose/modules/tensor_mechanics/test/tests/finite_strain_elastic/finite_strain_elastic_new_test.i)</h4><pre class="moose-pre"><code class="language-text">[Mesh]
+  type = GeneratedMesh
+  dim = 3
+  elem_type = HEX8
+[]
+
+[GlobalParams]
+  displacements = &#x27;disp_x disp_y disp_z&#x27;
+[]
+
+[Functions]
+  [./tdisp]
+    type = ParsedFunction
+    expression = &#x27;0.01 * t&#x27;
+  [../]
+[]
+
+[Modules]
+  [./TensorMechanics]
+    [./Master]
+      [./all]
+        strain = FINITE
+        add_variables = true
+      [../]
+    [../]
+  [../]
+[]
+
+[BCs]
+  [./symmy]
+    type = DirichletBC
+    variable = disp_y
+    boundary = bottom
+    value = 0
+  [../]
+  [./symmx]
+    type = DirichletBC
+    variable = disp_x
+    boundary = left
+    value = 0
+  [../]
+  [./symmz]
+    type = DirichletBC
+    variable = disp_z
+    boundary = back
+    value = 0
+  [../]
+  [./tdisp]
+    type = FunctionDirichletBC
+    variable = disp_z
+    boundary = front
+    function = tdisp
+  [../]
+[]
+
+[Materials]
+  [./elasticity_tensor]
+    type = ComputeElasticityTensor
+    C_ijkl = &#x27;1.684e5 0.176e5 0.176e5 1.684e5 0.176e5 1.684e5 0.754e5 0.754e5 0.754e5&#x27;
+    fill_method = symmetric9
+  [../]
+  [./stress]
+    type = ComputeFiniteStrainElasticStress
+  [../]
+[]
+
+[Preconditioning]
+  [./smp]
+    type = SMP
+    full = true
+  [../]
+[]
+
+[Executioner]
+  type = Transient
+  dt = 0.05
+
+  #Preconditioned JFNK (default)
+  solve_type = &#x27;PJFNK&#x27;
+
+  petsc_options_iname = -pc_hypre_type
+  petsc_options_value = boomeramg
+  nl_abs_tol = 1e-10
+  nl_rel_step_tol = 1e-10
+  dtmax = 10.0
+  nl_rel_tol = 1e-10
+  end_time = 1
+  dtmin = 0.05
+  num_steps = 10
+  nl_abs_step_tol = 1e-10
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="cd5e1253-03ca-49ca-a854-760add975a7a"><div class="modal-content"><h4>(moose/modules/tensor_mechanics/test/tests/finite_strain_elastic_anisotropy/3d_bar_orthotropic_full_rotation.i)</h4><pre class="moose-pre"><code class="language-text">[Mesh]
+  [generated_mesh]
+    type = GeneratedMeshGenerator
+    dim = 3
+    xmin = 0
+    xmax = 2
+    ymin = 0
+    ymax = 10
+    zmin = 0
+    zmax = 2
+    nx = 1
+    ny = 1
+    nz = 1
+    elem_type = HEX8
+  []
+  [corner]
+    type = ExtraNodesetGenerator
+    new_boundary = 101
+    coord = &#x27;0 0 0&#x27;
+    input = generated_mesh
+  []
+  [side]
+    type = ExtraNodesetGenerator
+    new_boundary = 102
+    coord = &#x27;2 0 0&#x27;
+    input = corner
+  []
+[]
+
+[GlobalParams]
+  displacements = &#x27;disp_x disp_y disp_z&#x27;
+[]
+
+[Modules/TensorMechanics/Master]
+  [all]
+    strain = FINITE
+    add_variables = true
+    use_finite_deform_jacobian = true
+    volumetric_locking_correction = false
+    generate_output = &#x27;stress_xx stress_yy stress_zz stress_xy stress_xz&#x27;
+  []
+[]
+
+[Materials]
+  [stress]
+    type = ComputeFiniteStrainElasticStress
+  []
+  [elasticity_tensor]
+    type = ComputeElasticityTensor
+    fill_method = orthotropic
+    C_ijkl = &#x27;2.0e3 2.0e5 2.0e3 0.71428571e3 0.71428571e3 0.71428571e3 0.4 0.2 0.004 0.004 0.2 0.4&#x27;
+  []
+[]
+
+[BCs]
+  [fix_z]
+    type = DirichletBC
+    variable = disp_z
+    boundary = bottom
+    value = 0
+  []
+
+  [rot_y]
+    type = DisplacementAboutAxis
+    boundary = bottom
+    function = t
+    angle_units = degrees
+    axis_origin = &#x27;0. 0. 0.&#x27;
+    axis_direction = &#x27;0. 0. 1.&#x27;
+    component = 1
+    variable = disp_y
+  []
+  #
+  [rot_x]
+    type = DisplacementAboutAxis
+    boundary = bottom
+    function = t
+    angle_units = degrees
+    axis_origin = &#x27;0. 0. 0.&#x27;
+    axis_direction = &#x27;0. 0. 1.&#x27;
+    component = 0
+    variable = disp_x
+  []
+
+  [rot_y90]
+    type = DisplacementAboutAxis
+    boundary = bottom
+    function = 360
+    angle_units = degrees
+    axis_origin = &#x27;0. 0. 0.&#x27;
+    axis_direction = &#x27;0. 0. 1.&#x27;
+    component = 1
+    variable = disp_y
+  []
+  #
+  [rot_x90]
+    type = DisplacementAboutAxis
+    boundary = bottom
+    function = 360
+    angle_units = degrees
+    axis_origin = &#x27;0. 0. 0.&#x27;
+    axis_direction = &#x27;0. 0. 1.&#x27;
+    component = 0
+    variable = disp_x
+  []
+
+  [press]
+    boundary = top
+    function = &#x27;-1.0*(t-360)*10.0&#x27;
+    use_displaced_mesh = true
+    displacements = &#x27;disp_x disp_y disp_z&#x27;
+    type = Pressure
+    variable = disp_y
+  []
+
+[]
+
+[Controls]
+  [c1]
+    type = TimePeriod
+    enable_objects = &#x27;BCs::rot_x BCs::rot_y&#x27;
+    disable_objects = &#x27;BCs::rot_x90 BCs::rot_y90 BCs::press&#x27;
+    start_time = &#x27;0&#x27;
+    end_time = &#x27;360&#x27;
+  []
+  [c190plus]
+    type = TimePeriod
+    enable_objects = &#x27;BCs::rot_x90 BCs::rot_y90 BCs::press&#x27;
+    disable_objects = &#x27;BCs::rot_x BCs::rot_y &#x27;
+    start_time = &#x27;360&#x27;
+    end_time = &#x27;660&#x27;
+  []
+[]
+
+[Executioner]
+  type = Transient
+
+  solve_type = &#x27;PJFNK&#x27;
+
+  petsc_options = &#x27;-snes_ksp_ew&#x27;
+  petsc_options_iname = &#x27;-ksp_gmres_restart&#x27;
+  petsc_options_value = &#x27;101&#x27;
+
+  line_search = &#x27;none&#x27;
+
+  nl_rel_tol = 1e-10
+  nl_abs_tol = 1e-08
+  nl_max_its = 50
+
+  l_tol = 1e-4
+  l_max_its = 50
+  start_time = 0.0
+
+  dt = 5
+  dtmin = 5
+
+  num_steps = 132
+[]
+
+[Preconditioning]
+  [smp]
+    type = SMP
+    full = true
+  []
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="0d3f93de-f8cc-4530-948f-0b4c62bda7de"><div class="modal-content"><h4>(moose/modules/tensor_mechanics/test/tests/isotropic_elasticity_tensor/2D-axisymmetric_rz_test.i)</h4><pre class="moose-pre"><code class="language-text">[Mesh]
+  type = GeneratedMesh
+  dim = 2
+  elem_type = QUAD8
+[]
+
+[GlobalParams]
+  displacements = &#x27;disp_r disp_z&#x27;
+[]
+
+[Problem]
+  coord_type = RZ
+[]
+
+[Modules/TensorMechanics/Master]
+  [./all]
+    strain = SMALL
+    add_variables = true
+  [../]
+[]
+
+[AuxVariables]
+  [./stress_theta]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+[]
+
+[AuxKernels]
+  [./stress_theta]
+    type = RankTwoAux
+    rank_two_tensor = stress
+    index_i = 2
+    index_j = 2
+    variable = stress_theta
+    execute_on = timestep_end
+  [../]
+[]
+
+[Materials]
+  [./elasticity_tensor]
+    #Material constants selected to match isotropic lambda and shear modulus case
+    type = ComputeElasticityTensor
+    C_ijkl = &#x27;1022726 113636 113636 1022726 454545&#x27;
+    fill_method = axisymmetric_rz
+  [../]
+  [./elastic_stress]
+    type = ComputeLinearElasticStress
+  [../]
+[]
+
+[BCs]
+# pin particle along symmetry planes
+  [./no_disp_r]
+    type = DirichletBC
+    variable = disp_r
+    boundary = left
+    value = 0.0
+  [../]
+
+  [./no_disp_z]
+    type = DirichletBC
+    variable = disp_z
+    boundary = bottom
+    value = 0.0
+  [../]
+
+# exterior and internal pressures
+  [./exterior_pressure_r]
+    type = Pressure
+    variable = disp_r
+    boundary = right
+    factor = 200000
+  [../]
+[]
+
+[Debug]
+  show_var_residual_norms = true
+[]
+
+[Executioner]
+  type = Transient
+
+  petsc_options_iname = &#x27;-ksp_gmres_restart -pc_type -pc_hypre_type -pc_hypre_boomeramg_max_iter&#x27;
+  petsc_options_value = &#x27;  201               hypre    boomeramg      10&#x27;
+
+  line_search = &#x27;none&#x27;
+
+  #Preconditioned JFNK (default)
+  solve_type = &#x27;PJFNK&#x27;
+
+  nl_rel_tol = 5e-9
+  nl_abs_tol = 1e-10
+  nl_max_its = 15
+
+  l_tol = 1e-3
+  l_max_its = 50
+
+  start_time = 0.0
+  end_time = 1
+  num_steps = 1000
+
+  dtmax = 5e6
+  dtmin = 1
+
+  [./TimeStepper]
+    type = IterationAdaptiveDT
+    dt = 1
+    optimal_iterations = 6
+    iteration_window = 0
+    linear_iteration_ratio = 100
+  [../]
+
+  [./Predictor]
+    type = SimplePredictor
+    scale = 1.0
+  [../]
+
+[]
+
+[Postprocessors]
+  [./dt]
+    type = TimestepSize
+  [../]
+[]
+
+[Outputs]
+  file_base = 2D-axisymmetric_rz_test_out
+  exodus = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="4e227f19-9de4-462a-aa37-1e7c1ff7e809"><div class="modal-content"><h4>(moose/modules/tensor_mechanics/test/tests/elasticitytensor/rotation_matrix_1_rotation.i)</h4><pre class="moose-pre"><code class="language-text"># This input file is designed to rotate an elasticity tensor both with euler angles
+# and a rotation matrix. The rotated tensor components should match between the
+# two methods.
+
+[Mesh]
+  type = GeneratedMesh
+  dim = 1
+  nx = 20
+  xmax = 1
+[]
+
+[AuxVariables]
+  [./C1111_aux_matrix]  # C11
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1122_aux_matrix]  # C12
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1133_aux_matrix]  # C13
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1112_aux_matrix]  # C16
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+
+  [./C1111_aux_euler]  # C11
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1122_aux_euler]  # C12
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1133_aux_euler]  # C13
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1112_aux_euler]  # C16
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+[]
+
+[AuxKernels]
+  [./matl_C1111_matrix]  # C11
+    type = RankFourAux
+    rank_four_tensor = rotation_matrix_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 0
+    index_l = 0
+    variable = C1111_aux_matrix
+    execute_on = initial
+  [../]
+  [./matl_C1122_matrix]  # C12
+    type = RankFourAux
+    rank_four_tensor = rotation_matrix_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 1
+    index_l = 1
+    variable = C1122_aux_matrix
+    execute_on = initial
+  [../]
+  [./matl_C1133_matrix]  # C13
+    type = RankFourAux
+    rank_four_tensor = rotation_matrix_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 2
+    index_l = 2
+    variable = C1133_aux_matrix
+    execute_on = initial
+  [../]
+  [./matl_C1112_matrix]  # C16
+    type = RankFourAux
+    rank_four_tensor = rotation_matrix_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 0
+    index_l = 1
+    variable = C1112_aux_matrix
+    execute_on = initial
+  [../]
+
+  [./matl_C1111_euler]  # C11
+    type = RankFourAux
+    rank_four_tensor = euler_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 0
+    index_l = 0
+    variable = C1111_aux_euler
+    execute_on = initial
+  [../]
+  [./matl_C1122_euler]  # C12
+    type = RankFourAux
+    rank_four_tensor = euler_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 1
+    index_l = 1
+    variable = C1122_aux_euler
+    execute_on = initial
+  [../]
+  [./matl_C1133_euler]  # C13
+    type = RankFourAux
+    rank_four_tensor = euler_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 2
+    index_l = 2
+    variable = C1133_aux_euler
+    execute_on = initial
+  [../]
+  [./matl_C1112_euler]  # C16
+    type = RankFourAux
+    rank_four_tensor = euler_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 0
+    index_l = 1
+    variable = C1112_aux_euler
+    execute_on = initial
+  [../]
+[]
+
+[Materials]
+  [./elasticity_matrix]
+    type = ComputeElasticityTensor
+    block = 0
+    base_name = &#x27;rotation_matrix&#x27;
+    fill_method = symmetric9
+    C_ijkl = &#x27;1111 1122 1133 2222 2233 3333 2323 1313 1212&#x27;
+    # rotation matrix for rotating a vector 30 degrees about the z-axis
+    rotation_matrix = &#x27;0.8660254 -0.5       0.
+                       0.5        0.8660254 0
+                       0          0         1&#x27;
+  [../]
+  [./elasticity_euler]
+    type = ComputeElasticityTensor
+    block = 0
+    base_name = &#x27;euler&#x27;
+    fill_method = symmetric9
+    C_ijkl = &#x27;1111 1122 1133 2222 2233 3333 2323 1313 1212&#x27;
+    euler_angle_1 = -30.  # same as above but opposite direction because _transpose_ gets built from these angles
+    euler_angle_2 = 0.
+    euler_angle_3 = 0.
+  [../]
+[]
+
+[Problem]
+  kernel_coverage_check = false
+  solve = false
+[]
+
+[Executioner]
+  type = Steady
+[]
+
+[Postprocessors]
+  # corresponding values in &quot;matrix&quot; and &quot;euler&quot; postprocessors should match
+  [./C11_matrix]
+    type = ElementAverageValue
+    variable = C1111_aux_matrix
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C12_matrix]
+    type = ElementAverageValue
+    variable = C1122_aux_matrix
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C13_matrix]
+    type = ElementAverageValue
+    variable = C1133_aux_matrix
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C16_matrix]
+    type = ElementAverageValue
+    variable = C1112_aux_matrix
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+
+  [./C11_euler]
+    type = ElementAverageValue
+    variable = C1111_aux_euler
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C12_euler]
+    type = ElementAverageValue
+    variable = C1122_aux_euler
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C13_euler]
+    type = ElementAverageValue
+    variable = C1133_aux_euler
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C16_euler]
+    type = ElementAverageValue
+    variable = C1112_aux_euler
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="3aeb999b-7d1f-4ae3-904a-7ef658ece73c"><div class="modal-content"><h4>(moose/modules/tensor_mechanics/test/tests/elasticitytensor/rotation_matrix_1_rotation.i)</h4><pre class="moose-pre"><code class="language-text"># This input file is designed to rotate an elasticity tensor both with euler angles
+# and a rotation matrix. The rotated tensor components should match between the
+# two methods.
+
+[Mesh]
+  type = GeneratedMesh
+  dim = 1
+  nx = 20
+  xmax = 1
+[]
+
+[AuxVariables]
+  [./C1111_aux_matrix]  # C11
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1122_aux_matrix]  # C12
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1133_aux_matrix]  # C13
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1112_aux_matrix]  # C16
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+
+  [./C1111_aux_euler]  # C11
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1122_aux_euler]  # C12
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1133_aux_euler]  # C13
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1112_aux_euler]  # C16
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+[]
+
+[AuxKernels]
+  [./matl_C1111_matrix]  # C11
+    type = RankFourAux
+    rank_four_tensor = rotation_matrix_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 0
+    index_l = 0
+    variable = C1111_aux_matrix
+    execute_on = initial
+  [../]
+  [./matl_C1122_matrix]  # C12
+    type = RankFourAux
+    rank_four_tensor = rotation_matrix_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 1
+    index_l = 1
+    variable = C1122_aux_matrix
+    execute_on = initial
+  [../]
+  [./matl_C1133_matrix]  # C13
+    type = RankFourAux
+    rank_four_tensor = rotation_matrix_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 2
+    index_l = 2
+    variable = C1133_aux_matrix
+    execute_on = initial
+  [../]
+  [./matl_C1112_matrix]  # C16
+    type = RankFourAux
+    rank_four_tensor = rotation_matrix_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 0
+    index_l = 1
+    variable = C1112_aux_matrix
+    execute_on = initial
+  [../]
+
+  [./matl_C1111_euler]  # C11
+    type = RankFourAux
+    rank_four_tensor = euler_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 0
+    index_l = 0
+    variable = C1111_aux_euler
+    execute_on = initial
+  [../]
+  [./matl_C1122_euler]  # C12
+    type = RankFourAux
+    rank_four_tensor = euler_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 1
+    index_l = 1
+    variable = C1122_aux_euler
+    execute_on = initial
+  [../]
+  [./matl_C1133_euler]  # C13
+    type = RankFourAux
+    rank_four_tensor = euler_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 2
+    index_l = 2
+    variable = C1133_aux_euler
+    execute_on = initial
+  [../]
+  [./matl_C1112_euler]  # C16
+    type = RankFourAux
+    rank_four_tensor = euler_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 0
+    index_l = 1
+    variable = C1112_aux_euler
+    execute_on = initial
+  [../]
+[]
+
+[Materials]
+  [./elasticity_matrix]
+    type = ComputeElasticityTensor
+    block = 0
+    base_name = &#x27;rotation_matrix&#x27;
+    fill_method = symmetric9
+    C_ijkl = &#x27;1111 1122 1133 2222 2233 3333 2323 1313 1212&#x27;
+    # rotation matrix for rotating a vector 30 degrees about the z-axis
+    rotation_matrix = &#x27;0.8660254 -0.5       0.
+                       0.5        0.8660254 0
+                       0          0         1&#x27;
+  [../]
+  [./elasticity_euler]
+    type = ComputeElasticityTensor
+    block = 0
+    base_name = &#x27;euler&#x27;
+    fill_method = symmetric9
+    C_ijkl = &#x27;1111 1122 1133 2222 2233 3333 2323 1313 1212&#x27;
+    euler_angle_1 = -30.  # same as above but opposite direction because _transpose_ gets built from these angles
+    euler_angle_2 = 0.
+    euler_angle_3 = 0.
+  [../]
+[]
+
+[Problem]
+  kernel_coverage_check = false
+  solve = false
+[]
+
+[Executioner]
+  type = Steady
+[]
+
+[Postprocessors]
+  # corresponding values in &quot;matrix&quot; and &quot;euler&quot; postprocessors should match
+  [./C11_matrix]
+    type = ElementAverageValue
+    variable = C1111_aux_matrix
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C12_matrix]
+    type = ElementAverageValue
+    variable = C1122_aux_matrix
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C13_matrix]
+    type = ElementAverageValue
+    variable = C1133_aux_matrix
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C16_matrix]
+    type = ElementAverageValue
+    variable = C1112_aux_matrix
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+
+  [./C11_euler]
+    type = ElementAverageValue
+    variable = C1111_aux_euler
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C12_euler]
+    type = ElementAverageValue
+    variable = C1122_aux_euler
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C13_euler]
+    type = ElementAverageValue
+    variable = C1133_aux_euler
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C16_euler]
+    type = ElementAverageValue
+    variable = C1112_aux_euler
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="30ad8a33-905a-4129-940d-fa14d58b5080"><div class="modal-content"><h4>(moose/modules/tensor_mechanics/test/tests/elasticitytensor/rotation_matrix_2_rotations.i)</h4><pre class="moose-pre"><code class="language-text"># This input file is designed to rotate an elasticity tensor both with euler angles
+# and a rotation matrix. The rotated tensor components should match between the
+# two methods.
+
+[Mesh]
+  type = GeneratedMesh
+  dim = 1
+  nx = 20
+  xmax = 1
+[]
+
+[AuxVariables]
+  [./C1111_aux_matrix]  # C11
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1122_aux_matrix]  # C12
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1133_aux_matrix]  # C13
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1112_aux_matrix]  # C16
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+
+  [./C1111_aux_euler]  # C11
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1122_aux_euler]  # C12
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1133_aux_euler]  # C13
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1112_aux_euler]  # C16
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+[]
+
+[AuxKernels]
+  [./matl_C1111_matrix]  # C11
+    type = RankFourAux
+    rank_four_tensor = rotation_matrix_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 0
+    index_l = 0
+    variable = C1111_aux_matrix
+    execute_on = initial
+  [../]
+  [./matl_C1122_matrix]  # C12
+    type = RankFourAux
+    rank_four_tensor = rotation_matrix_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 1
+    index_l = 1
+    variable = C1122_aux_matrix
+    execute_on = initial
+  [../]
+  [./matl_C1133_matrix]  # C13
+    type = RankFourAux
+    rank_four_tensor = rotation_matrix_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 2
+    index_l = 2
+    variable = C1133_aux_matrix
+    execute_on = initial
+  [../]
+  [./matl_C1112_matrix]  # C16
+    type = RankFourAux
+    rank_four_tensor = rotation_matrix_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 0
+    index_l = 1
+    variable = C1112_aux_matrix
+    execute_on = initial
+  [../]
+
+  [./matl_C1111_euler]  # C11
+    type = RankFourAux
+    rank_four_tensor = euler_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 0
+    index_l = 0
+    variable = C1111_aux_euler
+    execute_on = initial
+  [../]
+  [./matl_C1122_euler]  # C12
+    type = RankFourAux
+    rank_four_tensor = euler_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 1
+    index_l = 1
+    variable = C1122_aux_euler
+    execute_on = initial
+  [../]
+  [./matl_C1133_euler]  # C13
+    type = RankFourAux
+    rank_four_tensor = euler_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 2
+    index_l = 2
+    variable = C1133_aux_euler
+    execute_on = initial
+  [../]
+  [./matl_C1112_euler]  # C16
+    type = RankFourAux
+    rank_four_tensor = euler_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 0
+    index_l = 1
+    variable = C1112_aux_euler
+    execute_on = initial
+  [../]
+[]
+
+[Materials]
+  [./elasticity_matrix]
+    type = ComputeElasticityTensor
+    block = 0
+    base_name = &#x27;rotation_matrix&#x27;
+    fill_method = symmetric9
+    C_ijkl = &#x27;1111 1122 1133 2222 2233 3333 2323 1313 1212&#x27;
+    # rotation matrix for rotating a vector
+    #   1. 45 degrees about z-axis
+    #   2. ~54.7 degrees (arccos(1/sqrt(3)) radians) about x-axis
+    # then taking the tranpose to give sample-to-crystal rotation,
+    # ie. R*([0,0,1]) = [1,1,1], meaning the &lt;001&gt; direction of the sample
+    # (or simulation) frame points along the &lt;111&gt; direction of the crystal
+    rotation_matrix = &#x27;0.70710678  0.40824829  0.57735027
+                      -0.70710678  0.40824829  0.57735027
+                       0.         -0.81649658  0.57735027&#x27;
+  [../]
+  [./elasticity_euler]
+    type = ComputeElasticityTensor
+    block = 0
+    base_name = &#x27;euler&#x27;
+    fill_method = symmetric9
+    C_ijkl = &#x27;1111 1122 1133 2222 2233 3333 2323 1313 1212&#x27;
+    # the angles here are the same as used to build the rotation matrix above because
+    # we build the _transpose_ from euler angles in MOOSE, but we also transposed
+    # the matrix for this example, so it goes back to the original;
+    # the reversed order is due to the &quot;extrinsic&quot; convention used by MOOSE
+    euler_angle_1 = 0.
+    euler_angle_2 = 54.73561032
+    euler_angle_3 = 45.
+  [../]
+[]
+
+[Problem]
+  kernel_coverage_check = false
+  solve = false
+[]
+
+[Executioner]
+  type = Steady
+[]
+
+[Postprocessors]
+  # corresponding values in &quot;matrix&quot; and &quot;euler&quot; postprocessors should match
+  [./C11_matrix]
+    type = ElementAverageValue
+    variable = C1111_aux_matrix
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C12_matrix]
+    type = ElementAverageValue
+    variable = C1122_aux_matrix
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C13_matrix]
+    type = ElementAverageValue
+    variable = C1133_aux_matrix
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C16_matrix]
+    type = ElementAverageValue
+    variable = C1112_aux_matrix
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+
+  [./C11_euler]
+    type = ElementAverageValue
+    variable = C1111_aux_euler
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C12_euler]
+    type = ElementAverageValue
+    variable = C1122_aux_euler
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C13_euler]
+    type = ElementAverageValue
+    variable = C1133_aux_euler
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C16_euler]
+    type = ElementAverageValue
+    variable = C1112_aux_euler
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="9c7e39af-f7c0-45bc-aa8c-3bb4ec3f919f"><div class="modal-content"><h4>(moose/modules/tensor_mechanics/test/tests/elasticitytensor/rotation_matrix_2_rotations.i)</h4><pre class="moose-pre"><code class="language-text"># This input file is designed to rotate an elasticity tensor both with euler angles
+# and a rotation matrix. The rotated tensor components should match between the
+# two methods.
+
+[Mesh]
+  type = GeneratedMesh
+  dim = 1
+  nx = 20
+  xmax = 1
+[]
+
+[AuxVariables]
+  [./C1111_aux_matrix]  # C11
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1122_aux_matrix]  # C12
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1133_aux_matrix]  # C13
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1112_aux_matrix]  # C16
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+
+  [./C1111_aux_euler]  # C11
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1122_aux_euler]  # C12
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1133_aux_euler]  # C13
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./C1112_aux_euler]  # C16
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+[]
+
+[AuxKernels]
+  [./matl_C1111_matrix]  # C11
+    type = RankFourAux
+    rank_four_tensor = rotation_matrix_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 0
+    index_l = 0
+    variable = C1111_aux_matrix
+    execute_on = initial
+  [../]
+  [./matl_C1122_matrix]  # C12
+    type = RankFourAux
+    rank_four_tensor = rotation_matrix_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 1
+    index_l = 1
+    variable = C1122_aux_matrix
+    execute_on = initial
+  [../]
+  [./matl_C1133_matrix]  # C13
+    type = RankFourAux
+    rank_four_tensor = rotation_matrix_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 2
+    index_l = 2
+    variable = C1133_aux_matrix
+    execute_on = initial
+  [../]
+  [./matl_C1112_matrix]  # C16
+    type = RankFourAux
+    rank_four_tensor = rotation_matrix_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 0
+    index_l = 1
+    variable = C1112_aux_matrix
+    execute_on = initial
+  [../]
+
+  [./matl_C1111_euler]  # C11
+    type = RankFourAux
+    rank_four_tensor = euler_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 0
+    index_l = 0
+    variable = C1111_aux_euler
+    execute_on = initial
+  [../]
+  [./matl_C1122_euler]  # C12
+    type = RankFourAux
+    rank_four_tensor = euler_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 1
+    index_l = 1
+    variable = C1122_aux_euler
+    execute_on = initial
+  [../]
+  [./matl_C1133_euler]  # C13
+    type = RankFourAux
+    rank_four_tensor = euler_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 2
+    index_l = 2
+    variable = C1133_aux_euler
+    execute_on = initial
+  [../]
+  [./matl_C1112_euler]  # C16
+    type = RankFourAux
+    rank_four_tensor = euler_elasticity_tensor
+    index_i = 0
+    index_j = 0
+    index_k = 0
+    index_l = 1
+    variable = C1112_aux_euler
+    execute_on = initial
+  [../]
+[]
+
+[Materials]
+  [./elasticity_matrix]
+    type = ComputeElasticityTensor
+    block = 0
+    base_name = &#x27;rotation_matrix&#x27;
+    fill_method = symmetric9
+    C_ijkl = &#x27;1111 1122 1133 2222 2233 3333 2323 1313 1212&#x27;
+    # rotation matrix for rotating a vector
+    #   1. 45 degrees about z-axis
+    #   2. ~54.7 degrees (arccos(1/sqrt(3)) radians) about x-axis
+    # then taking the tranpose to give sample-to-crystal rotation,
+    # ie. R*([0,0,1]) = [1,1,1], meaning the &lt;001&gt; direction of the sample
+    # (or simulation) frame points along the &lt;111&gt; direction of the crystal
+    rotation_matrix = &#x27;0.70710678  0.40824829  0.57735027
+                      -0.70710678  0.40824829  0.57735027
+                       0.         -0.81649658  0.57735027&#x27;
+  [../]
+  [./elasticity_euler]
+    type = ComputeElasticityTensor
+    block = 0
+    base_name = &#x27;euler&#x27;
+    fill_method = symmetric9
+    C_ijkl = &#x27;1111 1122 1133 2222 2233 3333 2323 1313 1212&#x27;
+    # the angles here are the same as used to build the rotation matrix above because
+    # we build the _transpose_ from euler angles in MOOSE, but we also transposed
+    # the matrix for this example, so it goes back to the original;
+    # the reversed order is due to the &quot;extrinsic&quot; convention used by MOOSE
+    euler_angle_1 = 0.
+    euler_angle_2 = 54.73561032
+    euler_angle_3 = 45.
+  [../]
+[]
+
+[Problem]
+  kernel_coverage_check = false
+  solve = false
+[]
+
+[Executioner]
+  type = Steady
+[]
+
+[Postprocessors]
+  # corresponding values in &quot;matrix&quot; and &quot;euler&quot; postprocessors should match
+  [./C11_matrix]
+    type = ElementAverageValue
+    variable = C1111_aux_matrix
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C12_matrix]
+    type = ElementAverageValue
+    variable = C1122_aux_matrix
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C13_matrix]
+    type = ElementAverageValue
+    variable = C1133_aux_matrix
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C16_matrix]
+    type = ElementAverageValue
+    variable = C1112_aux_matrix
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+
+  [./C11_euler]
+    type = ElementAverageValue
+    variable = C1111_aux_euler
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C12_euler]
+    type = ElementAverageValue
+    variable = C1122_aux_euler
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C13_euler]
+    type = ElementAverageValue
+    variable = C1133_aux_euler
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+  [./C16_euler]
+    type = ElementAverageValue
+    variable = C1112_aux_euler
+    execute_on = &#x27;INITIAL TIMESTEP_END&#x27;
+  [../]
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>

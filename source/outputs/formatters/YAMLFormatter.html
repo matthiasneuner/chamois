@@ -1,0 +1,57 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>YAMLFormatter | Chamois</title><link rel="icon" type="image/x-icon" href="../../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../../contrib/jquery/jquery.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../../media/framework/github-logo.png" class="github-mark"></img><img src="../../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../../getting_started.html">Getting Started</a></li><li><a href="../../../singularity.html">Singularity container</a></li><li><a href="../../../publications.html">Publications</a></li><li><a href="../../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="5610e0e0-7f7d-4b57-bb26-64f1f2253059" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="1ddebef3-6ff6-4eaa-955b-542799d57094"><i class="material-icons">menu</i></a><ul class="sidenav" id="1ddebef3-6ff6-4eaa-955b-542799d57094"><li><a href="../../../getting_started.html">Getting Started</a></li><li><a href="../../../singularity.html">Singularity container</a></li><li><a href="../../../publications.html">Publications</a></li><li><a href="../../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="a3d22964-120d-4d6a-9c71-b91ce0614370" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="5610e0e0-7f7d-4b57-bb26-64f1f2253059"><li><a href="../../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="a3d22964-120d-4d6a-9c71-b91ce0614370"><li><a href="../../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="c438fa45-77c9-489f-9390-1ea46dc33269" data-section-level="1" data-section-text="YAMLFormatter"><h1 id="yamlformatter">YAMLFormatter</h1><p>This class produces produces a yaml dump of the <code>InputParameters</code> that is machine parsable by any YAML formatter.</p><p>This formatter is used for the <code>--yaml</code> command line option, described here. It is also available for the application developer, either directly or using an <a href="../../../syntax/Outputs/index.html#advanced-output">AdvancedOutput</a>.</p><section id="2b8b9fee-21c6-4939-ad55-d25e53817e2c" data-section-level="2" data-section-text="Example output"><h2 id="example-output">Example output</h2><p>We reproduce here the output of the <code>InputParameters</code> YAML dump for the <a href="../../../syntax/Functions/index.html">Functions</a> block and the <a href="../../functions/MooseParsedFunction.html">ParsedFunction</a>. We can see metadata about each parameter, such as their C++ type, their default, or their description.</p><pre class="moose-pre"><code class="language-text">
+- name: /Functions/ADParsedFunction
+  description: |
+
+  parameters:
+  - name: control_tags
+    required: No
+    default: !!str
+    cpp_type: std::__1::vector&lt;std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;, std::__1::allocator&lt;std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; &gt; &gt;
+    group_name: &#x27;Advanced&#x27;
+    description: |
+      Adds user-defined labels for accessing object parameters via control logic.
+  - name: enable
+    required: No
+    default: !!str 1
+    cpp_type: bool
+    group_name: &#x27;Advanced&#x27;
+    description: |
+      Set the enabled status of the MooseObject.
+  - name: execute_on
+    required: No
+    default: !!str LINEAR
+    cpp_type: ExecFlagEnum
+    group_name:
+    description: |
+      The list of flag(s) indicating when this object should be executed, the available options include NONE, INITIAL, LINEAR, NONLINEAR, TIMESTEP_END, TIMESTEP_BEGIN, FINAL, CUSTOM, ALWAYS.
+  - name: type
+    required: No
+    default: !!str ADParsedFunction
+    cpp_type: std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;
+    group_name:
+    description: |
+
+  - name: vals
+    required: No
+    default: !!str
+    cpp_type: std::__1::vector&lt;std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;, std::__1::allocator&lt;std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; &gt; &gt;
+    group_name:
+    description: |
+      Constant numeric values, postprocessor names, or function names for vars.
+  - name: value
+    required: Yes
+    default: !!str
+    cpp_type: FunctionExpression
+    group_name:
+    description: |
+      The user defined function.
+  - name: vars
+    required: No
+    default: !!str
+    cpp_type: std::__1::vector&lt;std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt;, std::__1::allocator&lt;std::__1::basic_string&lt;char, std::__1::char_traits&lt;char&gt;, std::__1::allocator&lt;char&gt; &gt; &gt; &gt;
+    group_name:
+    description: |
+      Variables (excluding t,x,y,z) that are bound to the values provided by the corresponding items in the vals vector.
+  subblocks:
+
+</code></pre></section></section></div></div></div></main></div></body><script type="text/javascript" src="../../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../../js/init.js"></script><script type="text/javascript" src="../../../js/navigation.js"></script><script type="text/javascript" src="../../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../../js/search_index.js"></script><script type="text/javascript" src="../../../js/sqa_moose.js"></script>

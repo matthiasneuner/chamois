@@ -1,0 +1,153 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>ChangeOverTimePostprocessor | Chamois</title><link rel="icon" type="image/x-icon" href="../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../media/framework/github-logo.png" class="github-mark"></img><img src="../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="b1c7a369-a2a6-4f78-bbf2-0f06fa42059f" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="d1e75023-8904-4090-913a-7f982afa9274"><i class="material-icons">menu</i></a><ul class="sidenav" id="d1e75023-8904-4090-913a-7f982afa9274"><li><a href="../../getting_started.html">Getting Started</a></li><li><a href="../../singularity.html">Singularity container</a></li><li><a href="../../publications.html">Publications</a></li><li><a href="../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="e9aac0d0-ed7a-4ece-9188-f9dae822c14a" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="b1c7a369-a2a6-4f78-bbf2-0f06fa42059f"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="e9aac0d0-ed7a-4ece-9188-f9dae822c14a"><li><a href="../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="640a68e4-c3a1-43be-a547-b4bcee5cf0a4" data-section-level="1" data-section-text="ChangeOverTimePostprocessor"><h1 id="changeovertimepostprocessor">ChangeOverTimePostprocessor</h1><section id="351ad9e0-6bf0-4a2b-9f1c-4a96c38ea610" data-section-level="2" data-section-text="Description"><h2 id="description">Description</h2><p>This post-processor computes the change or relative change in a post-processor value over a time step or over the entire transient. The change is computed as <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-08fdee96-242d-4f4d-88fa-2f3890ce4d13"></span><script>var element = document.getElementById("moose-equation-08fdee96-242d-4f4d-88fa-2f3890ce4d13");katex.render("  (\\Delta y)^n = y^n - y_{ref} \\,,", element, {displayMode:true,throwOnError:false});</script></span> where <span class="moose-katex-inline-equation" id="moose-equation-9744fdb8-6f7e-4782-be16-b781e9473f2d"><script>var element = document.getElementById("moose-equation-9744fdb8-6f7e-4782-be16-b781e9473f2d");katex.render("(\\Delta y)^n", element, {displayMode:false,throwOnError:false});</script></span> is the relative change at time index <span class="moose-katex-inline-equation" id="moose-equation-cc3b93f6-6928-44d0-a67e-08e2f2fc6c27"><script>var element = document.getElementById("moose-equation-cc3b93f6-6928-44d0-a67e-08e2f2fc6c27");katex.render("n", element, {displayMode:false,throwOnError:false});</script></span>, <span class="moose-katex-inline-equation" id="moose-equation-41f27bdc-df56-4dfd-a074-356b0d846dc8"><script>var element = document.getElementById("moose-equation-41f27bdc-df56-4dfd-a074-356b0d846dc8");katex.render("y^n", element, {displayMode:false,throwOnError:false});</script></span> is the value of post-processor <span class="moose-katex-inline-equation" id="moose-equation-872c0198-2ed8-46b2-bf4f-475cceae0013"><script>var element = document.getElementById("moose-equation-872c0198-2ed8-46b2-bf4f-475cceae0013");katex.render("y", element, {displayMode:false,throwOnError:false});</script></span> at time index <span class="moose-katex-inline-equation" id="moose-equation-7ff1b585-f748-4c2a-82f4-b7786b16da84"><script>var element = document.getElementById("moose-equation-7ff1b585-f748-4c2a-82f4-b7786b16da84");katex.render("n", element, {displayMode:false,throwOnError:false});</script></span>, and <span class="moose-katex-inline-equation" id="moose-equation-7bfb1dcb-22f9-4d19-85dc-61506c70170b"><script>var element = document.getElementById("moose-equation-7bfb1dcb-22f9-4d19-85dc-61506c70170b");katex.render("y_{ref}", element, {displayMode:false,throwOnError:false});</script></span> is the reference value for the change (either the previous time value, <span class="moose-katex-inline-equation" id="moose-equation-ad7ad22a-fff7-4096-9184-949877ce9c7b"><script>var element = document.getElementById("moose-equation-ad7ad22a-fff7-4096-9184-949877ce9c7b");katex.render("y^{n-1}", element, {displayMode:false,throwOnError:false});</script></span>, or the initial value, <span class="moose-katex-inline-equation" id="moose-equation-cf863f46-a1d4-41d1-817d-2a62e1b786cb"><script>var element = document.getElementById("moose-equation-cf863f46-a1d4-41d1-817d-2a62e1b786cb");katex.render("y^0", element, {displayMode:false,throwOnError:false});</script></span>). The relative change, which may be requested instead using the <a href="#37508829-a950-4de5-aa33-63224bf54994" class="moose-modal-link modal-trigger">&quot;compute_relative_change&quot;</a> parameter is computed as</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-e0686548-f955-4214-8514-c2595f84430f"></span><script>var element = document.getElementById("moose-equation-e0686548-f955-4214-8514-c2595f84430f");katex.render("  (\\Delta y)^n = \\frac{y^n - y_{ref}}{y_{ref}} \\,.", element, {displayMode:true,throwOnError:false});</script></span> Optionally, the user may specify to return the absolute value of the change.</p></section><section id="62441457-84ac-4532-956a-708cdfbba5f9" data-section-level="2" data-section-text="Example Syntax"><h2 id="example-syntax">Example Syntax</h2><p>The following example demonstrates how this post-processor is used:</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text"># This test tests the ChangeOverTimePostprocessor, which computes the change
+# in a postprocessor value with respect to the previous value or with respect to
+# the initial value. This test creates a time-dependent function postprocessor
+# and then computes its change over a timestep. The FE problem used here is a
+# dummy problem and has no effect on the test.
+
+[Mesh]
+  type = GeneratedMesh
+  dim = 1
+  nx = 5
+[]
+
+[Variables]
+  [./u]
+  [../]
+[]
+
+[Kernels]
+  [./time_derivative]
+    type = TimeDerivative
+    variable = u
+  [../]
+  [./diff]
+    type = Diffusion
+    variable = u
+  [../]
+[]
+
+[BCs]
+  [./left]
+    type = DirichletBC
+    variable = u
+    boundary = left
+    value = 0
+  [../]
+  [./right]
+    type = DirichletBC
+    variable = u
+    boundary = right
+    value = 1
+  [../]
+[]
+
+[Executioner]
+  type = Transient
+
+  start_time = 0.0
+  dt = 1.0
+  num_steps = 2
+[]
+
+[Functions]
+  [./my_function]
+    type = ParsedFunction
+    expression = &#x27;1 + t * t&#x27;
+  [../]
+[]
+
+[Postprocessors]
+  [./my_postprocessor]
+    type = FunctionValuePostprocessor
+    function = my_function
+    execute_on = &#x27;initial timestep_end&#x27;
+  [../]
+  [./change_over_time]
+    type = ChangeOverTimePostprocessor
+    postprocessor = my_postprocessor
+    change_with_respect_to_initial = false
+    execute_on = &#x27;initial timestep_end&#x27;
+  [../]
+[]
+
+[Outputs]
+  file_base = &#x27;change_over_time_previous&#x27;
+  csv = true
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#8b9112c8-44b7-4682-ab5d-dc5c9bc31a49">(moose/test/tests/postprocessors/change_over_time/change_over_time.i)</a></section><section id="228e8c66-d8f0-4bd4-9a12-3575cb893356" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="2caadf4e-3d2e-44a9-bbeb-00546bf1f558" data-section-level="3" data-section-text="Required Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">postprocessor</span><span class="moose-parameter-header-description">The name of the postprocessor</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>PostprocessorName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The name of the postprocessor</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Required Parameters</h3></summary></details></section><section id="dcbf8278-812e-4916-8d8d-d9e6dd42970e" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">change_with_respect_to_initial</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Compute change with respect to initial value instead of previous value</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Compute change with respect to initial value instead of previous value</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">compute_relative_change</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Compute magnitude of relative change instead of change</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Compute magnitude of relative change instead of change</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">execute_on</span><span class="moose-parameter-header-default">TIMESTEP_END</span><span class="moose-parameter-header-description">The list of flag(s) indicating when this object should be executed, the available options include NONE, INITIAL, LINEAR, NONLINEAR, TIMESTEP_END, TIMESTEP_BEGIN, MULTIAPP_FIXED_POINT_END, MULTIAPP_FIXED_POINT_BEGIN, FINAL, CUSTOM, ALWAYS.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>TIMESTEP_END</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>ExecFlagEnum</p><p class="moose-parameter-description-options"><span>Options:</span>NONE, INITIAL, LINEAR, NONLINEAR, TIMESTEP_END, TIMESTEP_BEGIN, MULTIAPP_FIXED_POINT_END, MULTIAPP_FIXED_POINT_BEGIN, FINAL, CUSTOM, ALWAYS, TRANSFER</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of flag(s) indicating when this object should be executed, the available options include NONE, INITIAL, LINEAR, NONLINEAR, TIMESTEP_END, TIMESTEP_BEGIN, MULTIAPP_FIXED_POINT_END, MULTIAPP_FIXED_POINT_BEGIN, FINAL, CUSTOM, ALWAYS.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">prop_getter_suffix</span><span class="moose-parameter-header-description">An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">take_absolute_value</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Option to take absolute value of change</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Option to take absolute value of change</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="1cee85fc-24a2-44e6-a0f9-d6e6d1c16363" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">allow_duplicate_execution_on_initial</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">In the case where this UserObject is depended upon by an initial condition, allow it to be executed twice during the initial setup (once before the IC and again after mesh adaptivity (if applicable).</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>In the case where this UserObject is depended upon by an initial condition, allow it to be executed twice during the initial setup (once before the IC and again after mesh adaptivity (if applicable).</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>Yes</p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">execution_order_group</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">Execution order groups are executed in increasing order (e.g., the lowest number is executed first). Note that negative group numbers may be used to execute groups before the default (0) group. Please refer to the user object documentation for ordering of user object execution within a group.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Execution order groups are executed in increasing order (e.g., the lowest number is executed first). Note that negative group numbers may be used to execute groups before the default (0) group. Please refer to the user object documentation for ordering of user object execution within a group.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">force_postaux</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Forces the UserObject to be executed in POSTAUX</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Forces the UserObject to be executed in POSTAUX</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">force_preaux</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Forces the UserObject to be executed in PREAUX</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Forces the UserObject to be executed in PREAUX</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">force_preic</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Forces the UserObject to be executed in PREIC during initial setup</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Forces the UserObject to be executed in PREIC during initial setup</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">outputs</span><span class="moose-parameter-header-description">Vector of output names where you would like to restrict the output of variables(s) associated with this object</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;OutputName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Vector of output names where you would like to restrict the output of variables(s) associated with this object</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">use_displaced_mesh</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section></section></section><div class="moose-modal modal" id="37508829-a950-4de5-aa33-63224bf54994"><div class="modal-content"><h4>compute_relative_change</h4><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Compute magnitude of relative change instead of change</p></div></div><div class="moose-modal modal" id="8b9112c8-44b7-4682-ab5d-dc5c9bc31a49"><div class="modal-content"><h4>(moose/test/tests/postprocessors/change_over_time/change_over_time.i)</h4><pre class="moose-pre"><code class="language-text"># This test tests the ChangeOverTimePostprocessor, which computes the change
+# in a postprocessor value with respect to the previous value or with respect to
+# the initial value. This test creates a time-dependent function postprocessor
+# and then computes its change over a timestep. The FE problem used here is a
+# dummy problem and has no effect on the test.
+
+[Mesh]
+  type = GeneratedMesh
+  dim = 1
+  nx = 5
+[]
+
+[Variables]
+  [./u]
+  [../]
+[]
+
+[Kernels]
+  [./time_derivative]
+    type = TimeDerivative
+    variable = u
+  [../]
+  [./diff]
+    type = Diffusion
+    variable = u
+  [../]
+[]
+
+[BCs]
+  [./left]
+    type = DirichletBC
+    variable = u
+    boundary = left
+    value = 0
+  [../]
+  [./right]
+    type = DirichletBC
+    variable = u
+    boundary = right
+    value = 1
+  [../]
+[]
+
+[Executioner]
+  type = Transient
+
+  start_time = 0.0
+  dt = 1.0
+  num_steps = 2
+[]
+
+[Functions]
+  [./my_function]
+    type = ParsedFunction
+    expression = &#x27;1 + t * t&#x27;
+  [../]
+[]
+
+[Postprocessors]
+  [./my_postprocessor]
+    type = FunctionValuePostprocessor
+    function = my_function
+    execute_on = &#x27;initial timestep_end&#x27;
+  [../]
+  [./change_over_time]
+    type = ChangeOverTimePostprocessor
+    postprocessor = my_postprocessor
+    change_with_respect_to_initial = false
+    execute_on = &#x27;initial timestep_end&#x27;
+  [../]
+[]
+
+[Outputs]
+  file_base = &#x27;change_over_time_previous&#x27;
+  csv = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../js/init.js"></script><script type="text/javascript" src="../../js/navigation.js"></script><script type="text/javascript" src="../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../js/search_index.js"></script><script type="text/javascript" src="../../js/sqa_moose.js"></script>

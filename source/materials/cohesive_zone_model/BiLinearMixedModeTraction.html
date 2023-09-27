@@ -1,0 +1,178 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>Bilinear mixed mode traction separation law | Chamois</title><link rel="icon" type="image/x-icon" href="../../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../../media/framework/github-logo.png" class="github-mark"></img><img src="../../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../../getting_started.html">Getting Started</a></li><li><a href="../../../singularity.html">Singularity container</a></li><li><a href="../../../publications.html">Publications</a></li><li><a href="../../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="2e00e3ed-0658-4aff-b197-f0fe209e8b69" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="2c51f9d4-a52f-4e8b-af44-bb146ee1b6c2"><i class="material-icons">menu</i></a><ul class="sidenav" id="2c51f9d4-a52f-4e8b-af44-bb146ee1b6c2"><li><a href="../../../getting_started.html">Getting Started</a></li><li><a href="../../../singularity.html">Singularity container</a></li><li><a href="../../../publications.html">Publications</a></li><li><a href="../../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="5681eced-8c32-4b11-93ee-5494f25cf054" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="2e00e3ed-0658-4aff-b197-f0fe209e8b69"><li><a href="../../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="5681eced-8c32-4b11-93ee-5494f25cf054"><li><a href="../../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="14672e58-d86b-4447-942b-5583515caaa9" data-section-level="1" data-section-text="Bilinear mixed mode traction separation law"><h1 id="bilinear-mixed-mode-traction-separation-law">Bilinear mixed mode traction separation law</h1><p>This class implements the bilinear mixed mode traction separation law described in <a href="#Camanho2002">Camanho and Dávila (2002)</a>.</p><section id="3c9642d4-b221-4f4b-9174-9dfa94d15de6" data-section-level="2" data-section-text="Softening onset prediction"><h2 id="softening-onset-prediction">Softening onset prediction</h2><p>The initiation of the softening process is predicted using the quadratic failure criterion given below,</p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-682df66f-9297-4b4f-91d9-f40fc8412038"></span><script>var element = document.getElementById("moose-equation-682df66f-9297-4b4f-91d9-f40fc8412038");katex.render("\\left(\\frac{\\langle\\tau_3\\rangle}{N}\\right)^2 + \\left(\\frac{\\tau_2}{S} \\right)^2 + \\left(\\frac{\\tau_1}{T} \\right)^2 = 1", element, {displayMode:true,throwOnError:false});</script></span></p><p>The total mixed-mode relative displacement <span class="moose-katex-inline-equation" id="moose-equation-a0b3d55a-b3a1-43e7-b2d7-b56872374e17"><script>var element = document.getElementById("moose-equation-a0b3d55a-b3a1-43e7-b2d7-b56872374e17");katex.render("\\delta_m", element, {displayMode:false,throwOnError:false});</script></span> is defined as <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-1a2f9d63-7ae7-41f9-a0b7-6d568c7f187e"></span><script>var element = document.getElementById("moose-equation-1a2f9d63-7ae7-41f9-a0b7-6d568c7f187e");katex.render("\\delta_m = \\sqrt{\\delta_1^2+\\delta_2^2+\\langle\\delta_3\\rangle^2} = \\sqrt{\\delta_{shear}^2+\\langle\\delta_3\\rangle^2}", element, {displayMode:true,throwOnError:false});</script></span> where <span class="moose-katex-inline-equation" id="moose-equation-21df1b6c-ea6d-45ae-b087-74f66004d7ca"><script>var element = document.getElementById("moose-equation-21df1b6c-ea6d-45ae-b087-74f66004d7ca");katex.render("\\delta_{shear}", element, {displayMode:false,throwOnError:false});</script></span> represents the norm of the vector defining the tangential relative displacements of the element.</p><p>Using the same penalty stiffness in Modes I, II and III, the tractions before softening onset are: <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-914e237f-8528-4a98-a997-b3f887e00a59"></span><script>var element = document.getElementById("moose-equation-914e237f-8528-4a98-a997-b3f887e00a59");katex.render("\\tau_i = K\\delta_i, ~~~\\text{i=1,2,3}", element, {displayMode:true,throwOnError:false});</script></span></p><p>Assuming <span class="moose-katex-inline-equation" id="moose-equation-39ced233-c7b4-499a-841b-e79a7b01f6a9"><script>var element = document.getElementById("moose-equation-39ced233-c7b4-499a-841b-e79a7b01f6a9");katex.render("S=T", element, {displayMode:false,throwOnError:false});</script></span>, the single mode relative displacements at softening onset are: <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-779ca502-9617-414d-82c9-e8dc7c848b7b"></span><script>var element = document.getElementById("moose-equation-779ca502-9617-414d-82c9-e8dc7c848b7b");katex.render("\\delta_3^0=\\frac{N}{K}", element, {displayMode:true,throwOnError:false});</script></span></p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-fb509618-1875-4da9-8602-d053b99ea96e"></span><script>var element = document.getElementById("moose-equation-fb509618-1875-4da9-8602-d053b99ea96e");katex.render("\\delta_1^0=\\delta_2^0=\\delta_{shear}^0=\\frac{S}{K}", element, {displayMode:true,throwOnError:false});</script></span></p><p>For an opening displacement <span class="moose-katex-inline-equation" id="moose-equation-139dff62-059e-48e6-acc0-6aba1f6538ed"><script>var element = document.getElementById("moose-equation-139dff62-059e-48e6-acc0-6aba1f6538ed");katex.render("\\delta_3", element, {displayMode:false,throwOnError:false});</script></span> greater than zero, the mode mixity ratio <span class="moose-katex-inline-equation" id="moose-equation-d0671ced-bac8-4007-9baf-cccb1fe3a4a8"><script>var element = document.getElementById("moose-equation-d0671ced-bac8-4007-9baf-cccb1fe3a4a8");katex.render("\\beta", element, {displayMode:false,throwOnError:false});</script></span> is defined as: <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-f9c024ec-1d28-42d0-ba18-aab573dfffda"></span><script>var element = document.getElementById("moose-equation-f9c024ec-1d28-42d0-ba18-aab573dfffda");katex.render("\\beta = \\frac{\\delta_{shear}}{\\delta_3}", element, {displayMode:true,throwOnError:false});</script></span></p><p>The mixed-mode relative displacement corresponding to the onset of softening <span class="moose-katex-inline-equation" id="moose-equation-7dd0a5c1-d61e-4bf6-9618-4d9484f88714"><script>var element = document.getElementById("moose-equation-7dd0a5c1-d61e-4bf6-9618-4d9484f88714");katex.render("\\delta_m^0", element, {displayMode:false,throwOnError:false});</script></span> is given as <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-ba3a2615-c8f1-4697-8a44-68a30c39937a"></span><script>var element = document.getElementById("moose-equation-ba3a2615-c8f1-4697-8a44-68a30c39937a");katex.render("\\delta_m^0= \\begin{cases}     \\delta_3^0\\delta_1^0\\sqrt{\\frac{1+\\beta^2}{(\\delta_1^0)^2+(\\beta\\delta_3^0)^2}} , & \\delta_3> 0\\\\     \\delta_{shear}^0,              & \\delta_3\\leq 0 \\end{cases}", element, {displayMode:true,throwOnError:false});</script></span></p></section><section id="25390274-a8a1-42cc-9b83-1980a25470f2" data-section-level="2" data-section-text="Delamination propagation prediction"><h2 id="delamination-propagation-prediction">Delamination propagation prediction</h2><section id="e804d73b-cbd8-44af-bb8b-c199d76b5818" data-section-level="3" data-section-text="Power law criterion"><h3 id="power-law-criterion">Power law criterion</h3><p>The power law criterion is given as <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-46a00aac-7b00-447c-970d-6faad6d8b997"></span><script>var element = document.getElementById("moose-equation-46a00aac-7b00-447c-970d-6faad6d8b997");katex.render("\\left(\\frac{G_{I}}{G_{IC}}\\right)^{\\alpha} + \\left(\\frac{G_{II}}{G_{IIC}}\\right)^{\\alpha} = 1", element, {displayMode:true,throwOnError:false});</script></span></p><p>The mixed-mode displacements corresponding to total decohesion is given as: <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-7c742873-7588-4399-9e01-8b288b9b378a"></span><script>var element = document.getElementById("moose-equation-7c742873-7588-4399-9e01-8b288b9b378a");katex.render("\\delta_m^f= \\begin{cases}     \\ \\frac{2(1+\\beta^2)}{K\\delta_m^0}\\left[\\left(\\frac{1}{G_{IC}}\\right)^{\\alpha} + \\left(\\frac{\\beta^2}{G_{IIC}}\\right)^{\\alpha}\\right]^{-1/\\alpha} , & \\delta_3> 0\\\\     \\ \\sqrt{(\\delta_1^f)^2+(\\delta_2^f)^2},              & \\delta_3\\leq 0 \\end{cases}", element, {displayMode:true,throwOnError:false});</script></span></p></section><section id="a8e37340-d6f8-4464-ba41-f935e3fb5fea" data-section-level="3" data-section-text="B - K criterion"><h3 id="b-k-criterion">B-K criterion</h3><p>The mixed-mode criterion proposed by Benzeggagh and Kenane is given as (B-K criterion): <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-a7851ce2-3a7c-44fb-b09d-b57ff8afee74"></span><script>var element = document.getElementById("moose-equation-a7851ce2-3a7c-44fb-b09d-b57ff8afee74");katex.render("G_{IC}+(G_{IIC}-G_{IC})\\left(\\frac{G_{shear}}{G_T}\\right)^{\\eta} = G_C~\\text{with}~G_T=G_I+G_{shear}", element, {displayMode:true,throwOnError:false});</script></span></p><p>The mixed-mode displacements corresponding to total decohesion is given as: <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-fefb0bfe-a28c-4392-8f1c-ad3284d6a166"></span><script>var element = document.getElementById("moose-equation-fefb0bfe-a28c-4392-8f1c-ad3284d6a166");katex.render("\\delta_m^f= \\begin{cases}     \\ \\frac{2}{K\\delta_m^0}\\left[G_{IC}+(G_{IIC}-G_{IC}\\left(\\frac{\\beta^2}{1+\\beta^2}\\right)^\\eta)\\right] , & \\delta_3> 0\\\\     \\ \\sqrt{(\\delta_1^f)^2+(\\delta_2^f)^2},              & \\delta_3\\leq 0 \\end{cases}", element, {displayMode:true,throwOnError:false});</script></span></p></section></section><section id="5e67e4b3-daa0-4327-b1f8-7f4f6961a615" data-section-level="2" data-section-text="Constitutive equation for mixed - mode loading"><h2 id="constitutive-equation-for-mixed-mode-loading">Constitutive equation for mixed-mode loading</h2><p>The constitutive equation for mixed-mode loading is given as <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-0a8540ff-5570-400f-a14e-8a793a35afc6"></span><script>var element = document.getElementById("moose-equation-0a8540ff-5570-400f-a14e-8a793a35afc6");katex.render("\\tau_s = D_{sr}\\delta_r", element, {displayMode:true,throwOnError:false});</script></span></p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-f2ebcb49-9606-427d-895a-0909a706bd62"></span><span class="moose-katex-equation-number">(1)</span><script>var element = document.getElementById("moose-equation-f2ebcb49-9606-427d-895a-0909a706bd62");katex.render("D_{sr} = \\begin{cases} \\bar{\\delta}_{sr}K, \\text{if}~\\delta_m^{max} \\leq \\delta_m^0 \\\\ \\bar{\\delta}_{sr}\\left[(1-d)K+Kd\\bar{\\delta}_{s3}\\frac{\\langle-\\delta_3\\rangle}{-\\delta_3}\\right], \\text{if}~\\delta_m^0 < \\delta_m^{max} \\leq \\delta_m^f \\\\ \\bar{\\delta}_{s3}\\bar{\\delta}_{3r}\\frac{\\langle-\\delta_3\\rangle}{-\\delta_3}K, \\text{if}~\\delta_m^{max} \\geq \\delta_m^f \\end{cases} ", element, {displayMode:true,throwOnError:false});</script></span></p><p><span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-a6c7f985-c540-4550-ac35-28a8c29d55fd"></span><span class="moose-katex-equation-number">(2)</span><script>var element = document.getElementById("moose-equation-a6c7f985-c540-4550-ac35-28a8c29d55fd");katex.render("d= \\frac{\\delta_m^f(\\delta_m^{max}-\\delta_m^0)}{\\delta_m^{max}(\\delta_m^f-\\delta_m^0)}, d\\in[0,1] ", element, {displayMode:true,throwOnError:false});</script></span></p></section><section id="a5ff7331-586b-42cc-b631-b2bbca2da7de" data-section-level="2" data-section-text="Solver options"><h2 id="solver-options">Solver options</h2><section id="376e27f8-a1d9-490a-bc88-27a31a4cf393" data-section-level="3" data-section-text="Viscous regularization"><h3 id="viscous-regularization">Viscous regularization</h3><p>Cohesive zone models exhibiting softening behavior and stiffness degradation often lead to convergence difficulties in an implicit solver. The traction-separation laws can be regularized using viscosity. The viscous damage variable <span class="moose-katex-inline-equation" id="moose-equation-04053892-a807-4041-8d78-21554e7ae585"><script>var element = document.getElementById("moose-equation-04053892-a807-4041-8d78-21554e7ae585");katex.render("d_v", element, {displayMode:false,throwOnError:false});</script></span> is defined by <span class="moose-katex-block-equation"><span class="moose-katex-equation table-cell" id="moose-equation-8138639e-2bd7-49ef-a7a0-909d9a7ce6b4"></span><script>var element = document.getElementById("moose-equation-8138639e-2bd7-49ef-a7a0-909d9a7ce6b4");katex.render("\\dot{d_v}=\\frac{1}{\\mu}(d-d_v)", element, {displayMode:true,throwOnError:false});</script></span> where <span class="moose-katex-inline-equation" id="moose-equation-e7e22e7d-847c-43a2-af1a-135eecb8fde5"><script>var element = document.getElementById("moose-equation-e7e22e7d-847c-43a2-af1a-135eecb8fde5");katex.render("\\mu", element, {displayMode:false,throwOnError:false});</script></span> is the viscosity parameter representing the relaxation time of the viscous system. An analytical expression of <span class="moose-katex-inline-equation" id="moose-equation-63a14c68-086d-4318-bd40-d1f2fc31e536"><script>var element = document.getElementById("moose-equation-63a14c68-086d-4318-bd40-d1f2fc31e536");katex.render("d_v", element, {displayMode:false,throwOnError:false});</script></span> can be obtained by using the backward Euler method. With viscous regularization, the <span class="moose-katex-inline-equation" id="moose-equation-88130bd0-a5fa-444e-b421-dbd7e933220d"><script>var element = document.getElementById("moose-equation-88130bd0-a5fa-444e-b421-dbd7e933220d");katex.render("d", element, {displayMode:false,throwOnError:false});</script></span> will be replaced by <span class="moose-katex-inline-equation" id="moose-equation-05344fea-a472-40cd-a3c9-9f12f2e7179c"><script>var element = document.getElementById("moose-equation-05344fea-a472-40cd-a3c9-9f12f2e7179c");katex.render("d_v", element, {displayMode:false,throwOnError:false});</script></span> in <a href="#moose-equation-f2ebcb49-9606-427d-895a-0909a706bd62">Eq. (1)</a> to compute traction.   </p></section><section id="5c43d9b8-e7e1-4b68-b564-0c482346dd6b" data-section-level="3" data-section-text="Lag separation state"><h3 id="lag-separation-state">Lag separation state</h3><p>It is typically useful to improve convergence by lagging the separation state. When <code>lag_seperation_state = true</code>, the <span class="moose-katex-inline-equation" id="moose-equation-ae8e23b5-caa1-4364-8875-f86fda4a2fc9"><script>var element = document.getElementById("moose-equation-ae8e23b5-caa1-4364-8875-f86fda4a2fc9");katex.render("\\delta_3", element, {displayMode:false,throwOnError:false});</script></span>, <span class="moose-katex-inline-equation" id="moose-equation-ac968cd0-24ae-4c4c-b5c2-89109d829a31"><script>var element = document.getElementById("moose-equation-ac968cd0-24ae-4c4c-b5c2-89109d829a31");katex.render("\\delta_m^{max}", element, {displayMode:false,throwOnError:false});</script></span>, <span class="moose-katex-inline-equation" id="moose-equation-31dc9fff-d78e-465a-917f-b480460cff5f"><script>var element = document.getElementById("moose-equation-31dc9fff-d78e-465a-917f-b480460cff5f");katex.render("\\delta_m^0", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-0982a3f0-9352-4340-a82a-797b5340a2f7"><script>var element = document.getElementById("moose-equation-0982a3f0-9352-4340-a82a-797b5340a2f7");katex.render("\\delta_m^f", element, {displayMode:false,throwOnError:false});</script></span> will be replaced by their old values from previous time step.</p></section><section id="9b2b77cb-f6a4-4e77-963e-96859423b8f4" data-section-level="3" data-section-text="Use Regularized Heavyside Function"><h3 id="use-regularized-heavyside-function">Use Regularized Heavyside Function</h3><p>The step (heavyside) function <span class="moose-katex-inline-equation" id="moose-equation-9c5965c0-cb09-4993-ba24-3e434f9ee0ce"><script>var element = document.getElementById("moose-equation-9c5965c0-cb09-4993-ba24-3e434f9ee0ce");katex.render("\\frac{\\langle-\\delta_3\\rangle}{-\\delta_3}", element, {displayMode:false,throwOnError:false});</script></span> in <a href="#moose-equation-f2ebcb49-9606-427d-895a-0909a706bd62">Eq. (1)</a> usually makes convergence bad. In the code, we replaced it with the regularized heavside function which provides a C0 continuity. The regularization parameter can be set by <code>alpha</code> parameter.</p></section></section><section id="9a4c57dc-8293-4df8-923a-d030afc583e9" data-section-level="2" data-section-text="Examples"><h2 id="examples">Examples</h2><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[czm]
+  type = BiLinearMixedModeTraction
+  boundary = &#x27;interface&#x27;
+  penalty_stiffness = 1e6
+  GI_c = 1e3
+  GII_c = 1e2
+  normal_strength = 1e4
+  shear_strength = 1e3
+  displacements = &#x27;disp_x disp_y&#x27;
+  eta = 2.2
+  viscosity = 1e-3
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#4c966154-05e3-436d-b801-6e3299c4923e">(moose/modules/tensor_mechanics/test/tests/cohesive_zone_model/bilinear_mixed.i)</a></section><section id="91d24147-271e-4efb-b747-2c4c41b58989" data-section-level="2" data-section-text="References"><h2 id="references">References</h2><div class="moose-bibliography"><ol><li id="Camanho2002">Pedro&nbsp;P. Camanho and Carlos&nbsp;G. D<span class="bibtex-protected">á</span>vila.
+Mixed-mode decohesion finite elements for the simulation of delamination in composite materials.
+Technical Report NASA/TM-2002-211737, National Aeronautics and Space Administration, 2002.<a href="#8aef35a0-b77a-4ab2-aee7-ccd5d83a2028" class="modal-trigger moose-bibtex-modal" style="padding-left:10px;">[BibTeX]</a><div class="modal" id="8aef35a0-b77a-4ab2-aee7-ccd5d83a2028"><div class="modal-content"><pre style="line-height:1.25;"><code class="language-latex">@techreport{Camanho2002,
+    author = "Camanho, Pedro P. and D{\'a}vila, Carlos G.",
+    title = "Mixed-Mode Decohesion Finite Elements for the Simulation of Delamination in Composite Materials",
+    year = "2002",
+    number = "NASA/TM-2002-211737",
+    institution = "National Aeronautics and Space Administration"
+}
+</code></pre></div></div></li></ol></div></section></section><div class="moose-modal modal" id="4c966154-05e3-436d-b801-6e3299c4923e"><div class="modal-content"><h4>(moose/modules/tensor_mechanics/test/tests/cohesive_zone_model/bilinear_mixed.i)</h4><pre class="moose-pre"><code class="language-text">[Mesh]
+  [msh]
+    type = GeneratedMeshGenerator
+    dim = 2
+    xmax = 1
+    ymax = 2
+    nx = 1
+    ny = 2
+  []
+  [block1]
+    type = SubdomainBoundingBoxGenerator
+    input = &#x27;msh&#x27;
+    bottom_left = &#x27;0 0 0&#x27;
+    top_right = &#x27;1 1 0&#x27;
+    block_id = 1
+    block_name = &#x27;block1&#x27;
+  []
+  [block2]
+    type = SubdomainBoundingBoxGenerator
+    input = &#x27;block1&#x27;
+    bottom_left = &#x27;0 1 0&#x27;
+    top_right = &#x27;1 2 0&#x27;
+    block_id = 2
+    block_name = &#x27;block2&#x27;
+  []
+  [split]
+    type = BreakMeshByBlockGenerator
+    input = block2
+  []
+  [top_node]
+    type = ExtraNodesetGenerator
+    coord = &#x27;0 2 0&#x27;
+    input = split
+    new_boundary = top_node
+  []
+  [bottom_node]
+    type = ExtraNodesetGenerator
+    coord = &#x27;0 0 0&#x27;
+    input = top_node
+    new_boundary = bottom_node
+  []
+[]
+
+[GlobalParams]
+  displacements = &#x27;disp_x disp_y&#x27;
+[]
+
+[Modules]
+  [TensorMechanics]
+    [Master]
+      generate_output = &#x27;stress_yy&#x27;
+      [all]
+        strain = FINITE
+        add_variables = true
+        use_automatic_differentiation = true
+        decomposition_method = TaylorExpansion
+      []
+    []
+  []
+[]
+
+[BCs]
+  [fix_x]
+    type = DirichletBC
+    preset = true
+    value = 0.0
+    boundary = bottom_node
+    variable = disp_x
+  []
+
+  [fix_top]
+    type = DirichletBC
+    preset = true
+    boundary = top
+    variable = disp_x
+    value = 0
+  []
+
+  [top]
+    type = FunctionDirichletBC
+    boundary = top
+    variable = disp_y
+    function = &#x27;if(t&lt;=0.3,t,if(t&lt;=0.6,0.3-(t-0.3),0.6-t))&#x27;
+    preset = true
+  []
+
+  [bottom]
+    type = DirichletBC
+    boundary = bottom
+    variable = disp_y
+    value = 0
+    preset = true
+  []
+[]
+
+[Modules/TensorMechanics/CohesiveZoneMaster]
+  [czm_ik]
+    boundary = &#x27;interface&#x27;
+  []
+[]
+
+[Materials]
+  [stress]
+    type = ADComputeFiniteStrainElasticStress
+  []
+  [elasticity_tensor]
+    type = ADComputeElasticityTensor
+    fill_method = symmetric9
+    C_ijkl = &#x27;1.684e5 0.176e5 0.176e5 1.684e5 0.176e5 1.684e5 0.754e5 0.754e5 0.754e5&#x27;
+  []
+  [czm]
+    type = BiLinearMixedModeTraction
+    boundary = &#x27;interface&#x27;
+    penalty_stiffness = 1e6
+    GI_c = 1e3
+    GII_c = 1e2
+    normal_strength = 1e4
+    shear_strength = 1e3
+    displacements = &#x27;disp_x disp_y&#x27;
+    eta = 2.2
+    viscosity = 1e-3
+  []
+[]
+
+[Preconditioning]
+  [smp]
+    type = SMP
+    full = true
+  []
+[]
+
+[Executioner]
+  type = Transient
+
+  solve_type = &#x27;NEWTON&#x27;
+  line_search = none
+
+  petsc_options_iname = &#x27;-pc_type&#x27;
+  petsc_options_value = &#x27;lu&#x27;
+
+  automatic_scaling = true
+
+  l_max_its = 2
+  l_tol = 1e-14
+  nl_max_its = 30
+  nl_rel_tol = 1e-50
+  nl_abs_tol = 1e-15
+  start_time = 0.0
+  dt = 0.1
+  end_time = 1.0
+  dtmin = 0.1
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../../js/init.js"></script><script type="text/javascript" src="../../../js/navigation.js"></script><script type="text/javascript" src="../../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../../js/search_index.js"></script><script type="text/javascript" src="../../../js/sqa_moose.js"></script>

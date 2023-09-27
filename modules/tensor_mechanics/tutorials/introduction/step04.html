@@ -1,0 +1,198 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>Step 4 Multiple submeshes | Chamois</title><link rel="icon" type="image/x-icon" href="../../../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../../../contrib/jquery/jquery.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../../../media/framework/github-logo.png" class="github-mark"></img><img src="../../../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../../../getting_started.html">Getting Started</a></li><li><a href="../../../../singularity.html">Singularity container</a></li><li><a href="../../../../publications.html">Publications</a></li><li><a href="../../../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="e8980c04-104a-43a4-82c2-2dd63da03364" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="728d702f-2e18-476f-89f8-e51e2fa953b1"><i class="material-icons">menu</i></a><ul class="sidenav" id="728d702f-2e18-476f-89f8-e51e2fa953b1"><li><a href="../../../../getting_started.html">Getting Started</a></li><li><a href="../../../../singularity.html">Singularity container</a></li><li><a href="../../../../publications.html">Publications</a></li><li><a href="../../../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="62418f8a-4ec8-4994-9be2-e91072664fb2" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="e8980c04-104a-43a4-82c2-2dd63da03364"><li><a href="../../../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="62418f8a-4ec8-4994-9be2-e91072664fb2"><li><a href="../../../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="49ed7b1d-7152-45a4-a524-64740bf4fdbd" data-section-level="1" data-section-text="Step 4 - Multiple submeshes"><h1 id="step-4-multiple-submeshes">Step 4 - Multiple submeshes</h1><p>As a final step in the tensor mechanics section of this tutorial we&#x27;ll set up a pair of separate mesh blocks - two cantilevers side by side, fixed at the bottom, that will be pushed towards each other with pressure boundary conditions.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">#
+# Multiple submesh setup with two cantilevers side by side
+# https://mooseframework.inl.gov/modules/tensor_mechanics/tutorials/introduction/step04.html
+#
+
+[GlobalParams]
+  displacements = &#x27;disp_x disp_y&#x27;
+[]
+
+[Mesh]
+  [generated1]
+    type = GeneratedMeshGenerator
+    dim = 2
+    nx = 5
+    ny = 15
+    xmin = -0.6
+    xmax = -0.1
+    ymax = 5
+    bias_y = 0.9
+    boundary_name_prefix = pillar1
+  []
+  [generated2]
+    type = GeneratedMeshGenerator
+    dim = 2
+    nx = 4
+    ny = 15
+    xmin = 0.1
+    xmax = 0.6
+    ymax = 5
+    bias_y = 0.9
+    boundary_name_prefix = pillar2
+    boundary_id_offset = 4
+  []
+  [collect_meshes]
+    type = MeshCollectionGenerator
+    inputs = &#x27;generated1 generated2&#x27;
+  []
+[]
+
+[Modules/TensorMechanics/Master]
+  [all]
+    add_variables = true
+    # we anticipate large deformation
+    strain = FINITE
+  []
+[]
+
+[BCs]
+  [bottom_x]
+    type = DirichletBC
+    variable = disp_x
+    boundary = &#x27;pillar1_bottom pillar2_bottom&#x27;
+    value = 0
+  []
+  [bottom_y]
+    type = DirichletBC
+    variable = disp_y
+    boundary = &#x27;pillar1_bottom pillar2_bottom&#x27;
+    value = 0
+  []
+  [Pressure]
+    [sides]
+      boundary = &#x27;pillar1_left pillar2_right&#x27;
+      function = 1e4*t
+    []
+  []
+[]
+
+[Materials]
+  [elasticity]
+    type = ComputeIsotropicElasticityTensor
+    youngs_modulus = 1e9
+    poissons_ratio = 0.3
+  []
+  # we anticipate large deformation
+  [stress]
+    type = ComputeFiniteStrainElasticStress
+  []
+[]
+
+[Executioner]
+  type = Transient
+  solve_type = NEWTON
+  line_search = none
+  petsc_options_iname = &#x27;-pc_type&#x27;
+  petsc_options_value = &#x27;lu&#x27;
+  end_time = 5
+  dt = 0.5
+  [Predictor]
+    type = SimplePredictor
+    scale = 1
+  []
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#3d9413f8-5da6-40e4-8d71-23d4a96b247a">(moose/modules/tensor_mechanics/tutorials/introduction/mech_step04.i)</a><section id="d6a0bd2a-3441-4f81-9bc2-4f735363a8e9" data-section-level="2" data-section-text="Input file"><h2 id="input-file">Input file</h2><section id="e8234079-64db-48de-a747-05765907ebaf" data-section-level="3" data-section-text="Mesh"><h3><code>Mesh</code></h3><p>We again are using multiple mesh generators to set up a more complex mesh. You could also use a meshing software, such as Cubit or Gmsh to create your geometry and mesh - and will most definitely have to do so when modeling complex geometries for which no specialized mesh generators are provided. It is crucial to assign block and boundary IDs and names to your meshes so you can apply material models and boundary conditions.</p><p>Here we are using the familiar <a href="../../../../source/meshgenerators/GeneratedMeshGenerator.html"><code>GeneratedMeshGenerator</code></a>, but with a few more options than last time. Note how we&#x27;re specifying the extent of the mesh with the <a href="#505d2854-f8d9-423f-a162-36751f27bf0f" class="moose-modal-link modal-trigger">&quot;xmin&quot;</a> and <a href="#d8e91e4e-4af6-4990-82e5-bba2d296db66" class="moose-modal-link modal-trigger">&quot;xmax&quot;</a> parameters (we keep the default value for <a href="#16161687-6395-4bcc-bb9a-07e11f41b664" class="moose-modal-link modal-trigger">&quot;ymin&quot;</a>, which is 0). We also use the <a href="#228e6c46-825f-4871-af8e-2b14d5df7c4e" class="moose-modal-link modal-trigger">&quot;bias_y&quot;</a> parameter to have the element height in the mesh gradually shrink towards the top (you will see later why that is a good idea). <a href="#5825fa50-e82b-401f-ad71-ed5fee5fa625" class="moose-modal-link modal-trigger">&quot;boundary_name_prefix&quot;</a> adds a prefix string to the names of the default boundaries that the GeneratedMeshGenerator sets up (<code>left</code>, <code>right</code>, <code>top</code>, <code>bottom</code> (for &gt;=2D), <code>front</code>, and <code>back</code> (for 3D)). The <code>generated</code> block will create a mesh with the boundaries <code>pillar1_left</code>, <code>pillar1_right</code>, <code>pillar1_top</code>, and <code>pillar1_bottom</code>.</p><p>The <code>generated2</code> generator will set up the second pillar and works very much like the first, except that we are also adding the <a href="#506c3607-d4c8-40af-9536-6620de890091" class="moose-modal-link modal-trigger">&quot;boundary_id_offset&quot;</a> to ensure that the boundaries of the second pillar have their own unique IDs (this is done by shifting the default IDs of the four boundaries by 4 so they don&#x27;t overlap with the IDs of pillar1).</p><div class="card moose-alert moose-alert-note"><div class="card-title moose-alert-title"><i class="material-icons moose-inline-icon">comment</i><span class="moose-alert-title-brand">note</span></div><div class="card-content"><div class="moose-alert-content"><p>When modeling the deformation/bending of walls with solid elements make sure to mesh at least about <em>five</em> elements through the wall thickness!</p></div></div></div><p>The <a href="../../../../source/meshgenerators/MeshCollectionGenerator.html"><code>MeshCollectionGenerator</code></a> then combines the two separate pillar mesh objects into a single mesh object that contains all elements from both meshes. Note that this does <em></em>not** mean the two meshes are glued together or connected in any way! Also, in contrast to the previous step the mesh generators do not form a <em>chain</em>, but they form a tree structure. The important thing for MOOSE is that a single generator sits at the end of such a chain or root of such a tree (otherwise MOOSE will complain with an error message).</p></section><section id="b366e234-4a16-4683-b5bf-f057f321ad34" data-section-level="3" data-section-text="TensorMechanics Action Master"><h3 id="tensormechanics-action">TensorMechanics <code>Master</code> Action</h3><p>As discussed previously, when we expect large deformation we need to make sure we select the correct strain formulation. So here we select finite strain.</p></section><section id="32f1be9a-8f0d-4c22-89bc-1993bb094f9e" data-section-level="3" data-section-text="BCs"><h3><code>BCs</code></h3><p>The boundary conditions should look familiar. Note how we can specify multiple boundaries for every boundary condition (or Pressure action).</p></section><section id="ac2f4cf3-977c-4513-af7d-b3a2098b69d8" data-section-level="3" data-section-text="Materials"><h3><code>Materials</code></h3><p>We select <a href="../../../../source/materials/ComputeFiniteStrainElasticStress.html"><code>ComputeFiniteStrainElasticStress</code></a> as the elastic stress calculator for the finite strain formulation.</p></section><section id="31cbe023-4b1a-4120-a3dc-d9debc697213" data-section-level="3" data-section-text="Executioner"><h3><code>Executioner</code></h3><p>Some more tweaks are made to the Executioner block:</p><ul class="browser-default"><li><p>We disable <a href="#e7ea1c98-33ab-4897-af58-27889b6f336f" class="moose-modal-link modal-trigger">&quot;line_search&quot;</a>. Line searches can accelerate the convergence of the linear system, but here it does more harm than good (check for yourself by commenting out this option). </p></li><li><p>We add a predictor to accelerate the solve. The <code>SimplePredictor</code> extrapolates an initial guess for the current time step from the two previous time steps. Especially with a Newton solve a good initial guess can lead to drastically improved convergence.</p></li></ul></section></section><section id="507b41fa-8d84-4b81-9b71-dc954500a533" data-section-level="2" data-section-text="Questions"><h2 id="questions">Questions</h2><section id="71fd614e-b2c3-4ae1-9009-df65a4a6dbfd" data-section-level="3" data-section-text="Expected outcome"><h3 id="expected-outcome">Expected outcome</h3><p>First off, run the simulation and look at the result.</p><blockquote><p>What do you observe (does it meet your expectations)?</p></blockquote><p><a href="answer04a.html">Click here for the answer.</a></p></section><section id="27214907-dee5-4cfa-a939-598ff7809f43" data-section-level="3" data-section-text="Convergence"><h3 id="convergence">Convergence</h3><p>Getting a problem to converge optimally can be tricky. Try a few different things</p><ul class="browser-default"><li><p>Remove all petsc options and check how the problem converges with the default ILU preconditioner </p></li><li><p>comment out the <code>line_search</code> option </p></li><li><p>remove the predictor</p></li></ul><blockquote><p>Check the consequence of these changes. You can inspect internal performance metrics of MOOSE by adding the option <code>perf_graph = true</code> in the <code>[Outputs]</code> block!</p></blockquote></section><section id="9bd57c28-1b5f-4a0e-a450-85a8734e1ac9" data-section-level="3" data-section-text="Iterative preconditioning"><h3 id="iterative-preconditioning">Iterative preconditioning</h3><p>Check how the problem converges with the following PETSc options</p><pre class="moose-pre"><code class="language-text">
+petsc_options_iname = &#x27;-pc_type -pc_hypre_type&#x27;
+petsc_options_value = &#x27;hypre boomeramg&#x27;
+</code></pre><p>This enables a very scalable algebraic multigrid (AMG) preconditioner, provided by the <a href="https://computing.llnl.gov/projects/hypre-scalable-linear-solvers-multigrid-methods/software">Hypre</a> library.</p></section><section id="9ece8260-b7f6-4df8-969d-6410a737da97" data-section-level="3" data-section-text="Postprocessing results"><h3 id="postprocessing-results">Postprocessing results</h3><p>MOOSE has a system of so called <a href="../../../../syntax/Postprocessors/index.html">Postprocessors</a> that can extract scalar quantities for a simulation while it runs. These quantities can be printed on the screen in real time or written to files for later analysis. You add postprocessors under the <code>[Postprocessors]</code> top level block.</p><p>File output of postprocessors is enabled by adding the <code>csv = true</code> option in the <code>[Outputs]</code> block.</p><blockquote><p>Let&#x27;s see if we can extract the x deflection of the left cantilever. It should be a positive value and the scalar we can extract is the maximum <code>disp_x</code> value in the simualtion cell (the left cantilever has positive displacements as it bends right in the positive x direction, while the right cantilever has negative displacements as it bends left in the negative x direction). So we need a postprocessor object that gives us an extreme value of a given variable. Take a look at <a href="../../../../source/postprocessors/NodalExtremeValue.html">NodalExtremeValue</a> and try to set it up to output the maximum positive x deflection.</p></blockquote><p><a href="answer04b.html">Click here for the answer.</a></p></section><section id="a5d36f01-d45f-428c-b368-2da80e734a2a" data-section-level="3" data-section-text="Sidebar : Volumetric locking"><h3 id="sidebar-volumetric-locking">Sidebar: Volumetric locking</h3><p><a href="../../VolumetricLocking.html">Volumetric locking</a> can occur in mechanics simulations of near incompressible materials if the elements (and associated shape functions) cannot accomodate the incompressibility constraint.</p><blockquote><p>Keep the postprocessing modifications from the previous question, set the <a href="#6b687396-96c5-4f5c-bb19-87232b9893e8" class="moose-modal-link modal-trigger">&quot;poissons_ratio&quot;</a> of the cantilevers to <code>0.49</code>. Then add and modify the following parameters</p><ul class="browser-default"><li><p><a href="#28692c76-ed59-4d6f-bbd8-bf728d0b11a8" class="moose-modal-link modal-trigger">&quot;uniform_refine&quot;</a> in the <code>[Mesh]</code> block </p></li><li><p><a href="#936757c8-0de8-421f-af5c-e44b3cc35cba" class="moose-modal-link modal-trigger">&quot;volumetric_locking_correction&quot;</a> in the tensor mechanics master action block </p></li><li><p><a href="#cd9a733c-b6c4-4947-8b4d-dfb0c84cf205" class="moose-modal-link modal-trigger">&quot;elem_type&quot;</a> in the <code>GeneratedMeshGenerator</code> blocks</p></li></ul><p>For convenience all those parameters may be listed under <code>[GlobalParams]</code> instead. Compare first order QUAD4 elements to second order QUAD8 elements, compare the cantilever deflection with and without volumetric locking correction (with QUAD4 elements), and compare the result for different levels of uniform refinement (1, 2, 3, 4).</p></blockquote><p><a href="step04a.html">Click here for the sidebar on volumetric locking.</a></p><p>Once you&#x27;ve answered the questions and run this example we will move on to Step 1 of the contact tutorial, which builds on this step. </p></section></section></section><div class="moose-modal modal" id="3d9413f8-5da6-40e4-8d71-23d4a96b247a"><div class="modal-content"><h4>(moose/modules/tensor_mechanics/tutorials/introduction/mech_step04.i)</h4><pre class="moose-pre"><code class="language-text">#
+# Multiple submesh setup with two cantilevers side by side
+# https://mooseframework.inl.gov/modules/tensor_mechanics/tutorials/introduction/step04.html
+#
+
+[GlobalParams]
+  displacements = &#x27;disp_x disp_y&#x27;
+[]
+
+[Mesh]
+  [generated1]
+    type = GeneratedMeshGenerator
+    dim = 2
+    nx = 5
+    ny = 15
+    xmin = -0.6
+    xmax = -0.1
+    ymax = 5
+    bias_y = 0.9
+    boundary_name_prefix = pillar1
+  []
+  [generated2]
+    type = GeneratedMeshGenerator
+    dim = 2
+    nx = 4
+    ny = 15
+    xmin = 0.1
+    xmax = 0.6
+    ymax = 5
+    bias_y = 0.9
+    boundary_name_prefix = pillar2
+    boundary_id_offset = 4
+  []
+  [collect_meshes]
+    type = MeshCollectionGenerator
+    inputs = &#x27;generated1 generated2&#x27;
+  []
+[]
+
+[Modules/TensorMechanics/Master]
+  [all]
+    add_variables = true
+    # we anticipate large deformation
+    strain = FINITE
+  []
+[]
+
+[BCs]
+  [bottom_x]
+    type = DirichletBC
+    variable = disp_x
+    boundary = &#x27;pillar1_bottom pillar2_bottom&#x27;
+    value = 0
+  []
+  [bottom_y]
+    type = DirichletBC
+    variable = disp_y
+    boundary = &#x27;pillar1_bottom pillar2_bottom&#x27;
+    value = 0
+  []
+  [Pressure]
+    [sides]
+      boundary = &#x27;pillar1_left pillar2_right&#x27;
+      function = 1e4*t
+    []
+  []
+[]
+
+[Materials]
+  [elasticity]
+    type = ComputeIsotropicElasticityTensor
+    youngs_modulus = 1e9
+    poissons_ratio = 0.3
+  []
+  # we anticipate large deformation
+  [stress]
+    type = ComputeFiniteStrainElasticStress
+  []
+[]
+
+[Executioner]
+  type = Transient
+  solve_type = NEWTON
+  line_search = none
+  petsc_options_iname = &#x27;-pc_type&#x27;
+  petsc_options_value = &#x27;lu&#x27;
+  end_time = 5
+  dt = 0.5
+  [Predictor]
+    type = SimplePredictor
+    scale = 1
+  []
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div><div class="moose-modal modal" id="505d2854-f8d9-423f-a162-36751f27bf0f"><div class="modal-content"><h4>xmin</h4><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Lower X Coordinate of the generated mesh</p></div></div><div class="moose-modal modal" id="d8e91e4e-4af6-4990-82e5-bba2d296db66"><div class="modal-content"><h4>xmax</h4><p class="moose-parameter-description-default"><span>Default:</span>1</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Upper X Coordinate of the generated mesh</p></div></div><div class="moose-modal modal" id="16161687-6395-4bcc-bb9a-07e11f41b664"><div class="modal-content"><h4>ymin</h4><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Lower Y Coordinate of the generated mesh</p></div></div><div class="moose-modal modal" id="228e6c46-825f-4871-af8e-2b14d5df7c4e"><div class="modal-content"><h4>bias_y</h4><p class="moose-parameter-description-default"><span>Default:</span>1</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The amount by which to grow (or shrink) the cells in the y-direction.</p></div></div><div class="moose-modal modal" id="5825fa50-e82b-401f-ad71-ed5fee5fa625"><div class="modal-content"><h4>boundary_name_prefix</h4><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::string</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>If provided, prefix the built in boundary names with this string</p></div></div><div class="moose-modal modal" id="506c3607-d4c8-40af-9536-6620de890091"><div class="modal-content"><h4>boundary_id_offset</h4><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>short</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>This offset is added to the generated boundary IDs</p></div></div><div class="moose-modal modal" id="e7ea1c98-33ab-4897-af58-27889b6f336f"><div class="modal-content"><h4>line_search</h4><p class="moose-parameter-description-default"><span>Default:</span>default</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>basic, bt, contact, cp, default, l2, none, project, shell</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Specifies the line search type (Note: none = basic)</p></div></div><div class="moose-modal modal" id="6b687396-96c5-4f5c-bb19-87232b9893e8"><div class="modal-content"><h4>poissons_ratio</h4><p class="moose-parameter-description-default"><span>Default:</span>-1</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>double</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>Yes</p><p class="moose-parameter-description"><span>Description:</span>Poisson's ratio for the material.</p></div></div><div class="moose-modal modal" id="28692c76-ed59-4d6f-bbd8-bf728d0b11a8"><div class="modal-content"><h4>uniform_refine</h4><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>unsigned int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Specify the level of uniform refinement applied to the initial mesh</p></div></div><div class="moose-modal modal" id="936757c8-0de8-421f-af5c-e44b3cc35cba"><div class="modal-content"><h4>volumetric_locking_correction</h4><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Flag to correct volumetric locking</p></div></div><div class="moose-modal modal" id="cd9a733c-b6c4-4947-8b4d-dfb0c84cf205"><div class="modal-content"><h4>elem_type</h4><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>EDGE, EDGE2, EDGE3, EDGE4, QUAD, QUAD4, QUAD8, QUAD9, TRI3, TRI6, HEX, HEX8, HEX20, HEX27, TET4, TET10, PRISM6, PRISM15, PRISM18, PYRAMID5, PYRAMID13, PYRAMID14</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The type of element from libMesh to generate (default: linear element for requested dimension)</p></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../../../js/init.js"></script><script type="text/javascript" src="../../../../js/navigation.js"></script><script type="text/javascript" src="../../../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../../../js/search_index.js"></script><script type="text/javascript" src="../../../../js/sqa_moose.js"></script>

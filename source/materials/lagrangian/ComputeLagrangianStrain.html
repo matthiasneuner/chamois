@@ -1,0 +1,316 @@
+<!DOCTYPE html><head><meta charset="UTF-8"><title>ComputeLagrangianStrain | Chamois</title><link rel="icon" type="image/x-icon" href="../../../media/chamois_logo.png" sizes="16x16 32x32 64x64 128x128"></link><link href="../../../contrib/materialize/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"></link><link href="../../../contrib/prism/prism.min.css" type="text/css" rel="stylesheet"></link><link href="../../../css/moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/devel_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/alert_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/content_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/sqa_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../css/civet_moose.css" type="text/css" rel="stylesheet"></link><link href="../../../contrib/katex/katex.min.css" type="text/css" rel="stylesheet"></link><link href="../../../css/katex_moose.css" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="../../../contrib/jquery/jquery.min.js"></script><script type="text/javascript" src="../../../contrib/katex/katex.min.js"></script></head><body><div class="page-wrap"><header><nav><div class="nav-wrapper container"><a href="../../../index.html" class="left moose-logo hide-on-med-and-down" id="home-button">Chamois</a><a href="https://github.com/matthiasneuner/chamois" class="right"><img src="../../../media/framework/github-logo.png" class="github-mark"></img><img src="../../../media/framework/github-mark.png" class="github-logo"></img></a><ul class="right hide-on-med-and-down"><li><a href="../../../getting_started.html">Getting Started</a></li><li><a href="../../../singularity.html">Singularity container</a></li><li><a href="../../../publications.html">Publications</a></li><li><a href="../../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="5be31281-f45c-411c-b181-040ae6af5d6c" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#" class="sidenav-trigger" data-target="28161e69-4d68-4377-a0a4-1bcec2c841aa"><i class="material-icons">menu</i></a><ul class="sidenav" id="28161e69-4d68-4377-a0a4-1bcec2c841aa"><li><a href="../../../getting_started.html">Getting Started</a></li><li><a href="../../../singularity.html">Singularity container</a></li><li><a href="../../../publications.html">Publications</a></li><li><a href="../../../contributors.html">Contributors</a></li><li><a href="#!" class="dropdown-trigger" data-target="717339b3-49fc-4975-a00e-87a23e213dbd" data-constrainWidth="false">Documentation<i class="material-icons right">arrow_drop_down</i></a></li></ul><a href="#moose-search" class="modal-trigger"><i class="material-icons">search</i></a></div><ul class="dropdown-content" id="5be31281-f45c-411c-b181-040ae6af5d6c"><li><a href="../../../syntax/chamois.html">Chamois syntax</a></li></ul><ul class="dropdown-content" id="717339b3-49fc-4975-a00e-87a23e213dbd"><li><a href="../../../syntax/chamois.html">Chamois syntax</a></li></ul></nav><div class="modal modal-fixed-footer moose-search-modal" id="moose-search"><div class="modal-content container moose-search-modal-content"><div class="row"><div class="col l12"><div class="input-field"><input type_="text" onkeyup="mooseSearch()" placeholder="/index.md" id="moose-search-box"></input></div></div><div><div class="col s12" id="moose-search-results"></div></div></div></div><div class="modal-footer"><a href="#!" class="modal-close btn-flat">Close</a></div></div></header><main class="main"><div class="container"><div class="row"><div class="moose-content col s12 m12 l12"><section id="e67fbe5e-86f1-4d45-ba76-95f93ec3a6d8" data-section-level="1" data-section-text="ComputeLagrangianStrain"><h1 id="computelagrangianstrain">ComputeLagrangianStrain</h1><p>Compute strain in Cartesian coordinates.</p><section id="4b87bdc6-e024-46ed-995a-99a54d634bd5" data-section-level="2" data-section-text="Overview"><h2 id="overview">Overview</h2><p>The <code>ComputeLagrangianStrain</code> class calculates the basic kinematic quantities used by the <a href="../../../modules/tensor_mechanics/LagrangianKernelTheory.html">new mechanics kernels</a> mechanics kernels.   <a href="../../../modules/tensor_mechanics/NewMaterialSystem.html">The theory</a> section on the new material system describes this class&#x27;s role in greater detail, the following gives a brief description.</p><p>The class calculates the strain measures available for the constitutive models to use to define the stress update and the kinematic tenors required to setup the stress equilibrium problem for large deformation simulations. The <code>stabilize_strain</code> averages the volumetric/dilatational part of these strain measures  using an <a href="../../../modules/tensor_mechanics/Stabilization.html"><span class="moose-katex-inline-equation" id="moose-equation-6400ad67-635a-47a2-820f-5daf114b63bd"><script>var element = document.getElementById("moose-equation-6400ad67-635a-47a2-820f-5daf114b63bd");katex.render("\\bar{F}", element, {displayMode:false,throwOnError:false});</script></span> stabilization</a> approach to prevent locking of linear quad and hex elements for problems experiencing incompressible deformation.  This class also adds in the extra deformation gradient imposed by the <a href="../../../modules/tensor_mechanics/Homogenization.html">homogenization</a> system.</p><p>The calculations differ somewhat between small and large deformation kinematic theory. The <code>large_kinematics</code> flag selects between the two theories. This flag should be consistent between the strain calculator and the kernels. The <code>stabilize_strain</code> flag determines if the calculator uses the <span class="moose-katex-inline-equation" id="moose-equation-83c46e52-0ff4-4e03-83f0-6aea5f39a9af"><script>var element = document.getElementById("moose-equation-83c46e52-0ff4-4e03-83f0-6aea5f39a9af");katex.render("\\bar{F}", element, {displayMode:false,throwOnError:false});</script></span> stabilization <a href="#de1996design">Souza Neto et al. (1996)</a>.</p><p>Step-by-step the class:</p><ol class="browser-default" start="1"><li><p>Calculates the deformation gradient as <span class="moose-katex-inline-equation" id="moose-equation-b59589f3-25c4-4d93-9166-b4c36e0c0d9e"><script>var element = document.getElementById("moose-equation-b59589f3-25c4-4d93-9166-b4c36e0c0d9e");katex.render("F_{iJ} = \\delta_{iJ} + \\frac{\\partial u_i}{\\partial X_J}", element, {displayMode:false,throwOnError:false});</script></span> for large deformations or <span class="moose-katex-inline-equation" id="moose-equation-677ed23f-5ac3-4d63-b929-17d247dfd16a"><script>var element = document.getElementById("moose-equation-677ed23f-5ac3-4d63-b929-17d247dfd16a");katex.render("F_{ij} = \\delta_{ij} + \\frac{\\partial u_i}{\\partial x_j}", element, {displayMode:false,throwOnError:false});</script></span> for small deformations. </p></li><li><p>If <code>stabilize_strain</code> is set, average the volumetric parts of the deformation gradient, as described in the <a href="../../../modules/tensor_mechanics/Stabilization.html">stabilization</a> documentation. </p></li><li><p>If active, add the extra gradient to this displacement-based deformation gradient calculated in the <a href="ComputeLagrangianHomogenizedLagrangianStrain">ComputeLagrangianHomogenizedLagrangianStrain</a>. </p></li><li><p>For large deformations only, calculate the kinematic tensors used to define the equilibrium problem in the right frame of reference in the kernels.  For small deformations these measures are set to the identity. </p></li><li><p>Calculate the increment in the spatial velocity gradient: <span class="moose-katex-inline-equation" id="moose-equation-2b0e9f1a-a1ef-4f29-9371-68863eb22baa"><script>var element = document.getElementById("moose-equation-2b0e9f1a-a1ef-4f29-9371-68863eb22baa");katex.render("\\Delta l_{ij} = \\delta_{ij} - F^{(n)}_{iK} F^{(n+1)-1}_{Kj}", element, {displayMode:false,throwOnError:false});</script></span> for large deformations and <span class="moose-katex-inline-equation" id="moose-equation-09e2adbd-5271-4c70-9405-8df8bab84459"><script>var element = document.getElementById("moose-equation-09e2adbd-5271-4c70-9405-8df8bab84459");katex.render("\\Delta l_{ij} = F_{ij}^{(new)} - F_{ij}^{(old)}", element, {displayMode:false,throwOnError:false});</script></span> for small deformations. </p></li><li><p>Calculate the total strain increment as <span class="moose-katex-inline-equation" id="moose-equation-02d21ee2-7793-4d0d-8dc3-ee3a9f4ac1d1"><script>var element = document.getElementById("moose-equation-02d21ee2-7793-4d0d-8dc3-ee3a9f4ac1d1");katex.render("\\Delta d_{ij} = \\frac{1}{2} \\left( l_{ij} + l_{ji} \\right)", element, {displayMode:false,throwOnError:false});</script></span>. </p></li><li><p>Sum up and subtract the eigenstrain increment over the step to fine the mechanical strain increment, <span class="moose-katex-inline-equation" id="moose-equation-754e65e9-14a6-49bb-a76a-46863af00bb9"><script>var element = document.getElementById("moose-equation-754e65e9-14a6-49bb-a76a-46863af00bb9");katex.render("\\Delta \\varepsilon_{ij} = \\Delta d_{ij} - \\Delta \\varepsilon_{ij}^{(eigen)}", element, {displayMode:false,throwOnError:false});</script></span>. </p></li><li><p>Use the previous step values of total and mechanical strain to calculate the updated strain values: <span class="moose-katex-inline-equation" id="moose-equation-d767991e-8d47-435b-b7dd-739c50ce66d2"><script>var element = document.getElementById("moose-equation-d767991e-8d47-435b-b7dd-739c50ce66d2");katex.render("d_{ij}^{(new)} = d_{ij}^{(old)} + \\Delta d_{ij}", element, {displayMode:false,throwOnError:false});</script></span> and <span class="moose-katex-inline-equation" id="moose-equation-0555d6be-176f-4254-bee3-7c7c62a9aeb8"><script>var element = document.getElementById("moose-equation-0555d6be-176f-4254-bee3-7c7c62a9aeb8");katex.render("\\varepsilon_{ij} = \\varepsilon_{ij}^{(old)} + \\Delta \\varepsilon_{ij}", element, {displayMode:false,throwOnError:false});</script></span>.</p></li></ol><div class="card moose-alert moose-alert-note"><div class="card-title moose-alert-title"><i class="material-icons moose-inline-icon">comment</i><span class="moose-alert-title-brand">note</span></div><div class="card-content"><div class="moose-alert-content"><p>The strain calculator does not apply the eigenstrains to the deformation gradient, only the incremental and integrated strain measures.</p></div></div></div><div class="card moose-alert moose-alert-tip"><div class="card-title moose-alert-title"><i class="material-icons moose-inline-icon">school</i><span class="moose-alert-title-brand">tip</span></div><div class="card-content"><div class="moose-alert-content"><p><code>stabilize_strain</code> should be set to true for problems using linear quad or hex elements where the material model produces incompressible or near-incompressible deformation.  It should be set to <code>false</code> for higher order elements. The <span class="moose-katex-inline-equation" id="moose-equation-75fac068-9518-417c-bd73-3160a5ef416b"><script>var element = document.getElementById("moose-equation-75fac068-9518-417c-bd73-3160a5ef416b");katex.render("\\bar{F}", element, {displayMode:false,throwOnError:false});</script></span> stabilization is ineffective for linear triangle or tet elements and these elements should not be used for incompressible or near-incompressible problems.</p></div></div></div><p>The calculator requires <code>use_displaced_mesh=false</code> and enforces this with an error.</p></section><section id="4ceb8a6f-c30d-4788-8968-92a8c7d26bb8" data-section-level="2" data-section-text="Example Input File Syntax"><h2 id="example-input-file-syntax">Example Input File Syntax</h2><p>The following example sets up the <code>ComputeLagrangianStrain</code> object for a large deformation problem without stabilization. For small deformations the only change would be <code>large_kinematics=false</code>.</p><pre class="moose-pre" style="max-height:350px;"><code class="language-text">[Materials]
+  [elastic_tensor]
+    type = ComputeIsotropicElasticityTensor
+    youngs_modulus = 1000.0
+    poissons_ratio = 0.25
+  []
+  [compute_stress]
+    type = ComputeLagrangianLinearElasticStress
+    large_kinematics = true
+  []
+  [compute_strain]
+    type = ComputeLagrangianStrain
+    displacements = &#x27;disp_x disp_y disp_z&#x27;
+    large_kinematics = true
+  []
+[]
+</code></pre><a class="moose-source-filename tooltipped modal-trigger" href="#780aa5da-aa27-4403-b1a9-86fbd2f87d40">(moose/modules/tensor_mechanics/test/tests/lagrangian/cartesian/updated/patch/large_patch.i)</a></section><section id="1c681868-9283-4caa-b8b3-5a4a66bcd0e0" data-section-level="2" data-section-text="Input Parameters"><h2 id="input-parameters">Input Parameters</h2><section id="ceb9b48b-28f7-4b30-b0b2-3fc8dc97281a" data-section-level="3" data-section-text="Required Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">displacements</span><span class="moose-parameter-header-description">Displacement variables</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;VariableName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Displacement variables</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Required Parameters</h3></summary></details></section><section id="256d1c6d-5b32-4547-b79a-0775f3283ec4" data-section-level="3" data-section-text="Optional Parameters" data-details-open="open"><details class="moose-section-content" open="open"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">base_name</span><span class="moose-parameter-header-description">Material property base name</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::string</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Material property base name</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">block</span><span class="moose-parameter-header-description">The list of blocks (ids or names) that this object will be applied</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;SubdomainName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of blocks (ids or names) that this object will be applied</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">boundary</span><span class="moose-parameter-header-description">The list of boundaries (ids or names) from the mesh where this object applies</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;BoundaryName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The list of boundaries (ids or names) from the mesh where this object applies</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">compute</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">When false, MOOSE will not call compute methods on this material. The user must call computeProperties() after retrieving the MaterialBase via MaterialBasePropertyInterface::getMaterialBase(). Non-computed MaterialBases are not sorted for dependencies.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>When false, MOOSE will not call compute methods on this material. The user must call computeProperties() after retrieving the MaterialBase via MaterialBasePropertyInterface::getMaterialBase(). Non-computed MaterialBases are not sorted for dependencies.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">constant_on</span><span class="moose-parameter-header-default">NONE</span><span class="moose-parameter-header-description">When ELEMENT, MOOSE will only call computeQpProperties() for the 0th quadrature point, and then copy that value to the other qps.When SUBDOMAIN, MOOSE will only call computeQpProperties() for the 0th quadrature point, and then copy that value to the other qps. Evaluations on element qps will be skipped</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>NONE</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MooseEnum</p><p class="moose-parameter-description-options"><span>Options:</span>NONE, ELEMENT, SUBDOMAIN</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>When ELEMENT, MOOSE will only call computeQpProperties() for the 0th quadrature point, and then copy that value to the other qps.When SUBDOMAIN, MOOSE will only call computeQpProperties() for the 0th quadrature point, and then copy that value to the other qps. Evaluations on element qps will be skipped</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">declare_suffix</span><span class="moose-parameter-header-description">An optional suffix parameter that can be appended to any declared properties. The suffix will be prepended with a '_' character.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>An optional suffix parameter that can be appended to any declared properties. The suffix will be prepended with a '_' character.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">eigenstrain_names</span><span class="moose-parameter-header-description">List of eigenstrains to account for</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;MaterialPropertyName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>List of eigenstrains to account for</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">homogenization_gradient_names</span><span class="moose-parameter-header-description">List of homogenization gradients to add to the displacement gradient</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;MaterialPropertyName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>List of homogenization gradients to add to the displacement gradient</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">large_kinematics</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Use large displacement kinematics in the kernel.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Use large displacement kinematics in the kernel.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">prop_getter_suffix</span><span class="moose-parameter-header-description">An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>MaterialPropertyName</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>An optional suffix parameter that can be appended to any attempt to retrieve/get material properties. The suffix will be prepended with a '_' character.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">stabilize_strain</span><span class="moose-parameter-header-default">False</span><span class="moose-parameter-header-description">Average the volumetric strains</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>False</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Average the volumetric strains</p></div></li></ul><summary><h3 data-details-open="open"><span class="moose-section-icon"></span>Optional Parameters</h3></summary></details></section><section id="7f2e9bbf-e8e2-4a28-b072-626e8db21b0c" data-section-level="3" data-section-text="Advanced Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">control_tags</span><span class="moose-parameter-header-description">Adds user-defined labels for accessing object parameters via control logic.</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Adds user-defined labels for accessing object parameters via control logic.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">enable</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Set the enabled status of the MooseObject.</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>Yes</p><p class="moose-parameter-description"><span>Description:</span>Set the enabled status of the MooseObject.</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">implicit</span><span class="moose-parameter-header-default">True</span><span class="moose-parameter-header-description">Determines whether this object is calculated using an implicit or explicit form</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>True</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>bool</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Determines whether this object is calculated using an implicit or explicit form</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">seed</span><span class="moose-parameter-header-default">0</span><span class="moose-parameter-header-description">The seed for the master random number generator</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>0</p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>unsigned int</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>The seed for the master random number generator</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Advanced Parameters</h3></summary></details></section><section id="d7f71974-1128-4a62-9921-3f9bd8b47516" data-section-level="3" data-section-text="Outputs Parameters" data-details-open="close"><details class="moose-section-content"><ul class="collapsible" data-collapsible="expandable"><li><div class="collapsible-header"><span class="moose-parameter-name">output_properties</span><span class="moose-parameter-header-description">List of material properties, from this material, to output (outputs must also be defined to an output type)</span></div><div class="collapsible-body"><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;std::string&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>List of material properties, from this material, to output (outputs must also be defined to an output type)</p></div></li><li><div class="collapsible-header"><span class="moose-parameter-name">outputs</span><span class="moose-parameter-header-default">none </span><span class="moose-parameter-header-description">Vector of output names where you would like to restrict the output of variables(s) associated with this object</span></div><div class="collapsible-body"><p class="moose-parameter-description-default"><span>Default:</span>none </p><p class="moose-parameter-description-cpptype"><span>C++ Type:</span>std::vector&lt;OutputName&gt;</p><p class="moose-parameter-description-controllable"><span>Controllable:</span>No</p><p class="moose-parameter-description"><span>Description:</span>Vector of output names where you would like to restrict the output of variables(s) associated with this object</p></div></li></ul><summary><h3 data-details-open="close"><span class="moose-section-icon"></span>Outputs Parameters</h3></summary></details></section></section><section id="140b514c-b01f-4ce8-b4d6-236972194a37" data-section-level="2" data-section-text="References"><h2 id="references">References</h2><div class="moose-bibliography"><ol><li id="de1996design">EA&nbsp;de&nbsp;Souza&nbsp;Neto, D&nbsp;Peri<span class="bibtex-protected">ć</span>, M&nbsp;Dutko, and DRJ Owen.
+Design of simple low order finite elements for large strain analysis of nearly incompressible solids.
+<em>International Journal of Solids and Structures</em>, 33(20-22):3277–3296, 1996.<a href="#0adca656-d20e-4bc6-b623-c5fc31f194aa" class="modal-trigger moose-bibtex-modal" style="padding-left:10px;">[BibTeX]</a><div class="modal" id="0adca656-d20e-4bc6-b623-c5fc31f194aa"><div class="modal-content"><pre style="line-height:1.25;"><code class="language-latex">@article{de1996design,
+    author = "de Souza Neto, EA and Peri{\'c}, D and Dutko, M and Owen, DRJ",
+    title = "Design of simple low order finite elements for large strain analysis of nearly incompressible solids",
+    journal = "International Journal of Solids and Structures",
+    volume = "33",
+    number = "20-22",
+    pages = "3277--3296",
+    year = "1996",
+    publisher = "Elsevier"
+}
+</code></pre></div></div></li></ol></div></section></section><div class="moose-modal modal" id="780aa5da-aa27-4403-b1a9-86fbd2f87d40"><div class="modal-content"><h4>(moose/modules/tensor_mechanics/test/tests/lagrangian/cartesian/updated/patch/large_patch.i)</h4><pre class="moose-pre"><code class="language-text">[Mesh]
+  [base]
+    type = FileMeshGenerator
+    file = &#x27;patch.xda&#x27;
+  []
+  [sets]
+    input = base
+    type = SideSetsFromPointsGenerator
+    new_boundary = &#x27;left right bottom top back front&#x27;
+    points = &#x27;    0 0.5 0.5
+                  1 0.5 0.5
+                  0.5 0.0 0.5
+               &#x27;
+             &#x27;   0.5 1.0 0.5
+                  0.5 0.5 0.0
+                  0.5 0.5 1.0&#x27;
+  []
+[]
+
+[GlobalParams]
+  displacements = &#x27;disp_x disp_y disp_z&#x27;
+[]
+
+[Variables]
+  [disp_x]
+  []
+  [disp_y]
+  []
+  [disp_z]
+  []
+[]
+
+[Kernels]
+  [sdx]
+    type = UpdatedLagrangianStressDivergence
+    variable = disp_x
+    displacements = &#x27;disp_x disp_y disp_z&#x27;
+    component = 0
+    use_displaced_mesh = true
+    large_kinematics = true
+  []
+  [sdy]
+    type = UpdatedLagrangianStressDivergence
+    variable = disp_y
+    displacements = &#x27;disp_x disp_y disp_z&#x27;
+    component = 1
+    use_displaced_mesh = true
+    large_kinematics = true
+  []
+  [sdz]
+    type = UpdatedLagrangianStressDivergence
+    variable = disp_z
+    displacements = &#x27;disp_x disp_y disp_z&#x27;
+    component = 2
+    use_displaced_mesh = true
+    large_kinematics = true
+  []
+[]
+
+[AuxVariables]
+  [strain_xx]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+  [strain_yy]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+  [strain_zz]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+  [strain_xy]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+  [strain_xz]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+  [strain_yz]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+  [stress_xx]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+  [stress_yy]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+  [stress_zz]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+  [stress_xy]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+  [stress_yz]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+  [stress_xz]
+    order = CONSTANT
+    family = MONOMIAL
+  []
+[]
+
+[AuxKernels]
+  [stress_xx]
+    type = RankTwoAux
+    rank_two_tensor = cauchy_stress
+    variable = stress_xx
+    index_i = 0
+    index_j = 0
+    execute_on = timestep_end
+  []
+  [stress_yy]
+    type = RankTwoAux
+    rank_two_tensor = cauchy_stress
+    variable = stress_yy
+    index_i = 1
+    index_j = 1
+    execute_on = timestep_end
+  []
+  [stress_zz]
+    type = RankTwoAux
+    rank_two_tensor = cauchy_stress
+    variable = stress_zz
+    index_i = 2
+    index_j = 2
+    execute_on = timestep_end
+  []
+  [stress_xy]
+    type = RankTwoAux
+    rank_two_tensor = cauchy_stress
+    variable = stress_xy
+    index_i = 0
+    index_j = 1
+    execute_on = timestep_end
+  []
+  [stress_xz]
+    type = RankTwoAux
+    rank_two_tensor = cauchy_stress
+    variable = stress_xz
+    index_i = 0
+    index_j = 2
+    execute_on = timestep_end
+  []
+  [stress_yz]
+    type = RankTwoAux
+    rank_two_tensor = cauchy_stress
+    variable = stress_yz
+    index_i = 1
+    index_j = 2
+    execute_on = timestep_end
+  []
+
+  [strain_xx]
+    type = RankTwoAux
+    rank_two_tensor = mechanical_strain
+    variable = strain_xx
+    index_i = 0
+    index_j = 0
+    execute_on = timestep_end
+  []
+  [strain_yy]
+    type = RankTwoAux
+    rank_two_tensor = mechanical_strain
+    variable = strain_yy
+    index_i = 1
+    index_j = 1
+    execute_on = timestep_end
+  []
+  [strain_zz]
+    type = RankTwoAux
+    rank_two_tensor = mechanical_strain
+    variable = strain_zz
+    index_i = 2
+    index_j = 2
+    execute_on = timestep_end
+  []
+  [strain_xy]
+    type = RankTwoAux
+    rank_two_tensor = mechanical_strain
+    variable = strain_xy
+    index_i = 0
+    index_j = 1
+    execute_on = timestep_end
+  []
+  [strain_xz]
+    type = RankTwoAux
+    rank_two_tensor = mechanical_strain
+    variable = strain_xz
+    index_i = 0
+    index_j = 2
+    execute_on = timestep_end
+  []
+  [strain_yz]
+    type = RankTwoAux
+    rank_two_tensor = mechanical_strain
+    variable = strain_yz
+    index_i = 1
+    index_j = 2
+    execute_on = timestep_end
+  []
+[]
+
+[BCs]
+  [left]
+    type = DirichletBC
+    preset = true
+    variable = disp_x
+    boundary = left
+    value = 0.0
+  []
+
+  [bottom]
+    type = DirichletBC
+    preset = true
+    variable = disp_y
+    boundary = bottom
+    value = 0.0
+  []
+
+  [back]
+    type = DirichletBC
+    preset = true
+    variable = disp_z
+    boundary = back
+    value = 0.0
+  []
+
+  [front]
+    type = DirichletBC
+    preset = true
+    variable = disp_z
+    boundary = front
+    value = 0.1
+  []
+[]
+
+[Materials]
+  [elastic_tensor]
+    type = ComputeIsotropicElasticityTensor
+    youngs_modulus = 1000.0
+    poissons_ratio = 0.25
+  []
+  [compute_stress]
+    type = ComputeLagrangianLinearElasticStress
+    large_kinematics = true
+  []
+  [compute_strain]
+    type = ComputeLagrangianStrain
+    displacements = &#x27;disp_x disp_y disp_z&#x27;
+    large_kinematics = true
+  []
+[]
+
+[Preconditioning]
+  [smp]
+    type = SMP
+    full = true
+  []
+[]
+
+[Executioner]
+  type = Transient
+  dt = 1
+
+  solve_type = &#x27;newton&#x27;
+
+  petsc_options_iname = -pc_type
+  petsc_options_value = lu
+
+  nl_abs_tol = 1e-10
+  nl_rel_tol = 1e-10
+
+  end_time = 1
+  dtmin = 1.0
+[]
+
+[Outputs]
+  exodus = true
+[]
+</code></pre></div><div class="modal-footer"><a class="modal-close btn-flat">Close</a></div></div></div></div></div></main></div></body><script type="text/javascript" src="../../../contrib/materialize/materialize.min.js"></script><script type="text/javascript" src="../../../contrib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="../../../contrib/prism/prism.min.js"></script><script type="text/javascript" src="../../../js/init.js"></script><script type="text/javascript" src="../../../js/navigation.js"></script><script type="text/javascript" src="../../../contrib/fuse/fuse.min.js"></script><script type="text/javascript" src="../../../js/search_index.js"></script><script type="text/javascript" src="../../../js/sqa_moose.js"></script>
