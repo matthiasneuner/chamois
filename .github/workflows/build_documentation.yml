@@ -29,8 +29,8 @@ jobs:
       - name: Install dependencies
         shell: bash -l {0}
         run: |
+          mamba install moose-dev
           mamba install gfortran_linux-64
-          mamba install moose-tools moose-libmesh lcov  cmake
           conda list | grep moose
           git clone https://gitlab.com/libeigen/eigen.git
           cd eigen 
